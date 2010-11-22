@@ -1,0 +1,160 @@
+<!--{panel}-->
+<div class='hd'>Профиль пользователя</div>
+<div class='bd'>
+	<div id="{i#editor}"></div>
+	<div class="field">
+		<div class="buttons right">
+			<input id="{i#bsave}" type="button" value="Сохранить" class="btn"/>
+			<input id="{i#bcancel}" type="button" value="Отмена" class="btn"/>
+		</div>
+	</div>
+</div>
+
+<!--{widget}-->
+<div id="{i#id}" class="yui-navset">
+	<ul class="yui-nav">
+		<li class="selected"><a href="#{i#fields}"><em>Личные данные</em></a></li>
+		<li><a href="#{i#avatar}"><em>Мое фото</em></a></li>
+		<li><a href="#{i#password}"><em>Пароль</em></a></li>
+	</ul>            
+  <div class="yui-content">
+	  <div id="{i#fields}">
+	  
+		<div id="{i#editor}"></div>
+		<div class="field">
+			<div class="buttons right">
+				<input id="{i#bsave}" type="button" value="Сохранить" class="btn"/>
+			</div>
+		</div>
+		
+	  </div>
+	  <div id="{i#avatar}"></div>
+	  <div id="{i#password}"></div>
+	</div>
+</div>
+
+
+<!--{editor}-->
+<div class="field">
+	<h3>Учетная запись: <label id="{i#username}"></label></h3>
+	<div id="{i#table}" style="max-height: 350px; overflow-y: auto"></div>
+</div>
+
+<!--{edtable}-->
+<table style="margin-top: 8px;">
+	<tbody>{v#rows}</tbody>
+</table>
+
+<!--{edrowwait}-->
+<tr valign="top">
+	<td colspan="2">Идет загрузка данных...</td>
+</tr>
+
+<!--{edrow}-->
+<tr valign="top">
+	<td style="width: 200px; "><span>{v#name}</span></td>
+	<td>{v#edit}</td>
+</tr>
+
+<!--{ted0}-->
+<select id="{i#id}-{v#fn}">
+	<option value="0">Нет</option>
+	<option value="1">Да</option>
+</select>
+
+<!--{ted1}-->
+<input type="text" id="{i#id}-{v#fn}" style="width: 50px; margin-top: 5px;"/>
+
+<!--{ted2}-->
+<input type="text" id="{i#id}-{v#fn}" style="width: 250px; margin-top: 5px;" />
+
+<!--{ted3}-->
+<input type="text" id="{i#id}-{v#fn}" style="width: 50px; margin-top: 5px;" />
+
+<!--{ted4}-->
+<textarea id="{i#id}-{v#fn}" style="width: 250px; height: 50px; margin-top: 5px;" ></textarea>
+
+<!--{ted5}-->
+<input type="text" id="{i#id}-{v#fn}" style="width: 100px; margin-top: 5px;" />
+
+<!--{ted6}-->
+<select id="{i#id}-{v#fn}" style="margin-top: 5px;">
+	{v#rows}
+</select>
+
+<!--{ted6row}-->
+<option value="{v#id}">{v#tl}</option>
+
+<!--{ted7}-->
+<input type="text" id="{i#id}-{v#fn}" style="width: 50px; margin-top: 5px;" />
+
+<!--{avatar}-->
+<div class="field">
+	<h3>Основное фото</h3>
+
+	<table style="margin-top: 10px;"><tbody><tr>
+	<td>
+		<table><tbody><tr>
+			<td>
+				<div id="{i#img1}" style="width: 180px; height: 180px; border: 1px solid #CBCBCB; margin: 10px;">
+					
+				</div>
+			</td>
+			<td>
+				<div id="{i#img2}" style="width: 90px; height: 90px; border: 1px solid #CBCBCB; margin: 10px;">
+					
+				</div>
+			</td>
+			<td>
+				<div id="{i#img3}" style="width: 45px; height: 45px; border: 1px solid #CBCBCB; margin: 10px;">
+					
+				</div>
+			</td>
+			<td>
+				<div id="{i#img4}" style="width: 24px; height: 24px; border: 1px solid #CBCBCB; margin: 10px;">
+					
+				</div>
+			</td>
+		</tr></tbody></table>
+	</td>
+	</tr><tr>
+		<td style="padding-left: 10px;">
+			<input id='{i#bupload}' type="button" value="Загрузить фотографию" class="btn" />
+		</td>
+	</tr></tbody></table>	
+	
+</div>
+
+<!--{password}-->
+<div class="field">
+	<h3>Сменить пароль</h3>
+	<p>
+		Старый пароль: <input type="password" id="{i#passold}" value="" style="width: 100px" />
+	</p>
+	<table><tbody>
+		<tr>
+			<td>Новый пароль:</td>
+			<td><input type="password" id="{i#passnew}" value="" style="margin-bottom: 5px; width: 100px"  /></td>
+		</tr>
+		<tr>
+			<td>Повторите пароль:</td>
+			<td><input type="password" id="{i#passnewret}" value="" style="margin-bottom: 5px; width: 100px"/></td>
+		</tr>
+	</tbody></table>
+	<p>
+		<span class="dsc">Пароль должен содержать не менее 4 символов и не может совпадать с логином. Не используйте простые пароли — будьте разумны.</span>
+	</p>
+	
+	<div class="buttons right">
+		<input id="{i#bsave}" type="button" value="Сохранить" class="btn"/>
+	</div>
+	
+	<div style="display: none;">
+		<span id="{i#err-conf}">Ошибка: Пароли не совпадают</span>
+		<span id="{i#err0}">Пароль успешно изменен</span>
+		<span id="{i#err1}">Ошибка: Нет доступа</span>
+		<span id="{i#err2}">Ошибка: Пароль должен содержать не менее 4 символов</span>
+		<span id="{i#err3}">Ошибка: Пароль не может совпадать с логином</span>
+		<span id="{i#err4}">Ошибка: Старый пароль ошибочный</span>
+	</div>
+</div>
