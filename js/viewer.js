@@ -210,17 +210,20 @@ Component.entryPoint = function(){
 	UserWidget.prototype = {
 		init: function(container, user){
 			this.user = user;
-			buildTemplate(this, 'widget,runm,rbirthday,rdescript,rlv');
+			buildTemplate(this, 'widget,runm,rbirthday,rdescript,rlv,rdl');
 			
 			var TM = this._TM;
 			
 			var lst = TM.replace('runm', {'value': user['unm']});
 			
-			if (L.isString(user['birthday']) && user['birthday'].length > 0){
+			if (user['birthday']*1>0){
 				lst += TM.replace('rbirthday', {'value': dayToString(dateServerToClient(user['birthday']))});
 			}
 			if (L.isString(user['descript']) && user['descript'].length > 0){
 				lst += TM.replace('rdescript', {'value': user['descript']});
+			}
+			if (user['dl']*1>0){
+				lst += TM.replace('rdl', {'value': dayToString(dateServerToClient(user['dl']))});
 			}
 			lst += TM.replace('rlv', {
 				'value': Brick.dateExt.convert(user['lv'])

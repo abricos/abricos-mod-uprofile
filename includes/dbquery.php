@@ -23,6 +23,7 @@ class UserProfileQuery {
 		if ($personal){
 			array_push($fields, 'email as eml');
 		}
+		array_push($fields, "joindate as dl");
 		array_push($fields, "lastvisit as lv");
 		$sql = "
 			SELECT
