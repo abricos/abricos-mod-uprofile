@@ -188,72 +188,48 @@ Component.entryPoint = function(){
 	};
 	NS.viewer = new Viewer();
 	
+	var lz = function(num){
+		var snum = num+'';
+		return snum.length == 1 ? '0'+snum : snum; 
+	};
+	var DPOINT = '.';
+	var dayToString = function(d){
+		if (L.isNull(d)){ return ''; }
+		return lz(d.getDate())+DPOINT+lz(d.getMonth()+1)+DPOINT+d.getFullYear();
+	};
+
+	var dateServerToClient = function(unix){
+		unix = unix * 1;
+		if (unix == 0){ return null; }
+		return new Date(unix*1000);
+	};
+	
 	var UserWidget = function(container, user){
 		this.init(container, user);
 	};
 	UserWidget.prototype = {
 		init: function(container, user){
 			this.user = user;
-			buildTemplate(this, 'widget');
+			buildTemplate(this, 'widget,runm,rbirthday,rdescript,rlv');
 			
+			var TM = this._TM;
+			
+			var lst = TM.replace('runm', {'value': user['unm']});
+			
+			if (L.isString(user['birthday']) && user['birthday'].length > 0){
+				lst += TM.replace('rbirthday', {'value': dayToString(dateServerToClient(user['birthday']))});
+			}
+			if (L.isString(user['descript']) && user['descript'].length > 0){
+				lst += TM.replace('rdescript', {'value': user['descript']});
+			}
+			lst += TM.replace('rlv', {
+				'value': Brick.dateExt.convert(user['lv'])
+			});
 			container.innerHTML = this._TM.replace('widget', {
 				'avt': NS.avatar.get180(user),
-				'unm': NS.viewer.buildUserName(user)
+				'unm': NS.viewer.buildUserName(user),
+				'rows': lst
 			});
-		},
-		render: function(){
-			
-			/*
-			var user = DATA.get('profile').getRows({'userid': this.userid}).getByIndex(0).cell;
-			var lst = "", TM = this._TM, T = this._T, TId = this._TId;
-			
-			DATA.get('fieldlist').getRows().foreach(function(row){
-				var di = row.cell, ft = di['ft']*1;
-				
-				switch(ft){
-				case NS.FTYPE.BOOLEAN:
-				case NS.FTYPE.INTEGER:
-				case NS.FTYPE.STRING:
-				case NS.FTYPE.DOUBLE:
-				case NS.FTYPE.TEXT:
-				case NS.FTYPE.DATETIME:
-					lst += TM.replace('edrow', {
-						'name': di['tl'],
-						'edit': TM.replace('ted'+ft, {'fn': di['nm']})
-					});
-					break;
-				case NS.FTYPE.ENUM:
-					var rs = di['ops'].split('|'), rslst = "";
-					for(var i=0;i<rs.length;i++){
-						rslst += TM.replace('ted6row', {'id': i, 'tl': rs[i]});
-					}
-					lst += TM.replace('edrow', {
-						'name': di['tl'],
-						'edit': TM.replace('ted6', {
-							'fn': di['nm'], 'rows': rslst
-						})
-					});
-					break;
-				}
-			});
-			TM.getEl('editor.table').innerHTML = TM.replace('edtable', {'rows': lst});
-			
-			// проставить значение полей
-			DATA.get('fieldlist').getRows().foreach(function(row){
-				var di = row.cell, ft = di['ft']*1;
-				var value = user[di['nm']];
-				var el = Dom.get(TId['ted'+ft]['id']+'-'+di['nm']);
-				
-				if (!L.isNull(el)){
-					if (ft == NS.FTYPE.DATETIME){
-						el.value = dayToString(dateServerToClient(value));
-					}else{
-						el.value = value;
-					}
-				}
-			});
-			TM.getEl('editor.username').innerHTML = user['unm'];
-			/**/
 		}
 	};
 	NS.UserWidget = UserWidget;
@@ -261,7 +237,7 @@ Component.entryPoint = function(){
 	var UserPanel = function(user){
 		this.user = user;
 		UserPanel.superclass.constructor.call(this, {
-			modal: false, fixedcenter: true, width: '500px'
+			modal: false, fixedcenter: true, width: '780px'
 		});
 	};
 	YAHOO.extend(UserPanel, Brick.widget.Panel, {
