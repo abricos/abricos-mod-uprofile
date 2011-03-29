@@ -60,14 +60,16 @@ Component.entryPoint = function(){
 	};
 	Avatar.prototype = {
 		init: function(){ },
-		build: function(user, size){
+		build: function(user, size, isUrl){
 			size = size || 24;
-			var nofoto = '<img src="/modules/uprofile/images/nofoto'+size+'.gif" width="'+size+'px" height="'+size+'px" />';
+			isUrl = isUrl || false;
+			var nourl = '/modules/uprofile/images/nofoto'+size+'.gif',
+				nofoto = '<img src="'+nourl+'" width="'+size+'px" height="'+size+'px" />';
 			
 			var avatar = user['avatar'] || user['avt'] || '';
 			
 			if (!avatar || !L.isString(avatar) || avatar.length != 8){
-				return nofoto;
+				return isUrl ? nourl : nofoto;
 			}
 			var url = '/filemanager/i/'+avatar+'/',
 				ssize = ' width="'+size+'px" height="'+size+'px"';
@@ -83,13 +85,13 @@ Component.entryPoint = function(){
 			}
 			
 			url += 'avatar.gif';
-			return '<img src="'+url+'" '+ssize+' />';
+			return isUrl ? url : '<img src="'+url+'" '+ssize+' />';
 			
 		},
-		get24: function(user){ return this.build(user, 24); },
-		get45: function(user){ return this.build(user, 45); },
-		get90: function(user){ return this.build(user, 90); },
-		get180: function(user){ return this.build(user, 180);}
+		get24: function(user, isUrl){ return this.build(user, 24, isUrl); },
+		get45: function(user, isUrl){ return this.build(user, 45, isUrl); },
+		get90: function(user, isUrl){ return this.build(user, 90, isUrl); },
+		get180: function(user, isUrl){ return this.build(user, 180, isUrl);}
 	};
 	NS.avatar = new Avatar();
 	

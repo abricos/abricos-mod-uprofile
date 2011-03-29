@@ -74,6 +74,7 @@ class UserProfileManager extends ModuleManager {
 	
 	public function AJAX($d){
 		switch($d->do){
+			case 'finduser': return $this->FindUser($d->firstname, $d->lastname, $d->username, true);
 			case "viewprofile":
 				$ret = new stdClass();
 				$ret->user = $this->Profile($d->userid, true);
@@ -82,8 +83,56 @@ class UserProfileManager extends ModuleManager {
 					$ret->fields = $this->SysFieldList();
 				}
 				return $ret;
+			case "friends": return $this->FriendListBuild();
 		}
 		return -1;
+	}
+	
+	/**
+	 * Поиск пользователя в базе
+	 * 
+	 * @param string $firstname
+	 * @param string $lastname
+	 * @param string $username
+	 * @param boolean $retarray
+	 */
+	public function FindUser($firstname, $lastname, $username, $retarray = false){
+		if (!(!empty($firstname) || !empty($lastname) || !empty($username))){ return null; }
+		
+		if (!$this->IsViewRole()){ return null; }
+		$rows = UserProfileQuery::FindUser($this->db, $this->userid, $firstname, $lastname, $username);
+		if (!$retarray){
+			return $rows;
+		}
+		$ret = array();
+		while (($row = $this->db->fetch_array($rows))){
+			$ret[$row['id']] = $row;
+		}
+		return $ret;
+	}
+	
+	/**
+	 * Построить список знакомых
+	 */
+	public function FriendListBuild(){
+		$ret = array();
+		
+		CMSRegistry::$instance->modules->RegisterAllModule();
+		$modules = CMSRegistry::$instance->modules->GetModules();
+		
+		foreach ($modules as $name => $module){
+			if (!method_exists($module, 'UProfile_UserFriendList')){
+				continue;
+			}
+			$o = $module->UProfile_UserFriendList();
+			if (is_null($o)){ continue; }
+			$o->mod = $name;
+			foreach ($o->users as $key => $user){
+				$ret[$key] = $user;
+			}
+		}
+		
+		return $ret;
 	}
 	
 	public function FieldList(){

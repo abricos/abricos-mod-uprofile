@@ -10,6 +10,41 @@
 
 class UserProfileQuery {
 	
+	/**
+	 * Поиск пользователя по имени, фамилии или логину
+	 * 
+	 * @param CMSDatabase $db
+	 * @param integer $userid
+	 * @param string $firstname
+	 * @param string $lastname
+	 * @param string $username
+	 */
+	public static function FindUser(CMSDatabase $db, $userid, $firstname, $lastname, $username){
+		$where = array();
+		if (!empty($firstname)){
+			array_push($where, " UPPER(u.firstname)=UPPER('".bkstr($firstname)."') ");
+		}
+		if (!empty($lastname)){
+			array_push($where, " UPPER(u.lastname)=UPPER('".bkstr($lastname)."') ");
+		}
+		if (!empty($username)){
+			array_push($where, " UPPER(u.username)=UPPER('".bkstr($username)."') ");
+		}
+		array_push($where, " u.userid<>".bkint($userid));
+		
+		$sql = "
+			SELECT
+			 	u.userid as id,
+				u.username as unm,
+				u.firstname as fnm,
+				u.lastname as lnm
+			FROM ".$db->prefix."user u
+			WHERE ".implode(" AND ", $where)."
+			LIMIT 50
+		";
+		return $db->query_read($sql);
+	}
+	
 	public static function FieldSetValue(CMSDatabase $db, $userid, $varname, $value){
 		$sql = "
 			UPDATE ".$db->prefix."user
