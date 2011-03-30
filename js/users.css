@@ -34,7 +34,6 @@
     margin-top: 6px;
     width: 22px;
 }
-
 .usfw .opt {
 	cursor: pointer;
     position: relative;
@@ -57,4 +56,25 @@
 .usfw .bfind {
 	text-align: center;
 	padding: 7px;
+}
+
+.usfw .mu-block {
+    position: relative;
+    overflow: hidden;
+	border: 1px solid #999999;
+	padding: 2px 16px 2px 2px;
+}
+
+.usfw .mu-block .employee {
+    height: 50px;
+}
+.usfw .mu-block .employee {
+	padding-left: 54px;
+}
+.usfw .mu-block .text {
+	font-size: 1.12em;
+	padding-top: 0.4em;
+}
+.usfw .mu-block .extra {
+	padding-top: 0.4em;
 }

@@ -71,6 +71,27 @@ Component.entryPoint = function(){
 	};
 	NS.friends = new Friends();
 	
+	var UserBlockWidget = function(container, user, config){
+		this.init(container, user, config);
+	}
+	UserBlockWidget.prototype = {
+		init: function(container, user, cfg){
+			cfg = L.merge({
+				'info': ''
+			}, cfg || {});
+			buildTemplate(this, 'userblock');
+			var TM = this._TM;
+			
+			container.innerHTML = TM.replace('userblock', {
+				'uid': user.id,
+				'unm': NS.builder.getUserName(user),
+				'avatar': NS.avatar.get45(user, true),
+				'txt': cfg['info']
+			});
+		}
+	};
+	NS.UserBlockWidget = UserBlockWidget;
+	
 	var UserRowType = {
 		FROM: 'uln',
 		SELECT: 'sel'
