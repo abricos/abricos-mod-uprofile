@@ -100,7 +100,8 @@ Component.entryPoint = function(){
 	};
 	Builder.prototype = {
 		init: function(){},
-		getUserName: function(user){
+		getUserName: function(user, socr){
+			socr = socr || false;
 			var emp = function(s){
 				s = s || '';
 				return s.length < 1;
@@ -109,8 +110,16 @@ Component.entryPoint = function(){
 				unm = u['username'] || u['unm'],
 				fnm = u['firstname'] || u['fnm'],
 				lnm = u['lastname'] || u['lnm'];
+			
+			if (emp(fnm) && emp(lnm)){ return unm; }
+			if (socr){
+				if (fnm.length > 1){
+					fnm = fnm.substring(0, 1) + '.';
+				}
+				return lnm + ' ' + fnm;
+			}
 
-			return (emp(fnm) && emp(lnm)) ? unm : fnm + ' ' + lnm; 
+			return fnm + ' ' + lnm; 
 		},
 		getAvatar: function(user, size, template){
 			var unm = this.getUserName(user),
