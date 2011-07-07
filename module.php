@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @version $Id: dbquery.php 600 2010-07-08 05:56:37Z roosit $
  * @package Abricos
@@ -12,10 +11,6 @@
 /**
  * Модуль "Профиль пользователя" 
  */
-
-$mod = new UserProfileModule();
-CMSRegistry::$instance->modules->Register($mod);
-
 class UserProfileModule extends CMSModule {
 	
 	private $_manager;
@@ -172,5 +167,7 @@ class UserProfilePermission extends CMSPermission {
 	}
 }
 
+$mod = new UserProfileModule();
+CMSRegistry::$instance->modules->Register($mod);
 
 ?>
