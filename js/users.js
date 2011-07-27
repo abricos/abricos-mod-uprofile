@@ -187,12 +187,17 @@ Component.entryPoint = function(){
 			}
 			var el = this.getRowEl(user.id, UserRowType.FROM);
 			var uss = this.getSelectedUsers();
-			for (var id in uss){
-				if (id*1 == user.id*1){ return; }
+			for (var i=0;i<uss.length;i++){
+				if (uss[i]*1 == user.id*1){ return; }
 			}
 			Dom.removeClass(el, 'opt-current');
-			this._clickUser(el, UserRowType.FROM);
+			// this._clickUser(el, UserRowType.FROM);
+			// el.scrollIntoView(true);
+			
+			this.selectUser(user.id);
+			var el = this.getRowEl(user.id, UserRowType.SELECT);
 			el.scrollIntoView(true);
+			this.onClick(el);
 		},
 		_clickUser: function(el, type){
 			var move = false;
