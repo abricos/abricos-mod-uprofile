@@ -172,11 +172,15 @@ Component.entryPoint = function(){
 		buildUserName: function(user){
 			return NS.builder.getUserName(user);
 		},
-		showUserPanel: function(userid){
+		loadUserInfo: function(userid, callback){
+			
 			if (this.users[userid]){
-				new UserPanel(this.users[userid]);
+				if (L.isFunction(callback)){
+					callback(this.users[userid]);
+				}
 				return;
 			}
+			
 			Brick.ajax('uprofile', {
 				'data': {
 					'do': 'viewprofile',
@@ -190,11 +194,24 @@ Component.entryPoint = function(){
 					if (d.fields){
 						NS.viewer.fields = d.fields;
 					}
-					if (!d.user){ return; }
+					if (!d.user){ 
+						return; 
+					}
 					NS.viewer.users[d.user['id']] = d.user;
-					new UserPanel(d.user);
+					
+					if (L.isFunction(callback)){
+						callback(d.user);
+					}
 				}
 			});
+		},
+		showUserPanel: function(userid){
+			this.loadUserInfo(userid, function(user){
+				NS.viewer.showUserPanelMethod(user);
+			});
+		},
+		showUserPanelMethod: function(user){
+			new UserPanel(user);
 		}
 	};
 	NS.viewer = new Viewer();
