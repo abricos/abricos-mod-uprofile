@@ -158,6 +158,7 @@ Component.entryPoint = function(){
                     var el = E.getTarget(e);
                     if (__self.onClick(el)){ E.preventDefault(e); }
             });
+			this.userChangedEvent = new YAHOO.util.CustomEvent("userChangedEvent");
 		},
 		onClick: function(el){
 			var fel;
@@ -204,6 +205,17 @@ Component.entryPoint = function(){
 					}
 				}
 			});
+		},
+		updateUserInfo: function(userid, info){
+			var user = this.users[userid];
+			if (!user || !L.isObject(info)){ return; }
+			
+			for (var n in info){
+				if (n == 'userid'){ continue; }
+				user[n] = info[n];
+			}
+			
+			this.userChangedEvent.fire(user);
 		},
 		showUserPanel: function(userid){
 			this.loadUserInfo(userid, function(user){

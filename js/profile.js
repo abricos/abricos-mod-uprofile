@@ -284,10 +284,10 @@ Component.entryPoint = function(){
 		});
 	}
 	
-	var AvatarEditors = function(){
+	var AvatarUploaders = function(){
 		this.init();
 	};
-	AvatarEditors.prototype = {
+	AvatarUploaders.prototype = {
 		init: function(){
 			this.idinc = 0;
 			this.list = {};
@@ -310,7 +310,42 @@ Component.entryPoint = function(){
 		}
 	};
 	
-	NS.AvatarEditors = new AvatarEditors();
+	NS.avatarUploaders = new AvatarUploaders();
+	
+	
+	var AvatarUploader = function(userid, callback){
+		this.init(userid, callback);
+	};
+	AvatarUploader.prototype = {
+		init: function(userid, callback){
+			this.uploadWindow = null;
+			this.userid = userid;
+			this.callback = callback;
+			this.id = NS.avatarUploaders.register(this);
+		},
+		destroy: function(){
+			NS.avatarUploaders.remove(this.id);
+		},
+		imageUpload: function(){
+			if (!L.isNull(this.uploadWindow) && !this.uploadWindow.closed){
+				this.uploadWindow.focus();
+				return;
+			}
+			var element = this.row;
+			
+			var url = '/uprofile/upload/'+this.userid+'/'+this.id+'/';
+			this.uploadWindow = window.open(
+				url, 'catalogimage',	
+				'statusbar=no,menubar=no,toolbar=no,scrollbars=yes,resizable=yes,width=480,height=270' 
+			); 
+		},
+		setAvatar: function(fileid){
+			if (L.isFunction(this.callback)){
+				this.callback(fileid);
+			}
+		}
+	};
+	NS.AvatarUploader = AvatarUploader;
 
 	var AvatarEditorWidget = function(container, userid){
 		this.init(container, userid);
@@ -319,8 +354,10 @@ Component.entryPoint = function(){
 		init: function(container, userid){
 			userid = userid || Brick.env.user.id;
 			this.userid = userid;
-			this.uploadWindow = null;
-			this.id = NS.AvatarEditors.register(this);
+			var __self = this;
+			this.avatarUploader = new AvatarUploader(userid, function(fileid){
+				__self.onAvatarUpload(fileid);
+			});
 
 			buildTemplate(this, 'avatar');
 			var TM = this._TM, T = this._T;
@@ -342,10 +379,16 @@ Component.entryPoint = function(){
 		destroy: function(){
 			DATA.onComplete.unsubscribe(this.dsEvent);
 			DATA.onStart.unsubscribe(this.dsEvent);
-			NS.AvatarEditors.remove(this.id);
+			this.avatarUploader.destroy();
 		},
 		renderWait: function(){
 			var TM = this._TM, T = this._T;
+		},
+		onAvatarUpload: function(fileid){
+			var row = DATA.get('profile').getRows({'userid': this.userid}).getByIndex(0);
+			if (L.isNull(row)){ return; }
+			row.cell['avatar'] = fileid;
+			this.render();
 		},
 		render: function(){
 			var TM = this._TM, T = this._T;
@@ -372,28 +415,9 @@ Component.entryPoint = function(){
 		onClick: function(el){
 			var tp = this._TId['avatar'];
 			switch(el.id){
-			case tp['bupload']: this.imageUpload(); return true;
+			case tp['bupload']: this.avatarUploader.imageUpload(); return true;
 			}
 			return false;
-		},
-		imageUpload: function(){
-			if (!L.isNull(this.uploadWindow) && !this.uploadWindow.closed){
-				this.uploadWindow.focus();
-				return;
-			}
-			var element = this.row;
-			
-			var url = '/uprofile/upload/'+this.userid+'/'+this.id+'/';
-			this.uploadWindow = window.open(
-				url, 'catalogimage',	
-				'statusbar=no,menubar=no,toolbar=no,scrollbars=yes,resizable=yes,width=480,height=270' 
-			); 
-		},
-		setAvatar: function(fileid){
-			var row = DATA.get('profile').getRows({'userid': this.userid}).getByIndex(0);
-			if (L.isNull(row)){ return; }
-			row.cell['avatar'] = fileid;
-			this.render();
 		}
 	};
 	NS.AvatarEditorWidget = AvatarEditorWidget;

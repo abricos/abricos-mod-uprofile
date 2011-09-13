@@ -76,7 +76,7 @@ if ($errornum == 0){
 	$fh = $fmManager->lastUploadFileHash;
 	$manager->FieldSetValue('avatar', $fmManager->lastUploadFileHash);
 }
-unlink($file);
+@unlink($file);
 
 $brick->param->var['command'] = Brick::ReplaceVarByData($brick->param->var['ok'], array(
 	"uid" => intval($userid),
