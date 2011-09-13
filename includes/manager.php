@@ -204,6 +204,9 @@ class UserProfileManager extends ModuleManager {
 		if (!$this->IsPersonalEditRole($d->id)){
 			return;
 		}
+		
+		$utmanager = CMSRegistry::$instance->GetUserTextManager(true);
+		
 		$upd = array();
 		$fs = $this->SysFieldList();
 		foreach ($fs as $fname => $frow){
@@ -218,6 +221,8 @@ class UserProfileManager extends ModuleManager {
 				break;
 			case UserFieldType::STRING:
 			case UserFieldType::TEXT:
+				
+				$val = $utmanager->Parser($val);
 				$nval = bkstr($val);
 				break;
 			case UserFieldType::DOUBLE:
