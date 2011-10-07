@@ -279,11 +279,9 @@ Component.entryPoint = function(){
 	
 	var UserPanel = function(user){
 		this.user = user;
-		UserPanel.superclass.constructor.call(this, {
-			modal: false, fixedcenter: true, width: '780px'
-		});
+		UserPanel.superclass.constructor.call(this, { width: '780px' });
 	};
-	YAHOO.extend(UserPanel, Brick.widget.Panel, {
+	YAHOO.extend(UserPanel, Brick.widget.Dialog, {
 		initTemplate: function(){
 			buildTemplate(this, 'panel');
 			return  this._TM.replace('panel', {

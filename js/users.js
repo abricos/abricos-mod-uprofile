@@ -268,9 +268,7 @@ Component.entryPoint = function(){
 	
 	var FindUserPanel = function(callback){
 		this.callback = callback || function(){};
-		FindUserPanel.superclass.constructor.call(this, {
-			fixedcenter: true, modal: true
-		});
+		FindUserPanel.superclass.constructor.call(this);
 	};
 	YAHOO.extend(FindUserPanel, Brick.widget.Dialog, {
 		initTemplate: function(){

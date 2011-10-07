@@ -128,10 +128,10 @@ Component.entryPoint = function(){
 	var ProfilePanel = function(userid){
 		this.userid = userid || Brick.env.user.id;
 		ProfilePanel.superclass.constructor.call(this, {
-			modal: true, fixedcenter: true, width: '400px'
+			width: '400px'
 		});
 	};
-	YAHOO.extend(ProfilePanel, Brick.widget.Panel, {
+	YAHOO.extend(ProfilePanel, Brick.widget.Dialog, {
 		initTemplate: function(){
 			buildTemplate(this, 'panel');
 
