@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: dbquery.php 572 2010-05-21 12:17:26Z roosit $
+ * @version $Id$
  * @package Abricos
  * @subpackage User
  * @copyright Copyright (C) 2008 Abricos. All rights reserved.
@@ -10,16 +10,54 @@
 
 class UserProfileQuery {
 	
+	public static function Profile(Ab_Database $db, $userid, $personal = false){
+		$sql = "
+			SELECT
+				userid as id, 
+				username as unm,
+				firstname as fnm,
+				lastname as lnm,
+				avatar as avt,
+				descript as dsc,
+				birthday as bd,
+				site,
+				sex,
+				lastvisit as lv,
+				joindate as dl
+				".($personal ? ",email as eml" : "")."
+			FROM ".$db->prefix."user
+			WHERE userid=".bkint($userid)."
+			LIMIT 1
+		";
+		return $db->query_read($sql);
+	}
+	
+	public static function ProfileUpdate(Ab_Database $db, $userid, $d){
+		$sql = "
+			UPDATE ".$db->prefix."user
+			SET
+				firstname='".bkstr($d->fnm)."',
+				lastname='".bkstr($d->lnm)."',
+				descript='".bkstr($d->dsc)."',
+				site='".bkstr($d->site)."',
+				sex=".bkint($d->sex).",
+				birthday=".bkint($d->bd)."
+			WHERE userid=".bkint($userid)."
+		";
+		$db->query_write($sql);
+	}
+	
+	
 	/**
 	 * Поиск пользователя по имени, фамилии или логину
 	 * 
-	 * @param CMSDatabase $db
+	 * @param Ab_Database $db
 	 * @param integer $userid
 	 * @param string $firstname
 	 * @param string $lastname
 	 * @param string $username
 	 */
-	public static function FindUser(CMSDatabase $db, $userid, $firstname, $lastname, $username){
+	public static function FindUser(Ab_Database $db, $userid, $firstname, $lastname, $username){
 		$where = array();
 		if (!empty($firstname)){
 			array_push($where, " UPPER(u.firstname)=UPPER('".bkstr($firstname)."') ");
@@ -37,7 +75,8 @@ class UserProfileQuery {
 			 	u.userid as id,
 				u.username as unm,
 				u.firstname as fnm,
-				u.lastname as lnm
+				u.lastname as lnm,
+				u.avatar as avt
 			FROM ".$db->prefix."user u
 			WHERE ".implode(" AND ", $where)."
 			LIMIT 50
@@ -45,7 +84,7 @@ class UserProfileQuery {
 		return $db->query_read($sql);
 	}
 	
-	public static function FieldSetValue(CMSDatabase $db, $userid, $varname, $value){
+	public static function FieldSetValue(Ab_Database $db, $userid, $varname, $value){
 		$sql = "
 			UPDATE ".$db->prefix."user
 			SET ".bkstr($varname)."='".bkstr($value)."'
@@ -54,38 +93,7 @@ class UserProfileQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function Profile(CMSDatabase $db, $userid, $personal = false, $fields = array()){
-		if ($personal){
-			array_push($fields, 'email as eml');
-		}
-		array_push($fields, "joindate as dl");
-		array_push($fields, "lastvisit as lv");
-		$sql = "
-			SELECT
-				userid as id, username as unm,
-				".implode(",", $fields)."
-			FROM ".$db->prefix."user
-			WHERE userid=".bkint($userid)."
-			LIMIT 1
-		";
-		return $db->query_read($sql);
-	}
-	
-	public static function ProfileUpdate(CMSDatabase $db, $userid, $upd){
-		if (empty($upd)){ return; }
-		$fs = array();
-		foreach($upd as $key => $value){
-			array_push($fs, $key."='".$value."'");
-		}
-		$sql = "
-			UPDATE ".$db->prefix."user
-			SET ".implode(',', $fs)."
-			WHERE userid=".bkint($userid)."
-		";
-		$db->query_write($sql);
-	}
-	
-	public static function FieldList(CMSDatabase $db){
+	public static function FieldList(Ab_Database $db){
 		$sql = "
 			SELECT
 				fieldid as id, 
@@ -102,7 +110,7 @@ class UserProfileQuery {
 		return $db->query_read($sql);
 	}
 	
-	public static function FieldAppend(CMSDatabase $db, $name, $title, $type, $size = '1', $options){
+	public static function FieldAppend(Ab_Database $db, $name, $title, $type, $size = '1', $options){
 		$name = bkstr($name);
 		$title = bkstr($title);
 		$size = bkstr($size);
@@ -140,7 +148,7 @@ class UserProfileQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function FieldInfoAppend(CMSDatabase $db, $name, $title, $type, $ops){
+	public static function FieldInfoAppend(Ab_Database $db, $name, $title, $type, $ops){
 		$sql = "
 			INSERT INTO ".$db->prefix."upfl_field (fieldname, title, fieldtype, fieldaccess, options, ord) VALUES (
 				'".bkstr($name)."',
@@ -154,7 +162,7 @@ class UserProfileQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function FieldRemove(CMSDatabase $db, $name){
+	public static function FieldRemove(Ab_Database $db, $name){
 		$sql = "
 			ALTER TABLE `".$db->prefix."user` DROP `".bkstr($name)."`
 		";
@@ -166,7 +174,7 @@ class UserProfileQuery {
 		$db->query_write($sql);
 	}
 	
-	public static function FieldAccessUpdate(CMSDatabase $db, $name, $access){
+	public static function FieldAccessUpdate(Ab_Database $db, $name, $access){
 		$sql = "
 			UPDATE ".$db->prefix."upfl_field
 			SET fieldaccess=".bkint($access)."

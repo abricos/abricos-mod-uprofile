@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: dbquery.php 600 2010-07-08 05:56:37Z roosit $
+ * @version $Id$
  * @package Abricos
  * @subpackage UserProfile
  * @copyright Copyright (C) 2008 Abricos. All rights reserved.
@@ -11,12 +11,12 @@
 /**
  * Модуль "Профиль пользователя" 
  */
-class UserProfileModule extends CMSModule {
+class UserProfileModule extends Ab_Module {
 	
 	private $_manager;
 	
 	function __construct(){
-		$this->version = "0.1.1.3";
+		$this->version = "0.1.3";
 		$this->name = "uprofile";
 		$this->takelink = "uprofile";
 		
@@ -166,8 +166,6 @@ class UserProfilePermission extends CMSPermission {
 		);
 	}
 }
-
-$mod = new UserProfileModule();
-CMSRegistry::$instance->modules->Register($mod);
+Abricos::ModuleRegister(new UserProfileModule());
 
 ?>

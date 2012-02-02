@@ -6,23 +6,23 @@
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
-$user = CMSRegistry::$instance->user;
+$user = Abricos::$user;
 
-$userid = $user->info['userid'];
-$db = CMSRegistry::$instance->db;
+$userid = $user->id;
+$db = Abricos::$db;
 if (empty($userid)){ return;  }
 
-$modFM = Brick::$modules->GetModule('filemanager');
+$modFM = Abricos::GetModule('filemanager');
 if (empty($modFM)){ return; }
 
 $brick = Brick::$builder->brick;
-$brick->param->var['url'] = Brick::$cms->adress->requestURI; 
+$brick->param->var['url'] = Abricos::$adress->requestURI; 
 
 $fmManager = $modFM->GetFileManager();
 
-$manager = Brick::$modules->GetModule('uprofile')->GetManager();
+$manager = Abricos::GetModule('uprofile')->GetManager();
 
-$p_act = Brick::$cms->input->clean_gpc('p', 'act', TYPE_STR);
+$p_act = Abricos::CleanGPC('p', 'act', TYPE_STR);
 if ($p_act != "upload"){ return; }
 
 // отключить проверку ролей в менеджере файлов
@@ -37,7 +37,7 @@ if (!empty($avatarid)){
 	$manager->FieldSetValue('avatar', '');
 }
 
-$p_file = Brick::$cms->input->clean_gpc('f', 'file0', TYPE_FILE);
+$p_file = Abricos::CleanGPC('f', 'file0', TYPE_FILE);
 
 $file = trim($p_file['tmp_name']);
 

@@ -1,0 +1,52 @@
+.aw-uprofile .clear { clear: both; }
+.aw-uprofile .right { text-align: right; }
+.aw-uprofile .hide  { display: none; } 
+
+.aw-uprofile .wsloading {
+	text-align: center;
+	padding: 30px;
+	vertical-align: middle;
+}
+
+.aw-uprofile .gheadermenu {
+	position: relative;
+	padding: 15px 0 0 150px;
+	height: 100px;
+}
+.aw-uprofile .gheadermenu h2 {
+	padding: 5px 10px;
+	font-size: 1.5em;
+	background-color: #8c8d8e;
+	color: #fff;
+}
+.aw-uprofile .gheadermenu div.logo {
+	position: absolute;
+	width: 96px;
+	height: 96px;
+	top: 0;
+	left: 30px;
+}
+.aw-uprofile .gheadermenu ul.topmenu {
+	margin: 10px;
+	margin-top: 6px;
+}
+.aw-uprofile .gheadermenu ul.topmenu li{
+	float: left;
+    padding: 1px 0.5em;
+    margin-right: 10px;
+}
+.aw-uprofile .gheadermenu ul.topmenu a {
+	font-size: 
+}
+.aw-uprofile .gheadermenu ul.topmenu li.sel {
+	background: none repeat scroll 0 0 #E3E3D7;
+    border: 1px solid #DDD9E2;
+}
+.aw-uprofile .gheadermenu ul.topmenu li.sel a {
+	color: #000;
+	text-decoration: none;
+}
+.aw-uprofile .gbmenu .line {
+    background: url("/modules/uprofile/images/gmshadow.png") repeat-x scroll 0 0 transparent;
+	height: 16px;
+}

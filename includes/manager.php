@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Id: manager.php 568 2010-05-14 06:37:24Z roosit $
+ * @version $Id$
  * @package Abricos
  * @subpackage User
  * @copyright Copyright (C) 2008 Abricos. All rights reserved.
@@ -10,7 +10,7 @@
 
 require_once 'dbquery.php';
 
-class UserProfileManager extends ModuleManager {
+class UserProfileManager extends Ab_ModuleManager {
 	
 	/**
 	 * 
@@ -18,32 +18,22 @@ class UserProfileManager extends ModuleManager {
 	 */
 	public $module = null;
 	
-	/**
-	 * User
-	 * @var User
-	 */
-	public $user = null;
 	private $_userFields = null;
 	
-	public $userid = 0;
-	
-	public function UserProfileManager(UserProfileModule $module){
-		parent::ModuleManager($module);
-		
-		$this->user = CMSRegistry::$instance->modules->GetModule('user');
-		$this->userid = $this->user->info['userid'];
+	public function __construct(UserProfileModule $module){
+		parent::__construct($module);
 	}
 	
 	public function IsAdminRole(){
-		return $this->module->permission->CheckAction(UserProfileAction::PROFILE_ADMIN) > 0;
+		return $this->IsRoleEnable(UserProfileAction::PROFILE_ADMIN);
 	}
 	
 	public function IsWriteRole(){
-		return $this->module->permission->CheckAction(UserProfileAction::PROFILE_WRITE) > 0;
+		return $this->IsRoleEnable(UserProfileAction::PROFILE_WRITE);
 	}
 	
 	public function IsViewRole(){
-		return $this->module->permission->CheckAction(UserProfileAction::PROFILE_VIEW) > 0;
+		return $this->IsRoleEnable(UserProfileAction::PROFILE_VIEW);
 	}
 	
 	public function IsPersonalEditRole($userid){
@@ -51,6 +41,7 @@ class UserProfileManager extends ModuleManager {
 	}
 
 	public function DSProcess($name, $rows){
+		/*
 		$p = $rows->p;
 		$db = $this->db;
 		
@@ -61,31 +52,68 @@ class UserProfileManager extends ModuleManager {
 				}
 				return;
 		}
+		/**/
 	}
 	
 	public function DSGetData($name, $rows){
+		/*
 		$p = $rows->p;
 		switch ($name){
 			case 'profile': return $this->Profile($p->userid);
 			case 'fieldlist': return $this->FieldList();
 		}
+		/**/
 		return null;
+		
 	}
 	
 	public function AJAX($d){
 		switch($d->do){
-			case 'finduser': return $this->FindUser($d->firstname, $d->lastname, $d->username, true);
+			
 			case "viewprofile":
-				$ret = new stdClass();
-				$ret->user = $this->Profile($d->userid, true);
-				$ret->fields = null;
-				if ($d->getfields){
-					$ret->fields = $this->SysFieldList();
-				}
-				return $ret;
-			case "friends": return $this->FriendListBuild();
+				return $this->Profile($d->userid, true);
+				
+			case 'profilesave': 
+				return $this->ProfileSave($d->userid, $d->data);
+				
+			case 'finduser': 
+				return $this->FindUser($d->firstname, $d->lastname, $d->username, true);
+			case "friends": 
+				return $this->FriendListBuild();
 		}
 		return -1;
+	}
+	
+	public function Profile($userid, $retarray = false){
+		$res = UserProfileQuery::Profile($this->db, $userid,  $this->IsPersonalEditRole($userid));
+		return $retarray ? $this->db->fetch_array($res) : $res;
+	}
+	
+	public function ProfileSave($userid, $d){
+		if ($userid != $this->userid && !$this->IsAdminRole()){
+			return null;
+		}
+		$ret = new stdClass();
+		$ret->err = 0;
+		if (!is_null($d->pass)){ // смена пароля
+			
+			$uman = Abricos::$user->GetManager();
+			$ret->err = $uman->UserPasswordChange($userid, $d->pass->new, $d->pass->old);
+			if ($ret->err > 0){
+				return $ret;
+			}
+		}
+		$utmf = Abricos::TextParser(true);
+		$d->fnm = $utmf->Parser($d->fnm);
+		$d->lnm = $utmf->Parser($d->lnm);
+		$d->site = $utmf->Parser($d->site);
+		$d->dsc = $utmf->Parser($d->dsc);
+		$d->sex = intval($d->sex);
+		$d->bd = intval($d->bd);
+		UserProfileQuery::ProfileUpdate($this->db, $userid, $d);
+	
+		$ret->udata = $this->Profile($userid, true);
+		return $ret;
 	}
 	
 	/**
@@ -116,7 +144,7 @@ class UserProfileManager extends ModuleManager {
 	 */
 	public function FriendListBuild(){
 		$ret = array();
-		
+
 		CMSRegistry::$instance->modules->RegisterAllModule();
 		$modules = CMSRegistry::$instance->modules->GetModules();
 		
@@ -186,26 +214,13 @@ class UserProfileManager extends ModuleManager {
 		$this->user->GetManager()->UserFieldCacheClear();
 	}
 	
-	public function Profile($userid, $retarray = false){
-		$fields = array();
-		$fs = $this->SysFieldList();
-		foreach ($fs as $fname => $frow){
-			if (intval($frow['ft']) == UserFieldType::TABLE){
-				continue;
-			}
-			array_push($fields, "`".$fname."`");
-		}
-		array_push($fields, "avatar");
-		$res = UserProfileQuery::Profile($this->db, $userid,  $this->IsPersonalEditRole($userid), $fields); 
-		return $retarray ? $this->db->fetch_array($res) : $res;
-	}
-	
+	/*
 	public function ProfileUpdate($d){
 		if (!$this->IsPersonalEditRole($d->id)){
 			return;
 		}
 		
-		$utmanager = CMSRegistry::$instance->GetUserTextManager(true);
+		$utmanager = Abricos::TextParser(true);
 		
 		$upd = array();
 		$fs = $this->SysFieldList();
@@ -234,6 +249,7 @@ class UserProfileManager extends ModuleManager {
 		}
 		UserProfileQuery::ProfileUpdate($this->db, $d->id, $upd);
 	}
+	/**/
 	
 	public function FieldSetValue($varname, $value){
 		UserProfileQuery::FieldSetValue($this->db, $this->userid, $varname, $value);

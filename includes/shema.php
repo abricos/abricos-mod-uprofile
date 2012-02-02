@@ -2,7 +2,7 @@
 /**
  * Схема таблиц данного модуля.
  * 
- * @version $Id: shema.php 572 2010-05-21 12:17:26Z roosit $
+ * @version $Id$
  * @package Abricos
  * @subpackage Sinwin
  * @copyright Copyright (C) 2008 Abricos. All rights reserved.
@@ -11,11 +11,11 @@
  */
 
 $charset = "CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
-$updateManager = CMSRegistry::$instance->modules->updateManager; 
-$db = CMSRegistry::$instance->db;
+$updateManager = Ab_UpdateManager::$current; 
+$db = Abricos::$db;
 $pfx = $db->prefix;
 
-$uprofileManager = CMSRegistry::$instance->modules->GetModule('uprofile')->GetManager(); 
+$uprofileManager = $updateManager->module->GetManager(); 
 
 if ($updateManager->isInstall()){
 	
@@ -47,7 +47,7 @@ if ($updateManager->isInstall()){
 }
 
 if ($updateManager->isUpdate('0.1.1')){
-	CMSRegistry::$instance->modules->GetModule('uprofile')->permission->Install();
+	Abricos::GetModule('uprofile')->permission->Install();
 }
 
 if ($updateManager->isUpdate('0.1.1.2') && !$updateManager->isInstall()){

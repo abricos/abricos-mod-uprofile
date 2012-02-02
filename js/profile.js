@@ -18,26 +18,18 @@ Component.requires = {
 	     {name: 'uprofile', files: ['viewer.js']}
     ]
 };
-Component.entryPoint = function(){
+Component.entryPoint = function(NS){
 	
 	var Dom = YAHOO.util.Dom,
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
-	
-	var NS = this.namespace,
-		TMG = this.template;
-	
-	var API = NS.API;
 
 	if (!NS.data){
 		NS.data = new Brick.util.data.byid.DataSet('uprofile');
 	}
 	var DATA = NS.data;
 	
-	var buildTemplate = function(w, templates){
-		var TM = TMG.build(templates), T = TM.data, TId = TM.idManager;
-		w._TM = TM; w._T = T; w._TId = TId;
-	};
+	var buildTemplate = this.buildTemplate;
 	
 	NS.FTYPE = {
 		BOOLEAN: 0,
@@ -270,14 +262,14 @@ Component.entryPoint = function(){
 		}
 	};
 	
-	API.showProfileWidget = function(container, userid){
+	NS.API.showProfileWidget = function(container, userid){
 		NS.roles.load(function(){
 			var profile = new ProfileWidget(container, userid);
 			DATA.request();
 		});
 	};
 	
-	API.showProfilePanel = function(userid){
+	NS.API.showProfilePanel = function(userid){
 		NS.roles.load(function(){
 			new ProfilePanel(userid);
 			DATA.request();

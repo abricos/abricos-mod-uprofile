@@ -1,0 +1,41 @@
+<!--{panel}-->
+<div class='hd'>Профиль пользователя</div>
+<div class='bd aw-uprofile'>
+
+	<div id="{i#gmenu}"></div>
+
+	<div id="{i#loading}" class="wsloading">
+		<img src="/images/loading.gif" />
+		Идет загрузка данных.<br />
+		Пожалуйста, подождите...
+	</div>
+
+	<div id="{i#pages}"></div>
+	
+</div>
+
+<!--{gbmenu}-->
+<div class="aw-uprofile">
+	<div class="gheadermenu">
+		<h2>{v#unm}</h2>
+		
+		<div class="logo" id="{i#avatar}">
+			{v#avatar}
+		</div>
+		
+		<ul class="topmenu">
+			{v#tlrows}
+		</ul>
+		<div class="clear"></div>
+	</div>
+	
+	<div class="gbmenu">
+		<div class="line"></div>
+	</div>
+
+</div>
+
+<!--{tlrow}-->
+<li id="{i#id}-{v#id}">
+	<a href="#app=uprofile/ws/showws/{v#uid}/{v#id}">{v#tl}</a>
+</li>

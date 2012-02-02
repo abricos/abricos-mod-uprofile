@@ -12,22 +12,13 @@ Component.requires = {
         {name: 'uprofile', files: ['viewer.js']}
 	]
 };
-Component.entryPoint = function(){
+Component.entryPoint = function(NS){
 	
 	var Dom = YAHOO.util.Dom,
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
 	
-	var NS = this.namespace, 
-		TMG = this.template,
-		API = NS.API;
-	
-	Brick.util.CSS.update(Brick.util.CSS['uprofile']['users']);	
-
-	var buildTemplate = function(w, templates){
-		var TM = TMG.build(templates), T = TM.data, TId = TM.idManager;
-		w._TM = TM; w._T = T; w._TId = TId;
-	};
+	var buildTemplate = this.buildTemplate;
 	
 	var find = function(el, className, cnt){
 		cnt = cnt || 0;
@@ -119,6 +110,10 @@ Component.entryPoint = function(){
 				__self.setUsers(users, selUsersId);
 			});
 		},
+		destroy: function(){
+			var el = this._TM.getEl('widget.id');
+			el.parentNode.removeChild(el);
+		},
 		buildHTMLRow: function(id, type){
 			var user = this.users[id];
 			return this._TM.replace('row', {
@@ -134,6 +129,7 @@ Component.entryPoint = function(){
 			
 			var lst = "", TM = this._TM;
 			for(var id in users){
+				NS.viewer.users.update([users[id]]);
 				lst += this.buildHTMLRow(id, UserRowType.FROM); 
 			}
 			lst += TM.replace('findrow');
@@ -293,11 +289,15 @@ Component.entryPoint = function(){
 
 			for (var id in users){
 				var di = users[id];
+				
+				NS.viewer.users.update([di]);
+
 				lst += TM.replace('firesrow', {
 					'id': id,
 					'unm': NS.viewer.buildUserName(di)
 				});
 			}
+
 			this._TM.getEl('finduserpanel.result').innerHTML = this._TM.replace('firestable', {'rows': lst});
 		},
 		onKeyPress: function(el, e){
@@ -361,7 +361,7 @@ Component.entryPoint = function(){
 	});
 	NS.FindUserPanel = FindUserPanel;
 
-	API.showFindUserPanel = function(callback){
+	NS.API.showFindUserPanel = function(callback){
 		new NS.FindUserPanel(callback);
 	};
 

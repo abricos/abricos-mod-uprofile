@@ -2,7 +2,7 @@
 /**
  * Обработка запросов DataSet 
  * 
- * @version $Id: js_data.php 340 2010-02-04 14:51:50Z roosit $
+ * @version $Id$
  * @package Abricos
  * @subpackage UserProfile
  * @copyright Copyright (C) 2008 Abricos. All rights reserved.
@@ -10,8 +10,8 @@
  * @author 
  */
 
-$mod = Brick::$modules->GetModule('sys');
-$manager = Brick::$modules->GetModule('uprofile')->GetManager();
+$mod = Abricos::GetModule('sys');
+$manager = Abricos::GetModule('uprofile')->GetManager();
 $ds = $mod->getDataSet();
 
 $ret = new stdClass();
