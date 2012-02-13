@@ -82,6 +82,7 @@ Component.entryPoint = function(NS){
 		onAvatarUpload: function(fileid){
 			this.user.avatar = fileid;
 			this.renderUser();
+			NS.viewer.onUserChanged(this.user);
 		},
 		onClick: function(el){
 			if (!L.isNull(this.editWidget) && this.editWidget.onClick(el)){
@@ -181,6 +182,7 @@ Component.entryPoint = function(NS){
 					}
 					__self.closeEditor();
 					__self.renderUser();
+					NS.viewer.onUserChanged(user);
 				}
 			});			
 		}

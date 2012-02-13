@@ -103,31 +103,31 @@ Component.entryPoint = function(NS){
 	};
 	NS.GlobalMenuWidget = GlobalMenuWidget;
 	
-	var UserWSPanel = function(userid, page){
-		this.userid = userid;
-		this._actpage = page || 'account';
-		this.widgets = {};
-		
-		UserWSPanel.superclass.constructor.call(this);
+	var UserWSWidget = function(container, userid, page){
+		this.init(container, userid, page);
 	};
-	YAHOO.extend(UserWSPanel, Brick.widget.Panel, {
-		initTemplate: function(){
-			var TM = buildTemplate(this, 'panel');
-			return TM.replace('panel');
-		},
-		onLoad: function(){
-			var TM = this._TM, __self = this,
-				userid = this.userid;
+	UserWSWidget.prototype = {
+		init: function(container, userid, page){
+			this.userid = userid = userid || Brick.env.user.id;
+			this._actpage = page || 'account';
+			this.widgets = {};
 			
-			this.ws = {};
+			var TM = buildTemplate(this, 'widget'), __self = this;
+			container.innerHTML = TM.replace('widget');
+			
 			R.load(function(){
 				NS.viewer.loadUser(userid, function(user){
 					__self.onLoadUser(user);
 				});
 			});
+			
+			NS.viewer.userChangedEvent.subscribe(this.onUserChanged, this, true);
 		},
 		destroy: function(){
-			UserWSPanel.superclass.destroy.call(this);
+			NS.viewer.userChangedEvent.unsubscribe(this.onUserChanged);
+		},
+		onUserChanged: function(evt, prms){
+			this.renderPages();
 		},
 		onLoadUser: function(user){
 			this.user = user;
@@ -151,7 +151,7 @@ Component.entryPoint = function(NS){
 		},
 		renderPages: function(){
 			var TM = this._TM, user = this.user;
-			this.gmenu = new NS.GlobalMenuWidget(TM.getEl('panel.gmenu'), user);
+			this.gmenu = new NS.GlobalMenuWidget(TM.getEl('widget.gmenu'), user);
 			this.showPage(this._actpage);
 		},
 		showPage: function(page){
@@ -177,13 +177,13 @@ Component.entryPoint = function(NS){
 			};
 			
 			if (!w){
-				Dom.setStyle(TM.getEl('panel.loading'), 'display', '');
-				Dom.setStyle(TM.getEl('panel.pages'), 'display', 'none');
+				Dom.setStyle(TM.getEl('widget.loading'), 'display', '');
+				Dom.setStyle(TM.getEl('widget.pages'), 'display', 'none');
 				
 				Brick.Loader.add({ mod: [{name: pg.module, files: [pg.request+'.js']}],
 					onSuccess: function() { 
-						Dom.setStyle(TM.getEl('panel.loading'), 'display', 'none');
-						Dom.setStyle(TM.getEl('panel.pages'), 'display', '');
+						Dom.setStyle(TM.getEl('widget.loading'), 'display', 'none');
+						Dom.setStyle(TM.getEl('widget.pages'), 'display', '');
 						
 						var WClass = Brick.mod[pg.module][pg.widget];
 						if (!WClass){ return; }
@@ -192,7 +192,7 @@ Component.entryPoint = function(NS){
 							'container': document.createElement('div'),
 							'page': pg
 						};
-						TM.getEl('panel.pages').appendChild(w['container']);
+						TM.getEl('widget.pages').appendChild(w['container']);
 						w['widget'] = new WClass(w['container'], user);
 						
 						ws[page] = w;
@@ -202,6 +202,33 @@ Component.entryPoint = function(NS){
 			}else{
 				showp();
 			}
+		}		
+	};
+	NS.UserWSWidget = UserWSWidget;
+	
+	NS.API.showWSWidget = function(container, userid, actpage){
+		var widget = new NS.UserWSWidget(container, userid, actpage);
+		return widget;
+	};
+	
+	
+	var UserWSPanel = function(userid, page){
+		this.userid = userid;
+		this._actpage = page || 'account';
+		
+		UserWSPanel.superclass.constructor.call(this);
+	};
+	YAHOO.extend(UserWSPanel, Brick.widget.Panel, {
+		initTemplate: function(){
+			var TM = buildTemplate(this, 'panel');
+			return TM.replace('panel');
+		},
+		onLoad: function(){
+			this.wsWidget = new NS.UserWSWidget(this._TM.getEl('panel.widget'), this.userid, this._actpage);
+		},
+		destroy: function(){
+			this.wsWidget.destroy();
+			UserWSPanel.superclass.destroy.call(this);
 		}
 	});
 	NS.UserWSPanel = UserWSPanel;

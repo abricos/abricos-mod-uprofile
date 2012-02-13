@@ -16,8 +16,7 @@ Component.entryPoint = function(){
 
 	var menuItem = new cp.MenuItem(this.moduleName, 'myprofile');
 	menuItem.icon = '/modules/user/css/images/cp_icon.gif';
-	menuItem.entryComponent = 'profile';
-	menuItem.entryPoint = 'Brick.mod.uprofile.API.showProfileWidget';
+	menuItem.entryComponent = 'ws';
+	menuItem.entryPoint = 'Brick.mod.uprofile.API.showWSWidget';
 	cp.MenuManager.add(menuItem);
-	
 };

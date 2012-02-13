@@ -37,12 +37,22 @@ if (!empty($avatarid)){
 	$manager->FieldSetValue('avatar', '');
 }
 
-$p_file = Abricos::CleanGPC('f', 'file0', TYPE_FILE);
+// $p_file = Abricos::CleanGPC('f', 'file0', TYPE_FILE);
 
-$file = trim($p_file['tmp_name']);
+// $file = trim($p_file['tmp_name']);
 
-// если картинка, ужать до размера 180x180
-$upload = $fmManager->GetUploadLib($file);
+$upload = FileManagerModule::$instance->GetManager()->CreateUploadByVar('file0');
+$upload->isOnlyImage = true;
+$upload->maxImageWidth = 180;
+$upload->maxImageHeight = 180;
+$upload->imageConvertTo = 'gif';
+$upload->ignoreUploadRole = true;
+$upload->filePublicName = 'avatar.gif';
+
+$errornum = $upload->Upload();
+
+/*
+$upload = $fmManager->CreateUploadByVar('file0');
 
 if (!$upload->file_is_image){
 	return;
@@ -72,15 +82,15 @@ $folderId = CMSQFileManager::FolderAdd($db, 0, $userid, 'avatar');
 $errornum = $fmManager->UploadFile($folderId, $file, 
 		'avatar.gif', 'gif', filesize($file), $atrribute = 0, 
 		true, true, true);
-if ($errornum == 0){
-	$fh = $fmManager->lastUploadFileHash;
-	$manager->FieldSetValue('avatar', $fmManager->lastUploadFileHash);
-}
 @unlink($file);
+/**/
+if ($errornum == 0){
+	$manager->FieldSetValue('avatar', $upload->uploadFileHash);
+}
 
 $brick->param->var['command'] = Brick::ReplaceVarByData($brick->param->var['ok'], array(
 	"uid" => intval($userid),
-	"fid" => $fmManager->lastUploadFileHash
+	"fid" => $upload->uploadFileHash
 ));
 
 	

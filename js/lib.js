@@ -221,16 +221,17 @@ Component.entryPoint = function(NS){
 		showUserPanel: function(userid){
 			window.location.href = "#app=uprofile/ws/showws/"+userid+"/";
 		},
-		loadUser: function(userid, callback){
+		loadUser: function(userid, callback, fromCache){
 			callback = L.isFunction(callback)?callback:function(){};
 			var users = this.users,
-				user = null;
-				//user = this.users.get(userid);
+				user = this.users.get(userid);
 			
-			if (!L.isNull(user)){
+			if (!L.isNull(user) && fromCache){
 				callback(user);
 				return;
 			}
+			
+			var __self = this;
 			
 			Brick.ajax('uprofile', {
 				'data': {
@@ -242,12 +243,20 @@ Component.entryPoint = function(NS){
 					if (L.isNull(d)){
 						user = null;
 					}else{
-						user = new User(d);
-						users.add(user);
+						user = users.get(d['id']);
+						if (L.isNull(user)){
+							user = new User(d);
+							users.add(user);
+						}else{
+							user.update(d);
+						}
 					}
 					callback(user);
 				}
 			});
+		},
+		onUserChanged: function(user){
+			this.userChangedEvent.fire(user);
 		},
 		buildUserName: function(d, socr){
 			return NS.builder.getUserName(d, socr);
