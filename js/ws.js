@@ -229,7 +229,11 @@ Component.entryPoint = function(NS){
 		destroy: function(){
 			this.wsWidget.destroy();
 			UserWSPanel.superclass.destroy.call(this);
+		},
+		showPage: function(){
+			this.wsWidget.showPage();
 		}
+		
 	});
 	NS.UserWSPanel = UserWSPanel;
 
