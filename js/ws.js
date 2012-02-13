@@ -230,8 +230,8 @@ Component.entryPoint = function(NS){
 			this.wsWidget.destroy();
 			UserWSPanel.superclass.destroy.call(this);
 		},
-		showPage: function(){
-			this.wsWidget.showPage();
+		showPage: function(page){
+			this.wsWidget.showPage(page);
 		}
 		
 	});
