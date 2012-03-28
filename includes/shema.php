@@ -26,7 +26,7 @@ if ($updateManager->isInstall()){
 		  `fieldname` varchar(250) NOT NULL DEFAULT '' COMMENT 'Имя поля',
 		  `fieldtype` int(2) unsigned NOT NULL DEFAULT 0 COMMENT 'Тип поля',
 		  `fieldaccess` int(2) unsigned NOT NULL DEFAULT 0 COMMENT 'Уровень доступа к полю',
-		  `options` TEXT DEFAULT '' COMMENT 'Опции',
+		  `options` TEXT COMMENT 'Опции',
 		  `title` varchar(250) NOT NULL DEFAULT '' COMMENT 'Заголовок',
 		  `ord` int(3) unsigned NOT NULL DEFAULT 0 COMMENT 'Сортировка',
 		  PRIMARY KEY  (`fieldid`),

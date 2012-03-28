@@ -145,8 +145,8 @@ class UserProfileManager extends Ab_ModuleManager {
 	public function FriendListBuild(){
 		$ret = array();
 
-		CMSRegistry::$instance->modules->RegisterAllModule();
-		$modules = CMSRegistry::$instance->modules->GetModules();
+		Abricos::$instance->modules->RegisterAllModule();
+		$modules = Abricos::$instance->modules->GetModules();
 		
 		foreach ($modules as $name => $module){
 			if (!method_exists($module, 'UProfile_UserFriendList')){

@@ -131,7 +131,7 @@ class UserProfileQuery {
 				$sql = "`".$name."` double(".$size.") ".$unsignedStr." NOT NULL default ".doubleval($defvalue)."";
 				break;
 			case UserFieldType::TEXT:
-				$sql = "`".$name."` TEXT default '".$defvalue."'";
+				$sql = "`".$name."` TEXT";
 				break;
 			case UserFieldType::DATETIME:
 				$sql = "`".$name."` int(10) unsigned NOT NULL default 0";
