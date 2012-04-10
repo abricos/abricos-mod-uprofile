@@ -54,8 +54,15 @@ Component.entryPoint = function(NS){
 			
 			var TM = this._TM, gel = function(nm){ return TM.getEl('widget.'+nm); };
 			
-			gel('foto').innerHTML = user.avatar180()
+			gel('foto').innerHTML = user.avatar180();
 			gel('fullname').innerHTML = user.getUserName();
+			
+			// сформировать превьюшки
+			var fototmb = function(size){
+				var img = new Image();
+				img.src = user['avatar'+size](true);
+			};
+			fototmb(24);fototmb(45);
 			
 			var lst = TM.replace('runm', {'value': user.userName});
 			
