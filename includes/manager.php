@@ -110,7 +110,7 @@ class UserProfileManager extends Ab_ModuleManager {
 		$d->dsc = $utmf->Parser($d->dsc);
 		$d->sex = intval($d->sex);
 		$d->bd = intval($d->bd);
-		UserProfileQuery::ProfileUpdate($this->db, $userid, $d);
+		UserProfileQuery::ProfileUpdate($this->db, $userid, $d, $this->IsAdminRole());
 	
 		$ret->udata = $this->Profile($userid, true);
 		return $ret;

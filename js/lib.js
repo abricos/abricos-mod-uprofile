@@ -127,6 +127,7 @@ Component.entryPoint = function(NS){
 			'unm': '', 
 			'fnm': '', 
 			'lnm': '', 
+			'eml': '', 
 			'avt': '',	// аватар
 			'bd': 0,	// дата рождения
 			'dsc': '',	// описание
@@ -140,6 +141,7 @@ Component.entryPoint = function(NS){
 	YAHOO.extend(User, SYS.Item, {
 		update: function(d){
 			this.userName = d['unm'];
+			this.email = d['eml'];
 			this.firstName = d['fnm'];
 			this.lastName = d['lnm'];
 			this.avatar = d['avt'];

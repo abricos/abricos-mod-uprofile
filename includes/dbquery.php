@@ -32,10 +32,11 @@ class UserProfileQuery {
 		return $db->query_read($sql);
 	}
 	
-	public static function ProfileUpdate(Ab_Database $db, $userid, $d){
+	public static function ProfileUpdate(Ab_Database $db, $userid, $d, $isAdmin = false){
 		$sql = "
 			UPDATE ".$db->prefix."user
 			SET
+				".($isAdmin ? "email='".bkstr($d->eml)."'," : "")."
 				firstname='".bkstr($d->fnm)."',
 				lastname='".bkstr($d->lnm)."',
 				descript='".bkstr($d->dsc)."',

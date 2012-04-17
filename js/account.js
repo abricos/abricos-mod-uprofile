@@ -9,8 +9,8 @@ var Component = new Brick.Component();
 Component.requires = {
 	mod:[
 		{name: 'sys', files: ['container.js','date.js']},
-        {name: 'uprofile', files: ['viewer.js','profile.js']},
-        {name: 'social', files: ['lib.js']}
+        {name: 'uprofile', files: ['viewer.js','profile.js']}
+		// , {name: 'social', files: ['lib.js']}
 	]
 };
 Component.entryPoint = function(NS){
@@ -22,7 +22,8 @@ Component.entryPoint = function(NS){
 	var UID = Brick.env.user.id,
 		NSys = Brick.mod.sys,
 		LNG = this.language,
-		buildTemplate = this.buildTemplate;
+		buildTemplate = this.buildTemplate,
+		R = NS.roles;
 
 	var AccountViewWidget = function(container, user){
 		this.init(container, user);
@@ -32,7 +33,7 @@ Component.entryPoint = function(NS){
 			this.user = user;
 			this.editWidget = null;
 			
-			var TM = buildTemplate(this, 'widget,runm,rbirthday,rdescript,rlv,rdl');
+			var TM = buildTemplate(this, 'widget,runm,reml,rbirthday,rdescript,rlv,rdl');
 			container.innerHTML = TM.replace('widget', {
 				'uid': user.id
 			});
@@ -50,7 +51,7 @@ Component.entryPoint = function(NS){
 		},
 		renderUser: function(){
 			var user = this.user,
-				isMyProfile = Brick.env.user.id*1 == user.id*1;
+				isMyProfile = Brick.env.user.id*1 == user.id*1 || R['isAdmin'];
 			
 			var TM = this._TM, gel = function(nm){ return TM.getEl('widget.'+nm); };
 			
@@ -65,6 +66,12 @@ Component.entryPoint = function(NS){
 			fototmb(24);fototmb(45);
 			
 			var lst = TM.replace('runm', {'value': user.userName});
+			
+			if (isMyProfile && user.email){
+				lst += TM.replace('reml', {
+					'value': user.email
+				});
+			}
 			
 			if (user.birthDay>0){
 				lst += TM.replace('rbirthday', {
@@ -224,9 +231,14 @@ Component.entryPoint = function(NS){
 			Dom.setStyle(gel('id'), 'display', '');
 			
 			gel('unm').innerHTML = user.userName;
+			gel('eml').value = user.email;
 			gel('fnm').value = user.firstName;
 			gel('lnm').value = user.lastName;
 			gel('sex').value = user.sex;
+			
+			if (!R['isAdmin']){
+				gel('eml').disabled = 'disabled';
+			}
 			
 			var bDate = user.birthDay > 0 ? (new Date(user.birthDay*1000)) : null;
 			if (!L.isNull(bDate)){
@@ -256,6 +268,7 @@ Component.entryPoint = function(NS){
 				birthday = new Date(byear, bmonth-1, bday);
 			}
 			var sd = {
+				'eml': gel('eml').value,
 				'fnm': gel('fnm').value,
 				'lnm': gel('lnm').value,
 				'sex': gel('sex').value,
