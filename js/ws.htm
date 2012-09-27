@@ -1,24 +1,19 @@
-<!--{panel}-->
-<div class='hd'>Профиль пользователя</div>
+<!--{panel}--><div class='hd'>{#mod.uprofile.ws.panel.1}</div>
 <div class='bd aw-uprofile'>
 	<div id="{i#widget}"></div>
 </div>
-
-<!--{widget}-->
-<div id="{i#id}" class='aw-uprofile'>
+<!--{widget}--><div id="{i#id}" class='aw-uprofile'>
 	<div id="{i#gmenu}"></div>
 
 	<div id="{i#loading}" class="wsloading">
 		<img src="/images/loading.gif" />
-		Идет загрузка данных.<br />
-		Пожалуйста, подождите...
+		{#mod.uprofile.ws.widget.1}<br />
+		{#mod.uprofile.ws.widget.2}
 	</div>
 
 	<div id="{i#pages}"></div>
 </div>
-
-<!--{gbmenu}-->
-<div class="aw-uprofile">
+<!--{gbmenu}--><div class="aw-uprofile">
 	<div class="gheadermenu">
 		<h2>{v#unm}</h2>
 		
@@ -37,8 +32,6 @@
 	</div>
 
 </div>
-
-<!--{tlrow}-->
-<li id="{i#id}-{v#id}">
+<!--{tlrow}--><li id="{i#id}-{v#id}">
 	<a href="#app=uprofile/ws/showws/{v#uid}/{v#id}">{v#tl}</a>
 </li>

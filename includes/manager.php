@@ -107,6 +107,7 @@ class UserProfileManager extends Ab_ModuleManager {
 		$d->fnm = $utmf->Parser($d->fnm);
 		$d->lnm = $utmf->Parser($d->lnm);
 		$d->site = $utmf->Parser($d->site);
+		$d->twt = $utmf->Parser($d->twt);
 		$d->dsc = $utmf->Parser($d->dsc);
 		$d->sex = intval($d->sex);
 		$d->bd = intval($d->bd);

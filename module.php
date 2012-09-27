@@ -16,7 +16,7 @@ class UserProfileModule extends Ab_Module {
 	private $_manager;
 	
 	function __construct(){
-		$this->version = "0.1.3";
+		$this->version = "0.1.4.2";
 		$this->name = "uprofile";
 		$this->takelink = "uprofile";
 		
@@ -37,7 +37,7 @@ class UserProfileModule extends Ab_Module {
 	}
 	
 	public function GetContentName(){
-		$cname = '';
+		$cname = 'index';
 		$adress = $this->registry->adress;
 		
 		if ($adress->level >= 2 && $adress->dir[1] == 'upload'){

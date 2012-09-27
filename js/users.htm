@@ -1,5 +1,4 @@
-<!--{widget}-->
-<div id="{i#id}" class="usfw">
+<!--{widget}--><div id="{i#id}" class="usfw">
 
 	<table class="usw-table" cellspacing="1" cellpadding="0"><tbody><tr class="usw-row">
 		<td class="c-uln">
@@ -15,23 +14,17 @@
 	</tr></tbody></table>
 
 </div>
-
-<!--{row}-->
-<div id="{i#id}{v#type}-{v#id}" class="opt opt-type-{v#type}">
+<!--{row}--><div id="{i#id}{v#type}-{v#id}" class="opt opt-type-{v#type}">
 	<div style="background-image: url('{v#avatar}');" class="employee "> 
 		<div class="text">{v#unm}</div>
 		<div class="extra">&nbsp;</div>
 		<div class="notice small-font"></div>
 	</div>
 </div>
-
-<!--{findrow}-->
-<div class="bfind">
-	<input id="{i#bfind}" type="button" value="Нет в списке? Найти..." />
+<!--{findrow}--><div class="bfind">
+	<input id="{i#bfind}" type="button" value="{#mod.uprofile.users.findrow.1}" />
 </div>
-
-<!--{userblock}-->
-<div class="usfw">
+<!--{userblock}--><div class="usfw">
 	<div class="mu-block">
 		<div style="background-image: url('{v#avatar}');" class="employee "> 
 			<div class="text">
@@ -41,71 +34,63 @@
 		</div>
 	</div>
 </div>
-
-<!--{finduserpanel}-->
-<div class='hd'>Поиск</div>
+<!--{finduserpanel}--><div class='hd'>{#mod.uprofile.users.finduserpanel.1}</div>
 <div class='bd'>
 	<div class="field">
 		<div id="{i#findact}">
 			<table style="margin-top: 10px;"><tbody>
 				<tr>
 					<td colspan="2">
-						<h3>Поиск по учетной записи</h3>
+						<h3>{#mod.uprofile.users.finduserpanel.2}</h3>
 					</td>
 				</tr>
 				<tr>
-					<td>Учетная запись пользователя</td>
+					<td>{#mod.uprofile.users.finduserpanel.3}</td>
 					<td><input id="{i#username}" type="text" style="width: 300px; margin-top: 5px;" /></td>
 				</tr>
 				<tr>
 					<td colspan="2">
-						<h3>Поиск по имени и фамилии</h3>
+						<h3>{#mod.uprofile.users.finduserpanel.4}</h3>
 					</td>
 				</tr>
 				<tr>
-					<td style="width: 150px;">Имя </td>
+					<td style="width: 150px;">{#mod.uprofile.users.finduserpanel.5}</td>
 					<td><input id="{i#firstname}" type="text" style="width: 300px; margin-top: 5px;" /></td>
 				</tr>
 				<tr>
-					<td>Фамилия </td>
+					<td>{#mod.uprofile.users.finduserpanel.6}</td>
 					<td><input id="{i#lastname}" type="text" style="width: 300px; margin-top: 5px;" /></td>
 				</tr>
 			</tbody></table>
 			<div class="buttons">
-				<input type="button" value="Найти" id="{i#bfind}" />
+				<input type="button" value="{#mod.uprofile.users.finduserpanel.7}" id="{i#bfind}" />
 				<div id="{i#wait}" style="display: none;"><img src="/images/loading.gif" />идет поиск...</div>
 			</div>
 		</div>
-		<h3>Результат поиска</h3>
+		<h3>{#mod.uprofile.users.finduserpanel.8}</h3>
 		<div id="{i#result}" style="height: 200px;"></div>
 	</div>
 	<div class="field">
 		<div class="buttons right">
-			<input type="button" value="Закрыть" id="{i#bclose}" />
+			<input type="button" value="{#mod.uprofile.users.finduserpanel.9}" id="{i#bclose}" />
 		</div>
 	</div>
 </div>
-
-<!--{firestable}-->
-<table id="{i#id}" class="bk-table-def" style="margin-top: 10px;">
+<!--{firestable}--><table id="{i#id}" class="bk-table-def" style="margin-top: 10px;">
 	<thead>
 		<tr>
-			<th>Пользователь</th>
+			<th>{#mod.uprofile.users.firestable.1}</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>{v#rows}</tbody>
 </table>
-
-<!--{firesrow}-->
-<tr valign="top">
+<!--{firesrow}--><tr valign="top">
 	<td>{v#unm}</td>
 	<td>
-		<a href="#" id="{i#append}-{v#id}">Добавить</a>
+		<a href="#" id="{i#append}-{v#id}">{#mod.uprofile.users.firesrow.1}</a>
 	</td>
 </tr>
-
-<!--{firesrowwait}-->
-<tr valign="top">
-	<td colspan="2">Идет загрузка данных. Пожалуйста, подождите...</td>
+<!--{firesrowwait}--><tr valign="top">
+	<td colspan="2">{#mod.uprofile.users.firesrowwait.1}</td>
 </tr>

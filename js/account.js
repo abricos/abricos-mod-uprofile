@@ -10,7 +10,6 @@ Component.requires = {
 	mod:[
 		{name: 'sys', files: ['container.js','date.js']},
         {name: 'uprofile', files: ['viewer.js','profile.js']}
-		// , {name: 'social', files: ['lib.js']}
 	]
 };
 Component.entryPoint = function(NS){
@@ -33,7 +32,7 @@ Component.entryPoint = function(NS){
 			this.user = user;
 			this.editWidget = null;
 			
-			var TM = buildTemplate(this, 'widget,runm,reml,rbirthday,rdescript,rlv,rdl');
+			var TM = buildTemplate(this, 'widget,runm,reml,rbirthday,rdescript,rlv,rdl,rsite,rtwitter');
 			container.innerHTML = TM.replace('widget', {
 				'uid': user.id
 			});
@@ -81,6 +80,13 @@ Component.entryPoint = function(NS){
 			if (user.descript.length > 0){
 				lst += TM.replace('rdescript', {'value': user.descript});
 			}
+			if (user.site.length > 0){
+				lst += TM.replace('rsite', {'value': user.site});
+			}
+			if (user.twitter.length > 0){
+				lst += TM.replace('rtwitter', {'value': user.twitter});
+			}
+
 			lst += TM.replace('rdl', {'value': Brick.dateExt.convert(user.joinDate)});
 			
 			lst += TM.replace('rlv', {
@@ -246,9 +252,9 @@ Component.entryPoint = function(NS){
 				gel('bdatemonth').value = bDate.getMonth()+1;
 				gel('bdateyear').value = bDate.getFullYear();
 			}
-			gel('site').value = user.site;
 			gel('desc').value = user.descript;
-			
+			gel('site').value = user.site;
+			gel('twitter').value = user.twitter;
 		},
 		destroy: function(){
 			var el = this._TM.getEl('editor.id');
@@ -273,6 +279,7 @@ Component.entryPoint = function(NS){
 				'lnm': gel('lnm').value,
 				'sex': gel('sex').value,
 				'site': gel('site').value,
+				'twt': gel('twitter').value,
 				'dsc': gel('desc').value,
 				'bd': birthday > 0 ? (birthday/1000) : 0,
 				'pass': {

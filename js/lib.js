@@ -133,6 +133,7 @@ Component.entryPoint = function(NS){
 			'dsc': '',	// описание
 			'sex': 0,	// пол
 			'site': '', // сайт
+			'twt': '',	// твиттер
 			'lv': 0,	// время последнего посещения
 			'dl': 0		// дата регистрации
 		}, d || {});
@@ -150,6 +151,7 @@ Component.entryPoint = function(NS){
 			this.descript = L.isNull(d['dsc']) ? '' : d['dsc'];
 			this.sex = d['sex'];
 			this.site = d['site'];
+			this.twitter = d['twt'];
 			this.lastVisit = d['lv'];
 			this.joinDate = d['dl'];
 		},
@@ -221,7 +223,14 @@ Component.entryPoint = function(NS){
 			return true;
 		},
 		showUserPanel: function(userid){
-			window.location.href = "#app=uprofile/ws/showws/"+userid+"/";
+			var nsBos = Brick.mod.bos;
+			if (nsBos && 
+					nsBos.PageManagerWidget &&
+					!L.isNull(nsBos.PageManagerWidget.instance)){
+				window.location.href = "#app=uprofile/ws/showws/"+userid+"/";
+			}else if (Brick.componentExists('uprofile', 'lib')){
+				window.location.href = "/uprofile/#app=uprofile/ws/showws/"+userid+"/";
+			}
 		},
 		loadUser: function(userid, callback, fromCache){
 			callback = L.isFunction(callback)?callback:function(){};
@@ -267,7 +276,7 @@ Component.entryPoint = function(NS){
 	NS.viewer = new Viewer();
 
 	NS.API.showUserProfile = function(userid){
-		window.location.href = "#app=uprofile/ws/showws/"+userid+"/";
+		NS.view.showUserPanel(userid);
 	};
 	
 };

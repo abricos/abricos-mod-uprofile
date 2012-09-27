@@ -21,6 +21,7 @@ class UserProfileQuery {
 				descript as dsc,
 				birthday as bd,
 				site,
+				twitter as twt,
 				sex,
 				lastvisit as lv,
 				joindate as dl
@@ -41,6 +42,7 @@ class UserProfileQuery {
 				lastname='".bkstr($d->lnm)."',
 				descript='".bkstr($d->dsc)."',
 				site='".bkstr($d->site)."',
+				twitter='".bkstr($d->twt)."',
 				sex=".bkint($d->sex).",
 				birthday=".bkint($d->bd)."
 			WHERE userid=".bkint($userid)."

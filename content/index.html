@@ -1,6 +1,22 @@
 <!--[*]
 [tt=main][/tt]
 [*]-->
-<h1>Профиль пользователя</h1>
-<div id="uprofile">Идет загрузка данных. Пожалуйста, подождите...</div>
-<script>Brick.f('uprofile', 'profile', 'showUserProfileWidget', 'uprofile');</script>
+
+<div id="bos" class="mod-uprofile">
+	<div class="static">
+		<div id="mod-uprofile-container" style="min-height: 220px;">
+			<div style="width: 300px; margin: 150px auto; text-align: center">
+				Идет загрузка данных<br />
+				<img src="/images/loading.gif" /> Пожалуйста, подождите...
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	Brick.ff('bos', 'os', function(){
+		var el = document.getElementById('mod-uprofile-container');
+		new Brick.mod.bos.PageManagerWidget(el, 'uprofile/ws/showws');
+	});
+
+</script>

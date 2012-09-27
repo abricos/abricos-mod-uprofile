@@ -1,4 +1,8 @@
- .aw-uprofile a {
+.aw-uprofile td {
+	vertical-align: top;
+}
+
+.aw-uprofile a {
 	color: #2B587A;
     text-decoration: none;
 }
