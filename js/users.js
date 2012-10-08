@@ -35,7 +35,7 @@ Component.entryPoint = function(NS){
 		init: function(){
 			this.cache = null;
 		},
-		load: function(callback){
+		load: function(callback, overUsers){
 			if (!L.isNull(this.cache)){
 				if (L.isFunction(callback)){
 					callback(this.cache);
@@ -45,7 +45,8 @@ Component.entryPoint = function(NS){
 			var __self = this;
 			Brick.ajax('uprofile', {
 				'data': {
-					'do': 'friends'
+					'do': 'friends',
+					'over': overUsers || []
 				},
 				'event': function(request){
 					var d = request.data;
@@ -88,11 +89,11 @@ Component.entryPoint = function(NS){
 		SELECT: 'sel'
 	};
 	
-	var UserSelectWidget = function(container, selUsersId){
-		this.init(container, selUsersId);
+	var UserSelectWidget = function(container, selUsersId, callback){
+		this.init(container, selUsersId, callback);
 	};
 	UserSelectWidget.prototype = {
-		init: function(container, selUsersId){
+		init: function(container, selUsersId, callback){
 			this.users = {};
 			
 			this._currentSource = 0;
@@ -108,7 +109,10 @@ Component.entryPoint = function(NS){
             });
 			NS.friends.load(function(users){
 				__self.setUsers(users, selUsersId);
-			});
+				if (L.isFunction(callback)){
+					callback();
+				}
+			}, selUsersId);
 		},
 		destroy: function(){
 			var el = this._TM.getEl('widget.id');
@@ -181,6 +185,7 @@ Component.entryPoint = function(NS){
 				this.users[user.id] = user;
 				this._TM.getEl('widget.allusers').innerHTML += this.buildHTMLRow(user.id, UserRowType.FROM);
 			}
+			user = this.users[user.id];
 			var el = this.getRowEl(user.id, UserRowType.FROM);
 			var uss = this.getSelectedUsers();
 			for (var i=0;i<uss.length;i++){

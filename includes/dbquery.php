@@ -2,14 +2,35 @@
 /**
  * @version $Id$
  * @package Abricos
- * @subpackage User
- * @copyright Copyright (C) 2008 Abricos. All rights reserved.
+ * @subpackage UProfile
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author Alexander Kuzmin (roosit@abricos.org)
+ * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
 class UserProfileQuery {
 	
+	public static function UserListById(Ab_Database $db, $ids){
+		$limit = 10;
+		$where = " ";
+		$sa = array("u.userid=0");
+		for ($i=0; $i<min(count($ids), $limit); $i++){
+			array_push($sa, " u.userid=".bkint($ids[$i]));
+		}
+		$sql = "
+			SELECT
+				DISTINCT
+				u.userid as id,
+				u.username as unm,
+				u.firstname as fnm,
+				u.lastname as lnm,
+				u.avatar as avt
+			FROM ".$db->prefix."user u
+			WHERE ".implode(" OR ", $sa)."
+			LIMIT ".bkint($limit)."
+		";
+		return $db->query_read($sql);
+	}
+		
 	public static function Profile(Ab_Database $db, $userid, $personal = false){
 		$sql = "
 			SELECT

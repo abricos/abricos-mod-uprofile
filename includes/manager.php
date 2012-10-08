@@ -79,7 +79,7 @@ class UserProfileManager extends Ab_ModuleManager {
 			case 'finduser': 
 				return $this->FindUser($d->firstname, $d->lastname, $d->username, true);
 			case "friends": 
-				return $this->FriendListBuild();
+				return $this->FriendListBuild($d->over);
 		}
 		return -1;
 	}
@@ -140,14 +140,49 @@ class UserProfileManager extends Ab_ModuleManager {
 		return $ret;
 	}
 	
+	/*
+	public function UProfile_UserFriendList(){
+		if (!$this->IsViewRole()){
+			return null;
+		}
+	
+		/*
+		$users = array();
+		$rows = BotaskQuery::BoardUsers($this->db, $this->userid);
+		while (($row = $this->db->fetch_array($rows))){
+			if ($row['id']*1 == $this->userid*1){
+				continue;
+			}
+			$users[$row['id']] = $row;
+		}
+	
+		$o = new stdClass();
+		$o->p = UserFriendPriority::MIDDLING;
+		$o->users = $users;
+	
+		return $o;
+	}
+	/**/
+	
+	
 	/**
 	 * Построить список знакомых
 	 */
-	public function FriendListBuild(){
+	public function FriendListBuild($over){
 		$ret = array();
 
 		Abricos::$instance->modules->RegisterAllModule();
 		$modules = Abricos::$instance->modules->GetModules();
+		
+		if(is_array($over) && count($over) > 0){
+			$rows = UserProfileQuery::UserListById($this->db, $over);
+			while (($row = $this->db->fetch_array($rows))){
+				if ($row['id']*1 == $this->userid*1){
+					continue;
+				}
+				$ret[$row['id']] = $row;
+			}
+		}
 		
 		foreach ($modules as $name => $module){
 			if (!method_exists($module, 'UProfile_UserFriendList')){
