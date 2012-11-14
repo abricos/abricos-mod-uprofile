@@ -1,3 +1,4 @@
 Brick.util.Language.add('ru',{'mod': {'{C#MODNAME}':{
-	'wstitle': 'Учетные данные'
+	'wstitle': 'Учетные данные',
+	'pbconftitle': 'Публичность'
 }}});

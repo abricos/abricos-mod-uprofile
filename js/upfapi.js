@@ -16,6 +16,16 @@ Component.entryPoint = function(NS){
 		'id': 'account',
 		'title': LNG['wstitle'],
 		'request': 'account',
-		'widget': 'AccountViewWidget'
+		'widget': 'AccountViewWidget',
+		'order': 10000
+	});
+	
+	UP.wsPageList.add(this, {
+		'id': 'pubconf',
+		'isPersonal': true,
+		'title': LNG['pbconftitle'],
+		'request': 'pubconf',
+		'widget': 'PublicConfigWidget',
+		'order': 1000
 	});
 };

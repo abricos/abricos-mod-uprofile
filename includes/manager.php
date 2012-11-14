@@ -18,9 +18,15 @@ class UserProfileManager extends Ab_ModuleManager {
 	 */
 	public $module = null;
 	
+	/**
+	 * @var UserProfileManager
+	 */
+	public static $instance = null;
+	
 	private $_userFields = null;
 	
 	public function __construct(UserProfileModule $module){
+		UserProfileManager::$instance = $this;
 		parent::__construct($module);
 	}
 	
@@ -37,49 +43,35 @@ class UserProfileManager extends Ab_ModuleManager {
 	}
 	
 	public function IsPersonalEditRole($userid){
-		return $this->IsWriteRole() && ($this->IsAdminRole() || $this->userid == $userid); 
+		return ($this->IsWriteRole() && $this->userid == $userid) || $this->IsAdminRole(); 
 	}
 
-	public function DSProcess($name, $rows){
-		/*
-		$p = $rows->p;
-		$db = $this->db;
-		
-		switch ($name){
-			case 'profile':
-				foreach ($rows->r as $r){
-					if ($r->f == 'u'){ $this->ProfileUpdate($r->d); }
-				}
-				return;
-		}
-		/**/
-	}
+	public function DSProcess($name, $rows){ }
 	
-	public function DSGetData($name, $rows){
-		/*
-		$p = $rows->p;
-		switch ($name){
-			case 'profile': return $this->Profile($p->userid);
-			case 'fieldlist': return $this->FieldList();
-		}
-		/**/
-		return null;
-		
-	}
+	public function DSGetData($name, $rows){ return null; }
 	
 	public function AJAX($d){
 		switch($d->do){
 			
 			case "viewprofile":
 				return $this->Profile($d->userid, true);
-				
-			case 'profilesave': 
+			case 'profilesave':
 				return $this->ProfileSave($d->userid, $d->data);
 				
 			case 'finduser': 
 				return $this->FindUser($d->firstname, $d->lastname, $d->username, true);
 			case "friends": 
 				return $this->FriendListBuild($d->over);
+
+			case "pubconf":
+				return $this->UserPublicityConfig($d->userid);
+			case 'pubconfsave': 
+				return $this->UserPublicityConfigSave($d->userid, $d->data);
+			case "pubcheck":
+				$ret = new stdClass();
+				$ret->userid = $d->userid;
+				$ret->result = $this->UserPublicityCheck($d->userid);
+				return $ret;
 		}
 		return -1;
 	}
@@ -90,7 +82,7 @@ class UserProfileManager extends Ab_ModuleManager {
 	}
 	
 	public function ProfileSave($userid, $d){
-		if ($userid != $this->userid && !$this->IsAdminRole()){
+		if (!$this->IsPersonalEditRole($userid)){ 
 			return null;
 		}
 		$ret = new stdClass();
@@ -115,6 +107,78 @@ class UserProfileManager extends Ab_ModuleManager {
 	
 		$ret->udata = $this->Profile($userid, true);
 		return $ret;
+	}
+	
+	private function UserPublicityConfigMethod($userid){
+		$ret = new stdClass();
+		$ret->userid = $userid;
+		$ret->values = array(
+			"pubconftype" => 0, 
+			"pubconfusers" => ""
+		);
+		
+		$userMan = Abricos::$user->GetManager();
+		$userMan->DisableRoles();
+		$rows = $userMan->UserConfigList($userid, 'uprofile');
+		$userMan->EnableRoles();
+				
+		while (($row = $this->db->fetch_array($rows))){
+			$ret->values[$row['nm']] = $row['vl'];
+		}
+		return $ret;
+	}
+	
+	/**
+	 * Данные настройка публичности
+	 */
+	public function UserPublicityConfig($userid){
+		if (!$this->IsPersonalEditRole($userid)){ 
+			return null;
+		}
+		return $this->UserPublicityConfigMethod($userid);
+	}
+	
+	public function UserPublicityConfigSave($userid, $data){
+		$userid = intval($userid);
+		if (!$this->IsPersonalEditRole($userid)){ 
+			return null;
+		}
+		
+		$pubtype = intval($data->pubconftype) == 1 ? 1 : 0;
+		$arr = explode(",", $data->pubconfusers);
+		$narr = array();
+		foreach ($arr as $id){
+			array_push($narr, intval($id));
+		}
+		$pubusers = implode(",", $narr);
+		
+		Abricos::$user->GetManager()->UserConfigValueSave($userid, 'uprofile', 'pubconftype', $pubtype);
+		Abricos::$user->GetManager()->UserConfigValueSave($userid, 'uprofile', 'pubconfusers', $pubusers);
+		
+		return $this->UserPublicityConfig($userid);
+	}
+	
+	/**
+	 * Проверка возможности отправки приглашения пользователю
+	 * 
+	 * @param unknown_type $userid
+	 */
+	public function UserPublicityCheck($userid){
+		if ($userid == $this->userid){ return true; }
+		
+		$cfg = $this->UserPublicityConfigMethod($userid);
+		$v = $cfg->values;
+		if ($v['pubconftype'] == 0){ // все могут отправлять ему приглашения
+			return true;
+		}
+		
+		$arr = explode(",", $v['pubconfusers']);
+		foreach($arr as $id){
+			if ($this->userid == $id){ 
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

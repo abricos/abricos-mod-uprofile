@@ -148,7 +148,7 @@ Component.entryPoint = function(NS){
 			switch(el.id){
 			case tp['badd']:
 				if (this._currentSource*1 > 0){
-					this.selectUser(this._currentSource);
+					this.selectUser(this._currentSource, true);
 				}
 				return true;
 			case tp['brem']:
@@ -177,10 +177,10 @@ Component.entryPoint = function(NS){
 		findUser: function(){
 			var __self = this;
 			new NS.FindUserPanel(function(user){
-				__self.appendUser(user);
+				__self.appendUser(user, true);
 			});
 		},
-		appendUser: function(user){
+		appendUser: function(user, showMsg){
 			if (!this.users[user.id]){
 				this.users[user.id] = user;
 				this._TM.getEl('widget.allusers').innerHTML += this.buildHTMLRow(user.id, UserRowType.FROM);
@@ -195,7 +195,7 @@ Component.entryPoint = function(NS){
 			// this._clickUser(el, UserRowType.FROM);
 			// el.scrollIntoView(true);
 			
-			this.selectUser(user.id);
+			this.selectUser(user.id, showMsg);
 			var el = this.getRowEl(user.id, UserRowType.SELECT);
 			el.scrollIntoView(true);
 			this.onClick(el);
@@ -205,7 +205,7 @@ Component.entryPoint = function(NS){
 			if (Dom.hasClass(el, 'opt-current')){
 				switch(type){
 				case UserRowType.FROM:
-					this.selectUser(this.parseUserId(el));
+					this.selectUser(this.parseUserId(el), true);
 					break;
 				case UserRowType.SELECT:
 					this.deselectUser(this.parseUserId(el));
@@ -231,7 +231,37 @@ Component.entryPoint = function(NS){
 		userExist: function(userid){
 			return !(!this.users[userid]);
 		},
-		selectUser: function(userid){
+		checkSelectedUser: function(userid, showMsg){ // а разрешил ли юзер добавить себя?
+			
+			var elRow = this.getRowEl(userid, UserRowType.SELECT);
+			Dom.addClass(elRow, 'opt-bdlg');
+			
+			var __self = this;
+			Brick.ajax('uprofile', {
+				'data': {'do': 'pubcheck', 'userid': userid},
+				'event': function(request){
+
+					if (L.isNull(request)){ return; }
+					
+					var d = request.data;
+					var user = __self.users[d['userid']];
+					var elRow = __self.getRowEl(d['userid'], UserRowType.SELECT);
+					
+					Dom.removeClass(elRow, 'opt-bdlg');
+
+					if (!L.isNull(d) && d['result']){
+						Dom.removeClass(elRow, 'opt-error');
+					}else{
+						Dom.addClass(elRow, 'opt-error');
+						if (showMsg){
+							new UserSelectErrorPanel(user);
+						}
+					}
+					
+				}
+			});	
+		},
+		selectUser: function(userid, showMsg){
 			if (!this.userExist(userid)){ return; }
 			var elSource = this.getRowEl(userid, UserRowType.FROM);
 			Dom.removeClass(elSource, 'opt-current');
@@ -239,6 +269,7 @@ Component.entryPoint = function(NS){
 			
 			this._TM.getEl('widget.sel').innerHTML += this.buildHTMLRow(userid, UserRowType.SELECT);
 			this._currentSource = 0;
+			this.checkSelectedUser(userid, showMsg);
 		},
 		deselectUser: function(userid){
 			if (!this.userExist(userid)){ return; }
@@ -266,6 +297,29 @@ Component.entryPoint = function(NS){
 		}
 	};
 	NS.UserSelectWidget = UserSelectWidget;
+	
+	
+	var UserSelectErrorPanel = function(user){
+		this.user = user;
+		UserSelectErrorPanel.superclass.constructor.call(this, {fixedcenter: true, width: '400px'});
+	};
+	YAHOO.extend(UserSelectErrorPanel, Brick.widget.Dialog, {
+		initTemplate: function(){
+			return buildTemplate(this, 'userrorpanel').replace('userrorpanel', {
+				'unm':  NS.builder.getUserName(this.user)
+			});
+		},
+		onClick: function(el){
+			var tp = this._TId['userrorpanel'];
+			switch(el.id){
+			case tp['bcancel']: this.close(); return true;
+			}
+			
+			return false;
+		}
+	});
+	NS.UserSelectErrorPanel = UserSelectErrorPanel;
+
 	
 	var FindUserPanel = function(callback){
 		this.callback = callback || function(){};

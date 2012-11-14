@@ -1,0 +1,43 @@
+<!--{widget}-->
+<table class="pubconf" id="{i#id}"><tbody><tr>
+	<td class="col1">
+		Общественные роли
+	</td>
+	<td class="col2">
+		<div id="{i#gloading}" class="gloading">
+			<img src="/images/loading.gif" /> Загрузка данных. Пожалуйста, подождите...
+		</div>
+		<div id="{i#editform}" class="editform" style="display: none">
+			<div class="group">
+				<h3>Приглашение к участию</h3>
+				<div class="rdvl">
+					<input type="radio" value="0" id="{i#rd0}" name="{i#radio}">
+					<label for="{i#rd0}">Все могут отправлять мне приглашение</label>
+				</div>
+				<div class="rdvl">
+					<input type="radio" value="1" id="{i#rd1}" name="{i#radio}">
+					<label for="{i#rd1}">Отправлять приглашение могут только определенные контакты</label>
+				</div>
+			</div>
+			<div id="{i#acctp}" class="cpedfld {v#acctp}">
+				<div class="ceacctp0"></div>
+				<div id="{i#userscnt}" class="group ceacctp1">
+					<h3>Список контактов</h3>
+					<div id="{i#users}"></div>
+					<div class="dsc">
+						Для того, чтобы контакт был добавлен в список допустимых к приглашению, 
+						необходимо его из левой колонки переместить в правую</div>
+				</div>
+			</div>			
+			<div class="buttons right field">
+				<span id="{i#btns}">
+					<input id="{i#bsave}" value="Сохранить" type="button" />
+				</span>
+				<span id="{i#bloading}" style="display: none">
+					<img src="/images/loading.gif" /> Сохранение...
+				</span>
+			</div>
+			
+		</div>
+	</td>
+</tr></tbody></table>

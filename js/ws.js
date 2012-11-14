@@ -19,11 +19,14 @@ Component.entryPoint = function(NS){
 		R = NS.roles;
 
 	var buildTemplate = this.buildTemplate;
+	var UID = Brick.env.user.id;
 	
 	var WSPage = function(component, cfg){
 		cfg = L.merge({
 			'id': 'undefined',
-			'title': 'undefined'
+			'title': 'undefined',
+			'isPersonal': false,
+			'order': 0
 		}, cfg || {});
 		this.init(component, cfg);
 	};
@@ -32,8 +35,10 @@ Component.entryPoint = function(NS){
 			this.module = component.moduleName;
 			this.id = cfg.id;
 			this.title = cfg.title;
+			this.isPersonal = cfg.isPersonal;
 			this.request = cfg.request;
 			this.widget = cfg.widget;
+			this.order = cfg.order;
 		}
 	};
 	NS.WSPage = WSPage;
@@ -46,7 +51,13 @@ Component.entryPoint = function(NS){
 			this.list = [];
 		},
 		add: function(component, cfg){
-			this.list[this.list.length] = new WSPage(component, cfg);
+			var a = this.list;
+			a[a.length] = new WSPage(component, cfg);
+			this.list = a.sort(function(w1, w2){
+				if (w1.order < w2.order){ return 1; }
+				if (w1.order > w2.order){ return -1; }
+				return 0;
+			});
 		},
 		get: function(id){
 			var lst = this.list;
@@ -71,6 +82,9 @@ Component.entryPoint = function(NS){
 			
 			for (var i=0;i<pgs.length;i++){
 				var pg = pgs[i];
+				if (pg.isPersonal && UID != user.id){
+					continue;
+				}
 				lst += TM.replace('tlrow', {
 					'id': pg.id,
 					'uid': user.id,

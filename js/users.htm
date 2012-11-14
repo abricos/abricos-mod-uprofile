@@ -20,6 +20,7 @@
 		<div class="extra">&nbsp;</div>
 		<div class="notice small-font"></div>
 	</div>
+	<img id="{i#ld}" class="ld" src="/images/loading.gif" />
 </div>
 <!--{findrow}--><div class="bfind">
 	<input id="{i#bfind}" type="button" value="{#mod.uprofile.users.findrow.1}" />
@@ -94,3 +95,20 @@
 <!--{firesrowwait}--><tr valign="top">
 	<td colspan="2">{#mod.uprofile.users.firesrowwait.1}</td>
 </tr>
+
+
+<!--{userrorpanel}-->
+<div class='hd'>Предупреждение</div>
+<div class='bd aw-jofolio'>
+	<div id="{i#dialogremove}" class="field">
+		<p>
+			Пользователь <strong>{v#unm}</strong> не может быть выбран, так 
+			как он установил ограничение на список контактов, которые могут его добавить 
+		</p>
+		<div class="buttons right">
+			<span id="{i#btns}">
+				<input id="{i#bcancel}" value="ОК" type="button" />
+			</span>
+		</div>
+	</div>
+</div>

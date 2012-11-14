@@ -43,6 +43,20 @@
 .usfw .opt-current {
 	background-color: #FFDF7F;
 }
+
+/* * * * Loading block * * * */
+.usfw .opt img.ld {
+	position: absolute;
+	left: 8px; top: 6px;
+	display: none;
+}
+.usfw .opt-bdlg img.ld {
+	display: block !important;
+}
+.usfw .opt-error {
+	color: red;
+}
+
 .usfw .employee {
 	background-position: 2px center;
 	background-repeat: no-repeat;
