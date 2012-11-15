@@ -23,6 +23,9 @@ Component.entryPoint = function(NS){
 	
 	var SYS = Brick.mod.sys;
 	
+	Brick.util.CSS.update(Brick.util.CSS['{C#MODNAME}']['{C#COMNAME}']);
+	delete Brick.util.CSS['{C#MODNAME}']['{C#COMNAME}'];
+
 	NS.lif = function(f){return L.isFunction(f) ? f : function(){}; };
 	NS.life = function(f, p1, p2, p3, p4, p5, p6, p7){ 
 		f = NS.lif(f); f(p1, p2, p3, p4, p5, p6, p7);
@@ -59,6 +62,7 @@ Component.entryPoint = function(NS){
 			}
 			
 			url += 'avatar.gif';
+			ssize = '';
 			return isUrl ? url : '<img src="'+url+'" '+ssize+' />';
 			
 		},
