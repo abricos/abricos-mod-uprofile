@@ -44,7 +44,28 @@ class UserProfileModule extends Ab_Module {
 			$cname = "upload";
 		}
 		return $cname;
-	}	
+	}
+	
+	public function URating_SQLCheckCalculate(){
+		$db = Abricos::$db;
+		return "
+			SELECT DISTINCT u.userid as uid
+			FROM ".$db->prefix."user u
+			LEFT JOIN ".$db->prefix."urating_modcalc mc ON u.userid=mc.userid
+			WHERE (mc.module='".bkstr($this->name)."' AND
+				mc.upddate + ".URatingModule::PERIOD_CHECK." < u.upddate) OR
+				ISNULL(mc.upddate)
+			LIMIT 30
+		";
+	}
+	
+	public function URating_UserCalculate($userid){
+		$ret = new stdClass();
+		$ret->skill = $this->GetManager()->UserSkillCalculate($userid);
+		
+		return $ret;
+	}
+	
 }
 
 

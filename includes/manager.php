@@ -77,6 +77,10 @@ class UserProfileManager extends Ab_ModuleManager {
 	}
 	
 	public function Profile($userid, $retarray = false){
+		$modURating = Abricos::GetModule('urating');
+		if (!empty($modURating)){
+			URatingModule::$instance->GetManager()->Calculate();
+		}
 		$res = UserProfileQuery::Profile($this->db, $userid,  $this->IsPersonalEditRole($userid));
 		return $retarray ? $this->db->fetch_array($res) : $res;
 	}
@@ -107,6 +111,26 @@ class UserProfileManager extends Ab_ModuleManager {
 	
 		$ret->udata = $this->Profile($userid, true);
 		return $ret;
+	}
+	
+	public function UserSkillCalculate($userid){
+		$user = UserQueryExt::User($this->db, $userid);
+		
+		$skill = 0;
+		
+		if (!empty($user['firstname']) && !empty($user['lastname'])){
+			$skill += 25;
+		}
+
+			if (!empty($user['avatar'])){
+			$skill += 25;
+		}
+		
+		if (!empty($user['descript'])){
+			$skill += 25;
+		}
+		
+		return $skill;
 	}
 	
 	private function UserPublicityConfigMethod($userid){
