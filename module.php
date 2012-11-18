@@ -49,7 +49,9 @@ class UserProfileModule extends Ab_Module {
 	public function URating_SQLCheckCalculate(){
 		$db = Abricos::$db;
 		return "
-			SELECT DISTINCT u.userid as uid
+			SELECT 
+				DISTINCT u.userid as uid,
+				'".$this->name."' as m
 			FROM ".$db->prefix."user u
 			LEFT JOIN ".$db->prefix."urating_modcalc mc ON u.userid=mc.userid
 			WHERE (mc.module='".bkstr($this->name)."' AND
