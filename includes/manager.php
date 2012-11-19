@@ -123,6 +123,7 @@ class UserProfileManager extends Ab_ModuleManager {
 	}
 	
 	public function UserSkillCalculate($userid){
+		Abricos::$user->GetManager();
 		$user = UserQueryExt::User($this->db, $userid);
 		
 		$skill = 0;
