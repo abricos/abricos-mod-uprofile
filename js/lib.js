@@ -31,7 +31,6 @@ Component.entryPoint = function(NS){
 		f = NS.lif(f); f(p1, p2, p3, p4, p5, p6, p7);
 	};
 	
-	
 	var Avatar = function(){
 		this.init();
 	};
@@ -133,6 +132,7 @@ Component.entryPoint = function(NS){
 			'lnm': '', 
 			'eml': '', 
 			'avt': '',	// аватар
+			'sk': 0,	// сила (рейтинг)
 			'bd': 0,	// дата рождения
 			'dsc': '',	// описание
 			'sex': 0,	// пол
@@ -150,6 +150,7 @@ Component.entryPoint = function(NS){
 			this.firstName = d['fnm'];
 			this.lastName = d['lnm'];
 			this.avatar = d['avt'];
+			this.skill = d['sk'];
 			
 			this.birthDay = d['bd']*1;
 			this.descript = L.isNull(d['dsc']) ? '' : d['dsc'];

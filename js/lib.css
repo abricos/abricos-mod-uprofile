@@ -16,3 +16,17 @@
 	margin: 0 auto;
 }
 
+/* * * * Рейтинг * * * */
+.aw-uprofile .urating .label,
+.aw-uprofile .urating .num {
+	text-align: center;
+}
+.aw-uprofile .urating .label {
+    color: #8C8C8C;
+    font-size: 10px;
+}
+.aw-uprofile .urating .num {
+	font-size: 22px;
+}
+
+

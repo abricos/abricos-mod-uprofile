@@ -95,9 +95,15 @@ Component.entryPoint = function(NS){
 			container.innerHTML = this._TM.replace('gbmenu', {
 				'uid': user.id,
 				'unm': user.getUserName(),
+				'uskill': user.skill,
 				'avatar': user.avatar90(),
 				'tlrows': lst
 			});
+
+			if (user.skill > 0){
+				Dom.setStyle(TM.getEl('gbmenu.urating'), 'display', '');
+			}
+
 		},
 		selectMenuItem: function(page){
 			var TM = this._TM,

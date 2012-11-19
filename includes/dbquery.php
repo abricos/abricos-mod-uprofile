@@ -9,7 +9,26 @@
 
 class UserProfileQuery {
 	
+	public static function UserRatingSQLExt(Ab_Database $db){
+		$ret = new stdClass();
+		$ret->fld = "";
+		$ret->tbl = "";
+		if (UserProfileManager::$instance->IsUserRating()){
+			$ret->fld = "
+				, IF(ISNULL(urt.skill), 0, urt.skill) as sk
+			";
+				
+			$ret->tbl = "
+				LEFT JOIN ".$db->prefix."urating_user urt ON u.userid=urt.userid
+			";
+		}
+		return $ret;
+	}
+	
+	
 	public static function UserListById(Ab_Database $db, $ids){
+		$urt = UserProfileQuery::UserRatingSQLExt($db);
+		
 		$limit = 10;
 		$where = " ";
 		$sa = array("u.userid=0");
@@ -24,7 +43,9 @@ class UserProfileQuery {
 				u.firstname as fnm,
 				u.lastname as lnm,
 				u.avatar as avt
+				".$urt->fld."
 			FROM ".$db->prefix."user u
+			".$urt->tbl."
 			WHERE ".implode(" OR ", $sa)."
 			LIMIT ".bkint($limit)."
 		";
@@ -32,23 +53,26 @@ class UserProfileQuery {
 	}
 		
 	public static function Profile(Ab_Database $db, $userid, $personal = false){
+		$urt = UserProfileQuery::UserRatingSQLExt($db);
 		$sql = "
 			SELECT
-				userid as id, 
-				username as unm,
-				firstname as fnm,
-				lastname as lnm,
-				avatar as avt,
-				descript as dsc,
-				birthday as bd,
-				site,
-				twitter as twt,
-				sex,
-				lastvisit as lv,
-				joindate as dl
-				".($personal ? ",email as eml" : "")."
-			FROM ".$db->prefix."user
-			WHERE userid=".bkint($userid)."
+				u.userid as id, 
+				u.username as unm,
+				u.firstname as fnm,
+				u.lastname as lnm,
+				u.avatar as avt,
+				u.descript as dsc,
+				u.birthday as bd,
+				u.site,
+				u.twitter as twt,
+				u.sex,
+				u.lastvisit as lv,
+				u.joindate as dl
+				".($personal ? ",u.email as eml" : "")."
+				".$urt->fld."
+			FROM ".$db->prefix."user u
+			".$urt->tbl."
+			WHERE u.userid=".bkint($userid)."
 			LIMIT 1
 		";
 		return $db->query_read($sql);
@@ -65,7 +89,8 @@ class UserProfileQuery {
 				site='".bkstr($d->site)."',
 				twitter='".bkstr($d->twt)."',
 				sex=".bkint($d->sex).",
-				birthday=".bkint($d->bd)."
+				birthday=".bkint($d->bd).",
+				upddate=".TIMENOW."
 			WHERE userid=".bkint($userid)."
 		";
 		$db->query_write($sql);
@@ -94,6 +119,8 @@ class UserProfileQuery {
 		}
 		array_push($where, " u.userid<>".bkint($userid));
 		
+		$urt = UserProfileQuery::UserRatingSQLExt($db);
+		
 		$sql = "
 			SELECT
 			 	u.userid as id,
@@ -101,7 +128,9 @@ class UserProfileQuery {
 				u.firstname as fnm,
 				u.lastname as lnm,
 				u.avatar as avt
+				".$urt->fld."
 			FROM ".$db->prefix."user u
+			".$urt->tbl."
 			WHERE ".implode(" AND ", $where)."
 			LIMIT 50
 		";

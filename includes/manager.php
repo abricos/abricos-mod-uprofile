@@ -76,11 +76,20 @@ class UserProfileManager extends Ab_ModuleManager {
 		return -1;
 	}
 	
-	public function Profile($userid, $retarray = false){
+	public function IsUserRating(){
+		$modURating = Abricos::GetModule('urating');
+		return !empty($modURating);
+	}
+	
+	public function UsersRatingCheck(){
 		$modURating = Abricos::GetModule('urating');
 		if (!empty($modURating)){
 			URatingModule::$instance->GetManager()->Calculate();
 		}
+	}
+	
+	public function Profile($userid, $retarray = false){
+		$this->UsersRatingCheck();
 		$res = UserProfileQuery::Profile($this->db, $userid,  $this->IsPersonalEditRole($userid));
 		return $retarray ? $this->db->fetch_array($res) : $res;
 	}

@@ -13,11 +13,22 @@
 	padding: 15px 0 0 150px;
 	height: 100px;
 }
-.aw-uprofile .gheadermenu h2 {
+.aw-uprofile .gheadermenu .hdline {
+	position: relative;
 	padding: 5px 10px;
-	font-size: 1.5em;
 	background-color: #8c8d8e;
 	color: #fff;
+}
+.aw-uprofile .gheadermenu h2 {
+	font-size: 1.5em;
+}
+.aw-uprofile .gheadermenu .urating {
+	position: absolute;
+	right: 0px;
+	top: -15px;
+}
+.aw-uprofile .gheadermenu .urating .num {
+	margin-top: 5px;
 }
 .aw-uprofile .gheadermenu div.logo {
 	position: absolute;
