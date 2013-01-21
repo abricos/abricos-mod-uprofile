@@ -1,7 +1,5 @@
 /*
-@version $Id$
 @package Abricos
-@copyright Copyright (C) 2008 Abricos All rights reserved.
 @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
@@ -9,6 +7,7 @@ var Component = new Brick.Component();
 Component.requires = {
 	mod:[
 		{name: 'sys', files: ['container.js','date.js']},
+		{name: 'widget', files: ['lib.js']},
         {name: 'uprofile', files: ['viewer.js','profile.js']}
 	]
 };
@@ -18,44 +17,35 @@ Component.entryPoint = function(NS){
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
 	
-	var UID = Brick.env.user.id,
-		NSys = Brick.mod.sys,
+	var NSys = Brick.mod.sys,
 		LNG = this.language,
 		buildTemplate = this.buildTemplate,
 		R = NS.roles;
-
+	
 	var AccountViewWidget = function(container, user){
-		this.init(container, user);
+		AccountViewWidget.superclass.constructor.call(this, container, {
+			'buildTemplate': buildTemplate, 
+			'tnames': 'widget,runm,reml,rbirthday,rdescript,rlv,rdl,rsite,rtwitter' 
+		}, user);
 	};
-	AccountViewWidget.prototype = {
-		init: function(container, user){
+	YAHOO.extend(AccountViewWidget, Brick.mod.widget.Widget, {
+		init: function(user){
 			this.user = user;
 			this.editWidget = null;
-			
-			var TM = buildTemplate(this, 'widget,runm,reml,rbirthday,rdescript,rlv,rdl,rsite,rtwitter');
-			container.innerHTML = TM.replace('widget', {
-				'uid': user.id
-			});
-			
+		},
+		buildTData: function(user){
+			return { 'uid': user.id };
+		},
+		onLoad: function (user){
 			this.avatarUploader = new NS.AvatarUploader(this.user.id, function(fileid){
 				__self.onAvatarUpload(fileid);
 			});
-			this.renderUser();
-			
-			var __self = this;
-			E.on(container, 'click', function(e){
-                var el = E.getTarget(e);
-                if (__self.onClick(el)){ E.preventDefault(e); }
-            });
 		},
-		renderUser: function(){
+		render: function(){
 			var user = this.user,
 				isMyProfile = Brick.env.user.id*1 == user.id*1 || R['isAdmin'];
 			
 			var TM = this._TM, gel = function(nm){ return TM.getEl('widget.'+nm); };
-			
-			gel('foto').innerHTML = user.avatar180();
-			gel('fullname').innerHTML = user.getUserName();
 			
 			// сформировать превьюшки
 			var fototmb = function(size){
@@ -93,22 +83,25 @@ Component.entryPoint = function(NS){
 				'value': Brick.dateExt.convert(user.lastVisit)
 			});
 			
-			gel('list').innerHTML = lst;
+			this.elSetHTML({
+				'foto': user.avatar180(),
+				'fullname': user.getUserName(),
+				'list': lst
+			});
 			
-			Dom.getElementsByClassName('_ismyprofile', '', gel('id'), function(el){
+			Dom.getElementsByClassName('_ismyprofile', '', this.gel('id'), function(el){
 				Dom.setStyle(el, 'display', (isMyProfile ? '' : 'none'));
 			});
 		},
 		onAvatarUpload: function(fileid){
 			this.user.avatar = fileid;
-			this.renderUser();
+			this.render();
 			NS.viewer.onUserChanged(this.user);
 		},
-		onClick: function(el){
+		onClick: function(el, tp){
 			if (!L.isNull(this.editWidget) && this.editWidget.onClick(el)){
 				return true;
 			}
-			var tp = this._TId['widget'];
 			switch(el.id){
 			case tp['fotoupload']: this.avatarUploader.imageUpload(); return true;
 			case tp['bshowedit']: this.showEditor(); return true;
@@ -121,21 +114,16 @@ Component.entryPoint = function(NS){
 			if (L.isNull(this.editWidget)){ return; }
 			this.editWidget.destroy();
 			this.editWidget = null; 
-			var TM = this._TM, gel = function(nm){ return TM.getEl('widget.'+nm); };
-			Dom.setStyle(gel('list'), 'display', '');
-			Dom.setStyle(gel('btnsshow'), 'display', '');
-			Dom.setStyle(gel('btnsedit'), 'display', 'none');
-			Dom.setStyle(gel('loading'), 'display', 'none');
+			this.elShow('list,btnsshow');
+			this.elHide('btnsedit,loading');
 		},
 		showEditor: function(){
 			if (!L.isNull(this.editWidget)){
 				this.closeEditor();
 			}
-			var TM = this._TM, gel = function(nm){ return TM.getEl('widget.'+nm); };
-			Dom.setStyle(gel('list'), 'display', 'none');
-			Dom.setStyle(gel('btnsshow'), 'display', 'none');
-			Dom.setStyle(gel('btnsedit'), 'display', '');
-			this.editWidget = new AccountEditWidget(gel('edit'), this.user);
+			this.elHide('list,btnsshow');
+			this.elShow('btnsedit');
+			this.editWidget = new AccountEditWidget(this.gel('edit'), this.user);
 		},
 		saveEditor: function(){
 			if (L.isNull(this.editWidget)){ return; }
@@ -143,11 +131,11 @@ Component.entryPoint = function(NS){
 
 			var TM = this._TM, gel = function(nm){ return TM.getEl('widget.'+nm); };
 
-			var sem = function(s){ return (!L.isString(s) || s.length == 0); },
-				serr = function(num){
-					var lnge = LNG['editor']['error'];
-					gel('err').innerHTML = lnge['tl']+lnge[num]; 
-				};
+			var sem = function(s){ return (!L.isString(s) || s.length == 0); };
+			var serr = function(num){
+				var lnge = LNG['editor']['error'];
+				gel('err').innerHTML = lnge['tl']+lnge[num]; 
+			};
 			
 			gel('err').innerHTML = '';
 
@@ -168,9 +156,8 @@ Component.entryPoint = function(NS){
 			
 			if (L.isNull(sd)){ return; }
 
-			Dom.setStyle(gel('btnsshow'), 'display', 'none');
-			Dom.setStyle(gel('btnsedit'), 'display', 'none');
-			Dom.setStyle(gel('loading'), 'display', '');
+			this.elHide('btnsshow,btnsedit');
+			this.elShow('loading');
 
 			var user = this.user;
 			Brick.ajax('uprofile', {
@@ -201,23 +188,25 @@ Component.entryPoint = function(NS){
 						}
 					}
 					__self.closeEditor();
-					__self.renderUser();
+					__self.render();
 					NS.viewer.onUserChanged(user);
 				}
 			});			
 		}
-	};
+	});
 	NS.AccountViewWidget = AccountViewWidget;
 	
 	var AccountEditWidget = function(container, user){
-		this.init(container, user);
+		AccountEditWidget.superclass.constructor.call(this, container, {
+			'buildTemplate': buildTemplate, 
+			'tnames': 'editor,yrow' 
+		}, user);
 	};
-	AccountEditWidget.prototype = {
-		init: function(container, user){
+	YAHOO.extend(AccountEditWidget, Brick.mod.widget.Widget, {
+		init: function(user){
 			this.user = user;
-			var TM = buildTemplate(this, 'editor,yrow'),
-				gel = function(nm){ return TM.getEl('editor.'+nm); };
-			
+		},
+		buildTData: function(user){
 			var dLst = "", year = (new Date()).getFullYear(), yLst = "";
 			for (var i=year;i>1900;i--){
 				yLst += this._TM.replace('yrow', {'v': i});
@@ -226,71 +215,68 @@ Component.entryPoint = function(NS){
 				dLst += this._TM.replace('yrow', {'v': i});
 			}
 			
-			container.innerHTML = TM.replace('editor', {
+			return {
 				'uid': user.id,
 				'unm': user.getUserName(),
 				'byears': yLst,
 				'bdays': dLst
+			};
+		},
+		onLoad: function(user){
+			this.elHide('wait');
+			this.elShow('id');
+
+			this.elSetHTML('unm', user.userName);
+			this.elSetValue({
+				'eml': user.email,
+				'fnm': user.firstName,
+				'lnm': user.lastName,
+				'sex': user.sex,
+				'desc': user.descript,
+				'site': user.site,
+				'twitter': user.twitter
 			});
 			
-			Dom.setStyle(gel('wait'), 'display', 'none');
-			Dom.setStyle(gel('id'), 'display', '');
-			
-			gel('unm').innerHTML = user.userName;
-			gel('eml').value = user.email;
-			gel('fnm').value = user.firstName;
-			gel('lnm').value = user.lastName;
-			gel('sex').value = user.sex;
-			
 			if (!R['isAdmin']){
-				gel('eml').disabled = 'disabled';
+				this.elDisable('eml');
 			}
 			
 			var bDate = user.birthDay > 0 ? (new Date(user.birthDay*1000)) : null;
 			if (!L.isNull(bDate)){
-				gel('bdateday').value = bDate.getDate();
-				gel('bdatemonth').value = bDate.getMonth()+1;
-				gel('bdateyear').value = bDate.getFullYear();
+				this.elSetValue({
+					'bdateday': bDate.getDate(),
+					'bdatemonth': bDate.getMonth()+1,
+					'bdateyear': bDate.getFullYear()
+				});
 			}
-			gel('desc').value = user.descript;
-			gel('site').value = user.site;
-			gel('twitter').value = user.twitter;
-		},
-		destroy: function(){
-			var el = this._TM.getEl('editor.id');
-			el.parentNode.removeChild(el);
-		},
-		onClick: function(el){
-			return false;
 		},
 		getSaveData: function(){
-			var TM = this._TM, gel = function(nm){ return TM.getEl('editor.'+nm); };
 			var birthday = 0, 
-				bday = gel('bdateday').value*1, 
-				bmonth = gel('bdatemonth').value*1,
-				byear = gel('bdateyear').value*1;
+				bday = this.gel('bdateday').value*1, 
+				bmonth = this.gel('bdatemonth').value*1,
+				byear = this.gel('bdateyear').value*1;
 			
 			if (bday > 0 && bmonth > 0 && byear > 0){
 				birthday = new Date(byear, bmonth-1, bday);
 			}
 			var sd = {
-				'eml': gel('eml').value,
-				'fnm': gel('fnm').value,
-				'lnm': gel('lnm').value,
-				'sex': gel('sex').value,
-				'site': gel('site').value,
-				'twt': gel('twitter').value,
-				'dsc': gel('desc').value,
+				'eml': this.gel('eml').value,
+				'fnm': this.gel('fnm').value,
+				'lnm': this.gel('lnm').value,
+				'sex': this.gel('sex').value,
+				'site': this.gel('site').value,
+				'twt': this.gel('twitter').value,
+				'dsc': this.gel('desc').value,
 				'bd': birthday > 0 ? (birthday/1000) : 0,
 				'pass': {
-					'old': gel('passold').value,
-					'new': gel('passnew').value,
-					'conf': gel('passconf').value
+					'old': this.gel('passold').value,
+					'new': this.gel('passnew').value,
+					'conf': this.gel('passconf').value
 				}
 			};
 			return sd;
-		}
-	};
+		}		
+	});
 	NS.AccountEditWidget = AccountEditWidget;
 	
 };

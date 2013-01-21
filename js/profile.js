@@ -20,6 +20,8 @@ Component.requires = {
 };
 Component.entryPoint = function(NS){
 	
+	/* * * * * * Старая версия просмотра/редактора профиля пользователя * * * * */
+	
 	var Dom = YAHOO.util.Dom,
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
