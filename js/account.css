@@ -36,7 +36,7 @@
 
 .aw-uprofile .profile .btned {
 	width: 200px;
-	text-align: center;
+	/* text-align: center; /**/
 }
 
 .aw-uprofile .profile .uinfo  {
@@ -101,10 +101,10 @@
 }
 
 /* * * * * Editor * * * * * */
-.aw-uprofile .profile .uinfo .editor dl {
+.aw-uprofile .editor .uinfo .editor dl {
 	margin: 0 0 3px;
 }
-.aw-uprofile .profile .btned .err {
+.aw-uprofile .editor .err {
 	margin-top: 10px;
 	color: red;
 }

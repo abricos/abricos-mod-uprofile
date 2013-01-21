@@ -104,7 +104,8 @@ Component.entryPoint = function(NS){
 			}
 			switch(el.id){
 			case tp['fotoupload']: this.avatarUploader.imageUpload(); return true;
-			case tp['bshowedit']: this.showEditor(); return true;
+			case tp['bshowedit']: this.showEditor('account'); return true;
+			case tp['bshoweditpwd']: this.showEditor('password'); return true;
 			case tp['bsave']: this.saveEditor(); return true;
 			case tp['bcancel']: this.closeEditor(); return true;
 			}
@@ -117,52 +118,36 @@ Component.entryPoint = function(NS){
 			this.elShow('list,btnsshow');
 			this.elHide('btnsedit,loading');
 		},
-		showEditor: function(){
+		showEditor: function(edType){
+			edType = edType || 'account';
 			if (!L.isNull(this.editWidget)){
 				this.closeEditor();
 			}
 			this.elHide('list,btnsshow');
 			this.elShow('btnsedit');
-			this.editWidget = new AccountEditWidget(this.gel('edit'), this.user);
+
+			if (edType == 'password'){
+				this.editWidget = new PasswordEditorWidget(this.gel('edit'), this.user);
+			}else{
+				this.editWidget = new AccountEditorWidget(this.gel('edit'), this.user);
+			}
 		},
 		saveEditor: function(){
 			if (L.isNull(this.editWidget)){ return; }
-			var __self = this, sd = this.editWidget.getSaveData();
+			var __self = this, edWidget = this.editWidget, sd = edWidget.getSaveData();
 
 			var TM = this._TM, gel = function(nm){ return TM.getEl('widget.'+nm); };
 
-			var sem = function(s){ return (!L.isString(s) || s.length == 0); };
-			var serr = function(num){
-				var lnge = LNG['editor']['error'];
-				gel('err').innerHTML = lnge['tl']+lnge[num]; 
-			};
-			
-			gel('err').innerHTML = '';
-
-			var pass = sd['pass'];
-			if  (sem(pass['old']) && sem(pass['new']) && sem(pass['conf'])){
-				sd['pass'] = null;
-			} else {
-				if (sem(pass['old'])){
-					serr(1); return null;
-				}else if(pass['new'].length < 3){
-					serr(2); return null;
-				}else if(pass['new'] != pass['conf']){
-					serr(3); return null;
-				}
-				delete pass['conf'];
-			}
-
-			
 			if (L.isNull(sd)){ return; }
 
 			this.elHide('btnsshow,btnsedit');
 			this.elShow('loading');
+			
 
 			var user = this.user;
 			Brick.ajax('uprofile', {
 				'data': {
-					'do': 'profilesave',
+					'do': this.editWidget.type == 'account' ? 'profilesave' : 'passwordsave',
 					'userid': user.id,
 					'data': sd
 				},
@@ -174,13 +159,13 @@ Component.entryPoint = function(NS){
 						var err = rd['err']*1;
 						if (err>0){
 							
-							Dom.setStyle(gel('btnsedit'), 'display', '');
-							Dom.setStyle(gel('loading'), 'display', 'none');
+							__self.elShow('btnsedit');
+							__self.elHide('loading');
 							
 							if (err == 3){
-								serr(12); 
+								edWidget.setError(12); 
 							}else{
-								serr(11); 
+								edWidget.setError(11); 
 							}
 							return;
 						}else{
@@ -196,13 +181,14 @@ Component.entryPoint = function(NS){
 	});
 	NS.AccountViewWidget = AccountViewWidget;
 	
-	var AccountEditWidget = function(container, user){
-		AccountEditWidget.superclass.constructor.call(this, container, {
+	var AccountEditorWidget = function(container, user){
+		this.type = 'account';
+		AccountEditorWidget.superclass.constructor.call(this, container, {
 			'buildTemplate': buildTemplate, 
 			'tnames': 'editor,yrow' 
 		}, user);
 	};
-	YAHOO.extend(AccountEditWidget, Brick.mod.widget.Widget, {
+	YAHOO.extend(AccountEditorWidget, Brick.mod.widget.Widget, {
 		init: function(user){
 			this.user = user;
 		},
@@ -250,6 +236,7 @@ Component.entryPoint = function(NS){
 				});
 			}
 		},
+		setError: function(num){ },
 		getSaveData: function(){
 			var birthday = 0, 
 				bday = this.gel('bdateday').value*1, 
@@ -267,16 +254,52 @@ Component.entryPoint = function(NS){
 				'site': this.gel('site').value,
 				'twt': this.gel('twitter').value,
 				'dsc': this.gel('desc').value,
-				'bd': birthday > 0 ? (birthday/1000) : 0,
-				'pass': {
-					'old': this.gel('passold').value,
-					'new': this.gel('passnew').value,
-					'conf': this.gel('passconf').value
-				}
+				'bd': birthday > 0 ? (birthday/1000) : 0
 			};
 			return sd;
 		}		
 	});
-	NS.AccountEditWidget = AccountEditWidget;
+	NS.AccountEditorWidget = AccountEditorWidget;
+
+	var PasswordEditorWidget = function(container, user){
+		this.type = 'password';
+		PasswordEditorWidget.superclass.constructor.call(this, container, {
+			'buildTemplate': buildTemplate, 'tnames': 'password'
+		}, user);
+	};
+	YAHOO.extend(PasswordEditorWidget, Brick.mod.widget.Widget, {
+		init: function(user){
+			this.user = user;
+		},
+		setError: function(num){
+			var lnge = LNG['editor']['error'];
+			this.elSetHTML('err', lnge['tl']+lnge[num]); 
+		},
+		getSaveData: function(){
+			var sd = {
+				'old': this.gel('passold').value,
+				'new': this.gel('passnew').value
+			};
+			
+			var sem = function(s){ return (!L.isString(s) || s.length == 0); };
+			
+			this.elSetHTML('err', '');
+
+			if  (sem(sd['old']) && sem(sd['new']) && sem(this.gel('passconf').value)){
+				return null;
+			} else {
+				if (sem(sd['old'])){
+					this.setError(1); return null;
+				}else if(sd['new'].length < 3){
+					this.setError(2); return null;
+				}else if(sd['new'] != this.gel('passconf').value){
+					this.setError(3); return null;
+				}
+			}
+			
+			return sd;
+		}		
+	});
+	NS.PasswordEditorWidget = PasswordEditorWidget;
 	
 };

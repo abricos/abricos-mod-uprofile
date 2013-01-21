@@ -1,11 +1,9 @@
 <?php
 /**
- * @version $Id$
  * @package Abricos
  * @subpackage User
- * @copyright Copyright (C) 2008 Abricos. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author Alexander Kuzmin (roosit@abricos.org)
+ * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
 require_once 'dbquery.php';
@@ -57,6 +55,8 @@ class UserProfileManager extends Ab_ModuleManager {
 				return $this->Profile($d->userid, true);
 			case 'profilesave':
 				return $this->ProfileSave($d->userid, $d->data);
+			case 'passwordsave':
+				return $this->PasswordSave($d->userid, $d->data);
 				
 			case 'finduser': 
 				return $this->FindUser($d->firstname, $d->lastname, $d->username, true);
@@ -94,20 +94,26 @@ class UserProfileManager extends Ab_ModuleManager {
 		return $retarray ? $this->db->fetch_array($res) : $res;
 	}
 	
+	public function PasswordSave($userid, $d){
+		if (!$this->IsPersonalEditRole($userid)){
+			return null;
+		}
+		$ret = new stdClass();
+		$ret->err = 0;
+				
+		$uman = Abricos::$user->GetManager();
+		$ret->err = $uman->UserPasswordChange($userid, $d->new, $d->old);
+		
+		return $ret;
+	}
+	
 	public function ProfileSave($userid, $d){
 		if (!$this->IsPersonalEditRole($userid)){ 
 			return null;
 		}
 		$ret = new stdClass();
 		$ret->err = 0;
-		if (!is_null($d->pass)){ // смена пароля
-			
-			$uman = Abricos::$user->GetManager();
-			$ret->err = $uman->UserPasswordChange($userid, $d->pass->new, $d->pass->old);
-			if ($ret->err > 0){
-				return $ret;
-			}
-		}
+		
 		$utmf = Abricos::TextParser(true);
 		$d->fnm = $utmf->Parser($d->fnm);
 		$d->lnm = $utmf->Parser($d->lnm);

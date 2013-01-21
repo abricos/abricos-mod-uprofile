@@ -16,6 +16,8 @@
 	<td class="btned _ismyprofile">
 		<span id="{i#btnsshow}">
 			<a id="{i#bshowedit}" href="#">{#mod.uprofile.account.widget.2}</a>
+			<br />
+			<a id="{i#bshoweditpwd}" href="#">Изменить пароль</a>
 		</span>
 		<span id="{i#btnsedit}" style="display: none">
 			<a id="{i#bsave}" href="#">{#mod.uprofile.account.widget.3}</a>
@@ -23,8 +25,6 @@
 			<a id="{i#bcancel}" href="#">{#mod.uprofile.account.widget.4}</a>
 		</span>
 		<img id="{i#loading}" src="/images/loading.gif" style="display: none" />
-		
-		<div id="{i#err}" class="err"></div>
 	</td>
 </tr></tbody></table>
 <!--{runm}--><dl>
@@ -132,7 +132,13 @@
 		<dt>Twitter</dt>
 		<dd><input id="{i#twitter}" type="text" /></dd>
 	</dl>
+	
+</div>
 
+<!--{yrow}--><option value="{v#v}">{v#v}</option>
+
+<!--{password}-->
+<div class="editor" id="{i#id}">
 	<dl>
 		<dt>{#mod.uprofile.account.editor.26}</dt>
 		<dd>
@@ -153,6 +159,9 @@
 			
 		</dd>
 	</dl>
+	<dl>
+		<dt>&nbsp;</dt>
+		<dd><div id="{i#err}" class="err"></div></dd>
+	</dl>
 	
 </div>
-<!--{yrow}--><option value="{v#v}">{v#v}</option>
