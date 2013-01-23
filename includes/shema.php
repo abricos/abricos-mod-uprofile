@@ -2,10 +2,8 @@
 /**
  * Схема таблиц данного модуля.
  * 
- * @version $Id$
  * @package Abricos
- * @subpackage Sinwin
- * @copyright Copyright (C) 2008 Abricos. All rights reserved.
+ * @subpackage UProfile
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @author 
  */

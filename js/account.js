@@ -37,6 +37,7 @@ Component.entryPoint = function(NS){
 			return { 'uid': user.id };
 		},
 		onLoad: function (user){
+			var __self = this;
 			this.avatarUploader = new NS.AvatarUploader(this.user.id, function(fileid){
 				__self.onAvatarUpload(fileid);
 			});

@@ -1,10 +1,10 @@
 <?php
 /**
-* @version $Id$
-* @package Abricos
-* @copyright Copyright (C) 2011 Abricos. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package Abricos
+ * @subpackage UProfile
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @author Alexander Kuzmin <roosit@abricos.org>
+ */
 
 $user = Abricos::$user;
 
@@ -37,10 +37,6 @@ if (!empty($avatarid)){
 	$manager->FieldSetValue('avatar', '');
 }
 
-// $p_file = Abricos::CleanGPC('f', 'file0', TYPE_FILE);
-
-// $file = trim($p_file['tmp_name']);
-
 $upload = FileManagerModule::$instance->GetManager()->CreateUploadByVar('file0');
 $upload->isOnlyImage = true;
 $upload->maxImageWidth = 180;
@@ -51,39 +47,6 @@ $upload->filePublicName = 'avatar.gif';
 
 $errornum = $upload->Upload();
 
-/*
-$upload = $fmManager->CreateUploadByVar('file0');
-
-if (!$upload->file_is_image){
-	return;
-}
-
-if ($upload->image_src_x > 180 || $upload->image_src_y > 180){
-	
-	$dir = CWD."/cache";
-	$upload->image_resize = true;
-	$upload->image_x = 180;
-	$upload->image_y = 180;
-	$upload->image_ratio_fill = true;
-				
-	// необходимо ли конвертировать картинку
-	$upload->image_convert = 'gif';
-	$upload->file_new_name_body = "avatar".$userid;
-	$upload->process($dir);
-	
-	if (!file_exists($upload->file_dst_pathname)){ 
-		return; 
-	}
-	$file = $upload->file_dst_pathname;
-}
-
-// загрузка фото в обход установленных ролей менеджера файлов
-$folderId = CMSQFileManager::FolderAdd($db, 0, $userid, 'avatar');
-$errornum = $fmManager->UploadFile($folderId, $file, 
-		'avatar.gif', 'gif', filesize($file), $atrribute = 0, 
-		true, true, true);
-@unlink($file);
-/**/
 if ($errornum == 0){
 	$manager->FieldSetValue('avatar', $upload->uploadFileHash);
 }

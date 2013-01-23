@@ -2,12 +2,10 @@
 /**
  * Обработка запросов DataSet 
  * 
- * @version $Id$
  * @package Abricos
- * @subpackage UserProfile
- * @copyright Copyright (C) 2008 Abricos. All rights reserved.
+ * @subpackage UProfile
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author 
+ * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
 $mod = Abricos::GetModule('sys');
