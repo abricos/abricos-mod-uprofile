@@ -217,6 +217,14 @@ Component.entryPoint = function(NS){
                 var el = E.getTarget(e);
                 if (__self.onClick(el)){ E.preventDefault(e); }
             });
+			
+			var user = Brick.env.user;
+			this.users.update([{
+				'id': user.id,
+				'unm': user.name,
+				'fnm': user.firstname,
+				'lnm': user.lastname
+			}]);
 		},
 		onClick: function(el){
 			var fel;
@@ -246,8 +254,6 @@ Component.entryPoint = function(NS){
 				callback(user);
 				return;
 			}
-			
-			var __self = this;
 			
 			Brick.ajax('uprofile', {
 				'data': {
