@@ -44,10 +44,6 @@ class UserProfileManager extends Ab_ModuleManager {
 		return ($this->IsWriteRole() && $this->userid == $userid) || $this->IsAdminRole(); 
 	}
 
-	public function DSProcess($name, $rows){ }
-	
-	public function DSGetData($name, $rows){ return null; }
-	
 	public function AJAX($d){
 		switch($d->do){
 			

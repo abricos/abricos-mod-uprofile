@@ -27,6 +27,15 @@
 	right: 0px;
 	top: -15px;
 }
+.aw-uprofile .gheadermenu .urating .voting,
+.aw-uprofile .gheadermenu .urating .skill {
+	float: left;
+	margin-left: 12px;
+}
+.aw-uprofile .gheadermenu .urating .aw-urating {
+	margin-top: 12px;
+}
+
 .aw-uprofile .gheadermenu .urating .num {
 	margin-top: 5px;
 }

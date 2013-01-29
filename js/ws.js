@@ -8,6 +8,8 @@
 var Component = new Brick.Component();
 Component.requires = { 
 	mod:[
+        {name: 'urating', files: ['vote.js']},
+        {name: 'widget', files: ['lib.js']},
         {name: '{C#MODNAME}', files: ['lib.js']}
 	]		
 };
@@ -20,6 +22,7 @@ Component.entryPoint = function(NS){
 
 	var buildTemplate = this.buildTemplate;
 	var UID = Brick.env.user.id;
+	var NSUR = Brick.mod.urating || {};
 	
 	var WSPage = function(component, cfg){
 		cfg = L.merge({
@@ -92,7 +95,7 @@ Component.entryPoint = function(NS){
 				});
 			}
 			
-			container.innerHTML = this._TM.replace('gbmenu', {
+			container.innerHTML = TM.replace('gbmenu', {
 				'uid': user.id,
 				'unm': user.getUserName(),
 				'uskill': user.skill,
@@ -100,10 +103,14 @@ Component.entryPoint = function(NS){
 				'tlrows': lst
 			});
 
-			if (user.skill > 0){
+			if (NSUR.VotingWidget){
 				Dom.setStyle(TM.getEl('gbmenu.urating'), 'display', '');
+				this.voteWidget = new NSUR.VotingWidget(TM.getEl('gbmenu.uservote'), {
+					'modname': 'urating',
+					'elementType': 'user',
+					'elementId': user.id
+				});
 			}
-
 		},
 		selectMenuItem: function(page){
 			var TM = this._TM,
@@ -124,17 +131,18 @@ Component.entryPoint = function(NS){
 	NS.GlobalMenuWidget = GlobalMenuWidget;
 	
 	var UserWSWidget = function(container, userid, page){
-		this.init(container, userid, page);
+		UserWSWidget.superclass.constructor.call(this, container, {
+			'buildTemplate': buildTemplate, 'tnames': 'widget' 
+		}, userid, page);
 	};
-	UserWSWidget.prototype = {
-		init: function(container, userid, page){
+	YAHOO.extend(UserWSWidget, Brick.mod.widget.Widget, {
+		init: function(userid, page){
 			this.userid = userid = userid || Brick.env.user.id;
 			this._actpage = page || 'account';
 			this.widgets = {};
-			
-			var TM = buildTemplate(this, 'widget'), __self = this;
-			container.innerHTML = TM.replace('widget');
-			
+		},
+		onLoad: function(userid, page){
+			var __self = this;
 			R.load(function(){
 				NS.viewer.loadUser(userid, function(user){
 					__self.onLoadUser(user);
@@ -170,12 +178,11 @@ Component.entryPoint = function(NS){
 			}
 		},
 		renderPages: function(){
-			var TM = this._TM, user = this.user;
-			this.gmenu = new NS.GlobalMenuWidget(TM.getEl('widget.gmenu'), user);
+			this.gmenu = new NS.GlobalMenuWidget(this.gel('gmenu'), this.user);
 			this.showPage(this._actpage);
 		},
 		showPage: function(page){
-			var TM = this._TM, pg = NS.wsPageList.get(page), 
+			var pg = NS.wsPageList.get(page), 
 				user = this.user,
 				gmenu = this.gmenu;
 			
@@ -197,13 +204,13 @@ Component.entryPoint = function(NS){
 			};
 			
 			if (!w){
-				Dom.setStyle(TM.getEl('widget.loading'), 'display', '');
-				Dom.setStyle(TM.getEl('widget.pages'), 'display', 'none');
-				
+				this.elShow('loading');
+				this.elHide('pages');
+				var __self = this;
 				Brick.Loader.add({ mod: [{name: pg.module, files: [pg.request+'.js']}],
 					onSuccess: function() { 
-						Dom.setStyle(TM.getEl('widget.loading'), 'display', 'none');
-						Dom.setStyle(TM.getEl('widget.pages'), 'display', '');
+						__self.elHide('loading');
+						__self.elShow('pages');
 						
 						var WClass = Brick.mod[pg.module][pg.widget];
 						if (!WClass){ return; }
@@ -212,7 +219,7 @@ Component.entryPoint = function(NS){
 							'container': document.createElement('div'),
 							'page': pg
 						};
-						TM.getEl('widget.pages').appendChild(w['container']);
+						__self.gel('pages').appendChild(w['container']);
 						w['widget'] = new WClass(w['container'], user);
 						
 						ws[page] = w;
@@ -223,7 +230,7 @@ Component.entryPoint = function(NS){
 				showp();
 			}
 		}		
-	};
+	});
 	NS.UserWSWidget = UserWSWidget;
 	
 	NS.API.showWSWidget = function(container, userid, actpage){
