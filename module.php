@@ -51,6 +51,11 @@ class UserProfileModule extends Ab_Module {
 		return $cname;
 	}
 	
+	/**
+	 * Модуль URating запросил SQL скрипт по форме, который ему нужен для того, 
+	 * чтобы определить какие пользователи и их данные в модулях нуждаются 
+	 * в пересчете рейтинга 
+	 */
 	public function URating_SQLCheckCalculate(){
 		$db = Abricos::$db;
 		return "
@@ -65,14 +70,6 @@ class UserProfileModule extends Ab_Module {
 			LIMIT 30
 		";
 	}
-	
-	public function URating_UserCalculate($userid){
-		$ret = new stdClass();
-		$ret->skill = $this->GetManager()->UserSkillCalculate($userid);
-		
-		return $ret;
-	}
-	
 }
 
 

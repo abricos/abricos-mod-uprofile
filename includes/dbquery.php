@@ -14,7 +14,7 @@ class UserProfileQuery {
 		$ret->tbl = "";
 		if (UserProfileManager::$instance->IsUserRating()){
 			$ret->fld = "
-				, IF(ISNULL(urt.skill), 0, urt.skill) as sk
+				, IF(ISNULL(urt.skill), 0, urt.skill) as rtg
 			";
 				
 			$ret->tbl = "

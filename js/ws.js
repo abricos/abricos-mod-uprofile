@@ -98,7 +98,7 @@ Component.entryPoint = function(NS){
 			container.innerHTML = TM.replace('gbmenu', {
 				'uid': user.id,
 				'unm': user.getUserName(),
-				'uskill': user.skill,
+				'urating': user.rating,
 				'avatar': user.avatar90(),
 				'tlrows': lst
 			});

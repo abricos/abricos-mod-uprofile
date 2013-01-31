@@ -124,7 +124,18 @@ class UserProfileManager extends Ab_ModuleManager {
 		return $ret;
 	}
 	
-	public function UserSkillCalculate($userid){
+	/**
+	 * Расчет рейтинга пользователя
+	 * 
+	 * Метод запрашивает модуль URating
+	 * 
+	 * +25 - за заполненное имя и фамилию
+	 * +25 - за указанный аватар
+	 * +25 - за заполненное поле "О себе"
+	 * 
+	 * @param integer $userid
+	 */
+	public function URating_UserCalculate($userid){
 		Abricos::$user->GetManager();
 		$user = UserQueryExt::User($this->db, $userid);
 		
@@ -133,8 +144,8 @@ class UserProfileManager extends Ab_ModuleManager {
 		if (!empty($user['firstname']) && !empty($user['lastname'])){
 			$skill += 25;
 		}
-
-			if (!empty($user['avatar'])){
+		
+		if (!empty($user['avatar'])){
 			$skill += 25;
 		}
 		
@@ -142,8 +153,11 @@ class UserProfileManager extends Ab_ModuleManager {
 			$skill += 25;
 		}
 		
-		return $skill;
+		$ret = new stdClass();
+		$ret->skill = $skill;
+		return $ret;
 	}
+	
 	
 	private function UserPublicityConfigMethod($userid){
 		$ret = new stdClass();
@@ -239,30 +253,6 @@ class UserProfileManager extends Ab_ModuleManager {
 		}
 		return $ret;
 	}
-	
-	/*
-	public function UProfile_UserFriendList(){
-		if (!$this->IsViewRole()){
-			return null;
-		}
-	
-		/*
-		$users = array();
-		$rows = BotaskQuery::BoardUsers($this->db, $this->userid);
-		while (($row = $this->db->fetch_array($rows))){
-			if ($row['id']*1 == $this->userid*1){
-				continue;
-			}
-			$users[$row['id']] = $row;
-		}
-	
-		$o = new stdClass();
-		$o->p = UserFriendPriority::MIDDLING;
-		$o->users = $users;
-	
-		return $o;
-	}
-	/**/
 	
 	
 	/**

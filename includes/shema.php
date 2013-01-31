@@ -5,7 +5,7 @@
  * @package Abricos
  * @subpackage UProfile
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author 
+ * @author  Alexander Kuzmin <roosit@abricos.org>
  */
 
 $charset = "CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
