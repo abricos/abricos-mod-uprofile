@@ -9,19 +9,19 @@ var Component = new Brick.Component();
 Component.requires = { 
 	mod:[
         {name: 'urating', files: ['vote.js']},
-        {name: 'widget', files: ['lib.js']},
+        {name: 'widget', files: ['notice.js']},
         {name: '{C#MODNAME}', files: ['lib.js']}
 	]		
 };
 Component.entryPoint = function(NS){
 
 	var Dom = YAHOO.util.Dom,
-		E = YAHOO.util.Event,
 		L = YAHOO.lang,
 		R = NS.roles;
 
 	var buildTemplate = this.buildTemplate;
 	var UID = Brick.env.user.id;
+	var LNG = this.language;
 	var NSUR = Brick.mod.urating || {};
 	
 	var WSPage = function(component, cfg){
@@ -112,7 +112,18 @@ Component.entryPoint = function(NS){
 					'elementId': user.id,
 					'value': user.reputation,
 					'vote': user.repMyVote,
-					'hideButtons': user.id == UID
+					'hideButtons': user.id == UID,
+					'onVotingError': function(error, merror){
+						var s = '', lng = LNG['urating']['error'];
+						if (merror > 0){
+							s = lng['m'+merror];
+						}else if (error == 1){
+							s = LNG[error];
+						}else{
+							return;
+						}
+						Brick.mod.widget.notice.show(s);						
+					}
 				});
 			}
 		},
