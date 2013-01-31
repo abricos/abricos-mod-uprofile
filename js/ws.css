@@ -32,13 +32,16 @@
 	top: 7px;
 }
 
-.aw-uprofile .gheadermenu .urating .voting,
+.aw-uprofile .gheadermenu .urating .wvoting,
 .aw-uprofile .gheadermenu .urating .skill {
 	float: left;
-	margin-left: 12px;
+	margin-right: 20px;
 }
+
 .aw-uprofile .gheadermenu .urating .bval {
 	font-size: 22px;
+	min-width: 25px;
+	text-align: center;
 }
 .aw-uprofile .gheadermenu .urating .aw-urating {
 	margin-top: 5px;
