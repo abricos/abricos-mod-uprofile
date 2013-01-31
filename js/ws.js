@@ -105,16 +105,19 @@ Component.entryPoint = function(NS){
 
 			if (NSUR.VotingWidget){
 				Dom.setStyle(TM.getEl('gbmenu.urating'), 'display', '');
+				
 				this.voteWidget = new NSUR.VotingWidget(TM.getEl('gbmenu.uservote'), {
 					'modname': 'urating',
 					'elementType': 'user',
-					'elementId': user.id
+					'elementId': user.id,
+					'value': user.reputation,
+					'vote': user.repMyVote,
+					'hideButtons': user.id == UID
 				});
 			}
 		},
 		selectMenuItem: function(page){
-			var TM = this._TM,
-				pgs = NS.wsPageList.list, lst = "";
+			var TM = this._TM, pgs = NS.wsPageList.list;
 			
 			for (var i=0;i<pgs.length;i++){
 				var pg = pgs[i];

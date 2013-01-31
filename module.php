@@ -63,10 +63,11 @@ class UserProfileModule extends Ab_Module {
 				DISTINCT u.userid as uid,
 				'".$this->name."' as m
 			FROM ".$db->prefix."user u
-			LEFT JOIN ".$db->prefix."urating_modcalc mc ON u.userid=mc.userid
-			WHERE (mc.module='".bkstr($this->name)."' AND
-				mc.upddate + ".URatingModule::PERIOD_CHECK." < u.upddate) OR
-				ISNULL(mc.upddate)
+			LEFT JOIN ".$db->prefix."urating_modcalc mc ON u.userid=mc.userid 
+				AND mc.module='".bkstr($this->name)."'
+			WHERE u.lastvisit > 0 
+				AND ((mc.upddate + ".URatingModule::PERIOD_CHECK." < u.upddate)
+					OR ISNULL(mc.upddate))
 			LIMIT 30
 		";
 	}

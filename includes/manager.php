@@ -87,6 +87,7 @@ class UserProfileManager extends Ab_ModuleManager {
 	public function Profile($userid, $retarray = false, $recalcRating = false){
 		$this->UsersRatingCheck($recalcRating);
 		$res = UserProfileQuery::Profile($this->db, $userid,  $this->IsPersonalEditRole($userid));
+		
 		return $retarray ? $this->db->fetch_array($res) : $res;
 	}
 	

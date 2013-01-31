@@ -132,7 +132,12 @@ Component.entryPoint = function(NS){
 			'lnm': '', 
 			'eml': '', 
 			'avt': '',	// аватар
+			
+			'rep': 0,	// репутация
+			'repcnt': 0,// кол-во голосов за репутацию
+			'repmy': null, // отношение к пользователю: null, 1, -1, 0
 			'rgt': 0,	// рейтинг (сила)
+			
 			'bd': 0,	// дата рождения
 			'dsc': '',	// описание
 			'sex': 0,	// пол
@@ -145,20 +150,27 @@ Component.entryPoint = function(NS){
 	};
 	YAHOO.extend(User, SYS.Item, {
 		update: function(d){
-			this.userName = d['unm'];
-			this.email = d['eml'];
-			this.firstName = d['fnm'];
-			this.lastName = d['lnm'];
-			this.avatar = d['avt'];
-			this.rating = d['rtg'];
+			this.userName		= d['unm'];
+			this.email			= d['eml'];
+			this.firstName		= d['fnm'];
+			this.lastName		= d['lnm'];
+			this.avatar			= d['avt'];
 			
-			this.birthDay = d['bd']*1;
-			this.descript = L.isNull(d['dsc']) ? '' : d['dsc'];
-			this.sex = d['sex'];
-			this.site = d['site'];
-			this.twitter = d['twt'];
-			this.lastVisit = d['lv'];
-			this.joinDate = d['dl'];
+			this.reputation		= d['rep'];
+			this.repVoteCount	= d['repcnt'];
+			this.rating			= d['rtg'];
+
+			// отношение к этому пользователю
+			// null -нет отношения, 1 - ЗА, -1 -ПРОТИВ, 0 - нейтрально 
+			this.repMyVote		= d['repmy'];
+			
+			this.birthDay		= d['bd']*1;
+			this.descript		= L.isNull(d['dsc']) ? '' : d['dsc'];
+			this.sex			= d['sex'];
+			this.site			= d['site'];
+			this.twitter		= d['twt'];
+			this.lastVisit		= d['lv'];
+			this.joinDate		= d['dl'];
 		},
 		getData: function(){
 			return {
