@@ -10,6 +10,7 @@ Component.requires = {
 };
 Component.entryPoint = function(){
 	
+	/*
 	if (!Brick.env.user.isRegister()){ return; }
 	
 	var cp = Brick.mod.user.cp;
@@ -19,4 +20,5 @@ Component.entryPoint = function(){
 	menuItem.entryComponent = 'ws';
 	menuItem.entryPoint = 'Brick.mod.uprofile.API.showWSWidget';
 	cp.MenuManager.add(menuItem);
+	/**/
 };
