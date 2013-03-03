@@ -19,38 +19,40 @@
 	background-color: #8c8d8e;
 	color: #fff;
 }
-.aw-uprofile .gheadermenu h2 {
-	font-size: 1.5em;
+.aw-uprofile .gheadermenu .hdtitle {
+	font-size: 18px;
 }
 .aw-uprofile .gheadermenu .urating {
 	position: absolute;
 	right: 0px;
 	top: -15px;
 }
-.aw-uprofile .gheadermenu .voting .bup,
-.aw-uprofile .gheadermenu .voting .bdown {
-	top: 7px;
-}
-
 .aw-uprofile .gheadermenu .urating .wvoting,
 .aw-uprofile .gheadermenu .urating .skill {
 	float: left;
 	margin-right: 20px;
 }
 
+.aw-uprofile .gheadermenu .urating .wvoting .label,
+.aw-uprofile .gheadermenu .urating .skill .label  {
+	padding-bottom: 5px;
+}
+
 .aw-uprofile .gheadermenu .urating .bval {
 	font-size: 22px;
 	min-width: 25px;
 	text-align: center;
-	margin-top: 11px;
-}
-.aw-uprofile .gheadermenu .urating .aw-urating {
-	margin-top: 5px;
 }
 
-.aw-uprofile .gheadermenu .urating .num {
-	margin-top: 5px;
+.aw-uprofile .gheadermenu .urating .bval,
+.aw-uprofile .gheadermenu .urating .num  {
+	line-height: 25px;
 }
+.aw-uprofile .gheadermenu .voting .bup,
+.aw-uprofile .gheadermenu .voting .bdown { 
+	top: 6px;
+}
+
 .aw-uprofile .gheadermenu div.logo {
 	position: absolute;
 	width: 96px;
