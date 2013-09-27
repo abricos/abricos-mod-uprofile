@@ -1,5 +1,7 @@
 <!--[*]
 [tt=main][/tt]
+[script]content_index.php[/script]
+
 [*]-->
 
 <div id="bos" class="mod-uprofile">
@@ -16,7 +18,7 @@
 
 	Brick.ff('bos', 'os', function(){
 		var el = document.getElementById('mod-uprofile-container');
-		new Brick.mod.bos.PageManagerWidget(el, 'uprofile/ws/showws');
+		new Brick.mod.bos.PageManagerWidget(el, 'uprofile/ws/showws/{v#userid}');
 	});
 
 </script>
