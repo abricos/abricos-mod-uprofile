@@ -6,6 +6,7 @@
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
+require_once 'classes.php';
 require_once 'dbquery.php';
 
 class UserProfileManager extends Ab_ModuleManager {
@@ -88,7 +89,16 @@ class UserProfileManager extends Ab_ModuleManager {
 		$this->UsersRatingCheck($recalcRating);
 		$res = UserProfileQuery::Profile($this->db, $userid,  $this->IsPersonalEditRole($userid));
 		
-		return $retarray ? $this->db->fetch_array($res) : $res;
+		if (!$retarray){
+			return $res;
+		}
+		
+		$ret = $this->db->fetch_array($res);
+		
+		$initData = new UProfileInitData($userid);
+		$ret['initdata'] = $initData->ToAJAX();
+		
+		return $ret;
 	}
 	
 	public function PasswordSave($userid, $d){
@@ -340,43 +350,6 @@ class UserProfileManager extends Ab_ModuleManager {
 		$this->_userFields = null;
 		$this->user->GetManager()->UserFieldCacheClear();
 	}
-	
-	/*
-	public function ProfileUpdate($d){
-		if (!$this->IsPersonalEditRole($d->id)){
-			return;
-		}
-		
-		$utmanager = Abricos::TextParser(true);
-		
-		$upd = array();
-		$fs = $this->SysFieldList();
-		foreach ($fs as $fname => $frow){
-			$val = $d->$fname;
-			$nval = null;
-			switch (intval($frow['ft'])){
-			case UserFieldType::BOOLEAN:
-			case UserFieldType::INTEGER:
-			case UserFieldType::DATETIME:
-			case UserFieldType::ENUM:
-				$nval = intval($val);
-				break;
-			case UserFieldType::STRING:
-			case UserFieldType::TEXT:
-				
-				$val = $utmanager->Parser($val);
-				$nval = bkstr($val);
-				break;
-			case UserFieldType::DOUBLE:
-				$nval = doubleval($val);
-			}
-			if (!is_null($nval)){
-				$upd[$fname] = $nval;
-			}
-		}
-		UserProfileQuery::ProfileUpdate($this->db, $d->id, $upd);
-	}
-	/**/
 	
 	public function FieldSetValue($varname, $value){
 		UserProfileQuery::FieldSetValue($this->db, $this->userid, $varname, $value);

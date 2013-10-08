@@ -1,8 +1,7 @@
 /*
-* @version $Id$
-* @copyright Copyright (C) 2008 Abricos. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @copyright Copyright (C) 2008 Abricos. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 /**
  * @module UserProfile
@@ -21,15 +20,65 @@ Component.entryPoint = function(NS){
 		E = YAHOO.util.Event,
 		L = YAHOO.lang;
 	
-	var SYS = Brick.mod.sys;
-	
-	Brick.util.CSS.update(Brick.util.CSS['{C#MODNAME}']['{C#COMNAME}']);
-	delete Brick.util.CSS['{C#MODNAME}']['{C#COMNAME}'];
+	var SysNS = Brick.mod.sys;
+
+	this.buildTemplate({}, '');
 
 	NS.lif = function(f){return L.isFunction(f) ? f : function(){}; };
 	NS.life = function(f, p1, p2, p3, p4, p5, p6, p7){ 
 		f = NS.lif(f); f(p1, p2, p3, p4, p5, p6, p7);
 	};
+	
+	var AppInfo = function(d){
+		d = L.merge({
+			'mnm': '',
+			'nm': '',
+			'w': '',
+			'tl': ''
+		}, d || {});
+		AppInfo.superclass.constructor.call(this, d);
+	};
+	YAHOO.extend(AppInfo, SysNS.Item, {
+		update: function(d){
+			this.moduleName = d['mnm'];
+			this.name = d['nm'];
+			this.widgetName = d['w'];
+			this.title = d['tl'];
+		}
+	});
+	NS.AppInfo = AppInfo;
+	
+	var AppInfoList = function(d){
+		AppInfoList.superclass.constructor.call(this, d, AppInfo);
+	};
+	YAHOO.extend(AppInfoList, SysNS.ItemList, {
+		getBy: function(mname, cname){
+			var ret = null;
+			this.foreach(function(app){
+				if (app.moduleName == mname
+						&& app.name == cname){ 
+					ret = app;
+					return true;
+				}
+			});
+			return ret;
+		}
+	});
+	NS.AppInfoList = AppInfoList;
+	
+	var InitData = function(d){
+		d = L.merge({
+			'apps': []
+		}, d || {});
+		this.init(d);
+	};
+	InitData.prototype = {
+		init: function(d){
+			this.appInfoList = new NS.AppInfoList(d['apps']);
+		}
+	};
+	NS.InitData = InitData;	
+		
 	
 	var Avatar = function(){
 		this.init();
@@ -148,7 +197,7 @@ Component.entryPoint = function(NS){
 		}, d || {});
 		User.superclass.constructor.call(this, d);
 	};
-	YAHOO.extend(User, SYS.Item, {
+	YAHOO.extend(User, SysNS.Item, {
 		update: function(d){
 			this.userName		= d['unm'];
 			this.email			= d['eml'];
@@ -194,7 +243,7 @@ Component.entryPoint = function(NS){
 	var UserList = function(d){
 		UserList.superclass.constructor.call(this, d, User);
 	};
-	YAHOO.extend(UserList, SYS.ItemList, {});
+	YAHOO.extend(UserList, SysNS.ItemList, {});
 	NS.UserList = UserList;
 	
 	
@@ -283,6 +332,10 @@ Component.entryPoint = function(NS){
 							users.add(user);
 						}else{
 							user.update(d);
+						}
+						
+						if (L.isValue(d['initdata'])){
+							user.initData = new NS.InitData(d['initdata']);
 						}
 					}
 					callback(user);

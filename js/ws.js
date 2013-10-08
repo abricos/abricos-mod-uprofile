@@ -95,6 +95,16 @@ Component.entryPoint = function(NS){
 				});
 			}
 			
+			if (user.initData){
+				user.initData.appInfoList.foreach(function(app){
+					lst += TM.replace('tlrow', {
+						'id': app.name,
+						'uid': user.id,
+						'tl': app.title
+					});
+				});
+			}
+			
 			container.innerHTML = TM.replace('gbmenu', {
 				'uid': user.id,
 				'unm': user.getUserName(),
@@ -140,6 +150,19 @@ Component.entryPoint = function(NS){
 					Dom.removeClass(el, 'sel');
 				}
 			}
+			
+			if (this.user.initData){
+				this.user.initData.appInfoList.foreach(function(app){
+					var el = Dom.get(TM.getElId('tlrow.id')+'-'+app.name);
+					
+					if (page == app.name){
+						Dom.addClass(el, 'sel');
+					}else{
+						Dom.removeClass(el, 'sel');
+					}
+				});
+			}
+
 		}
 	};
 	NS.GlobalMenuWidget = GlobalMenuWidget;
@@ -172,6 +195,7 @@ Component.entryPoint = function(NS){
 			this.renderPages();
 		},
 		onLoadUser: function(user){
+	
 			this.user = user;
 			var list = [];
 			// сформировать список модулей имеющих компонент 'upfapi' в наличие
@@ -200,6 +224,20 @@ Component.entryPoint = function(NS){
 				user = this.user,
 				gmenu = this.gmenu;
 			
+			if (!L.isValue(pg) && user.initData){
+				user.initData.appInfoList.foreach(function(app){
+					if (app.name == page){
+						pg = {
+							'module': app.moduleName,
+							'id': app.name,
+							'title': app.title,
+							'request': app.name,
+							'widget': app.widgetName
+						};
+					}
+				});
+			}
+		
 			if (L.isNull(pg)){ return; }
 			this._actpage = page;
 			
