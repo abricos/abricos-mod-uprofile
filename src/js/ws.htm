@@ -1,53 +1,58 @@
-<!--{panel}--><div class='hd'>{#mod.uprofile.ws.panel.1}</div>
+<!--{panel}-->
+<div class='hd'>{#mod.uprofile.ws.panel.1}</div>
 <div class='bd aw-uprofile'>
-	<div id="{i#widget}"></div>
+    <div id="{i#widget}"></div>
 </div>
-<!--{widget}--><div id="{i#id}" class='aw-uprofile'>
-	<div id="{i#gmenu}"></div>
 
-	<div id="{i#loading}" class="wsloading">
-		<img src="/images/loading.gif" />
-		{#mod.uprofile.ws.widget.1}<br />
-		{#mod.uprofile.ws.widget.2}
-	</div>
+<!--{widget}-->
+<div id="{i#id}" class='aw-uprofile'>
+    <div id="{i#gmenu}"></div>
 
-	<div id="{i#pages}"></div>
+    <div id="{i#loading}" class="wsloading">
+        <img src="/images/loading.gif"/>
+        {#mod.uprofile.ws.widget.1}<br/>
+        {#mod.uprofile.ws.widget.2}
+    </div>
+
+    <div id="{i#pages}"></div>
 </div>
 
 <!--{gbmenu}-->
 <div class="aw-uprofile">
-	<div class="gheadermenu">
-		<div class="hdline">
-			<div class="hdtitle">{v#unm}</div>
-			<div id="{i#urating}" class="urating" style="display: none;">
-				<div class="wvoting">
-					<div class="label">репутация</div>
-					<div id="{i#uservote}"></div>
-				</div>
-				<div class="skill">
-					<div class="label">рейтинг</div>
-					<div class="num">{v#urating}</div>
-				</div>
-				<div class="clear"></div>
-			</div>
-		
-		</div>
-		
-		<div class="logo" id="{i#avatar}">
-			{v#avatar}
-		</div>
-		
-		<ul class="topmenu">
-			{v#tlrows}
-		</ul>
-		<div class="clear"></div>
-	</div>
-	
-	<div class="gbmenu">
-		<div class="line"></div>
-	</div>
+    <div class="gheadermenu">
+        <div class="hdline">
+            <div class="hdtitle">{v#unm}</div>
+            <div id="{i#urating}" class="urating" style="display: none;">
+                <div class="wvoting">
+                    <div class="label">репутация</div>
+                    <div id="{i#uservote}"></div>
+                </div>
+                <div class="skill">
+                    <div class="label">рейтинг</div>
+                    <div class="num">{v#urating}</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+        </div>
+
+        <div class="logo" id="{i#avatar}">
+            {v#avatar}
+        </div>
+
+        <div class="topmenu">
+            {v#tlrows}
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div class="gbmenu">
+        <div class="line"></div>
+    </div>
 
 </div>
-<!--{tlrow}--><li id="{i#id}-{v#id}">
-	<a href="#app=uprofile/ws/showws/{v#uid}/{v#id}">{v#tl}</a>
-</li>
+
+<!--{tlrow}-->
+<item id="{i#id}-{v#id}" class="tpmitem" >
+    <a href="#app=uprofile/ws/showws/{v#uid}/{v#id}">{v#tl}</a>
+</item>

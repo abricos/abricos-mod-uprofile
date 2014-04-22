@@ -61,23 +61,23 @@
 	left: 30px;
 	text-align: center;
 }
-.aw-uprofile .gheadermenu ul.topmenu {
+.aw-uprofile .gheadermenu .topmenu {
 	margin: 10px;
 	margin-top: 6px;
 }
-.aw-uprofile .gheadermenu ul.topmenu li{
-	float: left;
+.aw-uprofile .gheadermenu .topmenu a {
+
+}
+.aw-uprofile .gheadermenu .topmenu .tpmitem {
+    float: left;
     padding: 1px 0.5em;
     margin-right: 10px;
 }
-.aw-uprofile .gheadermenu ul.topmenu a {
-	font-size: 
-}
-.aw-uprofile .gheadermenu ul.topmenu li.sel {
+.aw-uprofile .gheadermenu .topmenu .sel {
 	background: none repeat scroll 0 0 #E3E3D7;
     border: 1px solid #DDD9E2;
 }
-.aw-uprofile .gheadermenu ul.topmenu li.sel a {
+.aw-uprofile .gheadermenu .topmenu .sel a {
 	color: #000;
 	text-decoration: none;
 }
