@@ -168,20 +168,20 @@ class UserProfileAction {
 	const PROFILE_ADMIN		= 50;
 }
 
-class UserProfilePermission extends CMSPermission {
+class UserProfilePermission extends Ab_UserPermission {
 	
-	public function UserProfilePermission(UserProfileModule $module){
+	public function __construct(UserProfileModule $module){
 		$defRoles = array(
-			new CMSRole(UserProfileAction::PROFILE_VIEW, 1, User::UG_GUEST),
-			new CMSRole(UserProfileAction::PROFILE_VIEW, 1, User::UG_REGISTERED),
-			new CMSRole(UserProfileAction::PROFILE_VIEW, 1, User::UG_ADMIN),
+			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, 1, Ab_UserGroup::GUEST),
+			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, 1, Ab_UserGroup::REGISTERED),
+			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, 1, Ab_UserGroup::ADMIN),
 
-			new CMSRole(UserProfileAction::PROFILE_WRITE, 1, User::UG_REGISTERED),
-			new CMSRole(UserProfileAction::PROFILE_WRITE, 1, User::UG_ADMIN),
+			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, 1, Ab_UserGroup::REGISTERED),
+			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, 1, Ab_UserGroup::ADMIN),
 			
-			new CMSRole(UserProfileAction::PROFILE_ADMIN, 1, User::UG_ADMIN)
+			new Ab_UserRole(UserProfileAction::PROFILE_ADMIN, 1, Ab_UserGroup::ADMIN)
 		);
-		parent::CMSPermission($module, $defRoles);
+        parent::__construct($module, $defRoles);
 	}
 	
 	public function GetRoles(){
