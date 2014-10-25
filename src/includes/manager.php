@@ -335,7 +335,7 @@ class UserProfileManager extends Ab_ModuleManager {
 		
 		$fields = $this->SysFieldList();
 		if (!empty($fields[$name])){ return; }
-		if ($this->user->GetManager()->UserFieldCheck($name)){ return; }
+		if (UserModule::$instance->GetManager()->UserFieldCheck($name)){ return; }
 		
 		UserProfileQuery::FieldAppend($this->db, $name, $title, $type, $size, $options);
 		UserProfileQuery::FieldInfoAppend($this->db, $name, $title, $type, $options);
@@ -348,7 +348,7 @@ class UserProfileManager extends Ab_ModuleManager {
 	
 	public function FieldCacheClear(){
 		$this->_userFields = null;
-		$this->user->GetManager()->UserFieldCacheClear();
+        UserModule::$instance->GetManager()->UserFieldCacheClear();
 	}
 	
 	public function FieldSetValue($varname, $value){
