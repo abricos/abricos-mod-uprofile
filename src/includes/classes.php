@@ -6,6 +6,34 @@
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
+UserModule::$instance->GetManager();
+
+class UserProfile extends UserItem {
+    public $patronymic;
+    public $sex;
+    public $birthday;
+    public $descript;
+    public $site;
+    public $icq;
+    public $avatar;
+    public $twitter;
+
+    public function __construct(UserItem $user) {
+        $d = $user->_data;
+        parent::__construct($d);
+
+        $this->patronymic = strval($d['patronymic']);
+        $this->sex = intval($d['sex']);
+        $this->birthday = intval($d['birthday']);
+        $this->descript = strval($d['descript']);
+        $this->site = strval($d['site']);
+        $this->icq = strval($d['icq']);
+        $this->avatar = $d['avatar'];
+        $this->twitter = strval($d['twitter']);
+    }
+
+}
+
 
 /**
  * Приложение для профиля пользователя

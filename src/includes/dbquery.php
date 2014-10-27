@@ -244,7 +244,7 @@ class UserProfileQuery {
 		$sql = "
 			UPDATE ".$db->prefix."upfl_field
 			SET fieldaccess=".bkint($access)."
-			WHERE fieldname='".bkstr($fieldname)."'
+			WHERE fieldname='".bkstr($name)."'
 			LIMIT 1
 		";
 		$db->query_write($sql);
