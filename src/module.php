@@ -43,7 +43,7 @@ class UserProfileModule extends Ab_Module {
 	
 	public function GetContentName(){
 		$cname = 'index';
-		$adress = $this->registry->adress;
+		$adress = Abricos::$adress;
 		
 		if ($adress->level >= 2 && $adress->dir[1] == 'upload'){
 			$cname = "upload";

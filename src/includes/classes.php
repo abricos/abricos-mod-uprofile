@@ -119,8 +119,8 @@ class UProfileInitData {
 		$this->appList = new UProfileAppInfoList();
 		
 		// зарегистрировать все модули
-		Abricos::$instance->modules->RegisterAllModule();
-		$modules = Abricos::$instance->modules->GetModules();
+		Abricos::$modules->RegisterAllModule();
+		$modules = Abricos::$modules->GetModules();
 		
 		foreach ($modules as $name => $module){
 			if (!method_exists($module, 'UProfile_GetAppInfo')){
