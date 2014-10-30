@@ -172,14 +172,14 @@ class UserProfilePermission extends Ab_UserPermission {
 	
 	public function __construct(UserProfileModule $module){
 		$defRoles = array(
-			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, 1, Ab_UserGroup::GUEST),
-			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, 1, Ab_UserGroup::REGISTERED),
-			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, 1, Ab_UserGroup::ADMIN),
+			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::GUEST),
+			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::REGISTERED),
+			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::ADMIN),
 
-			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, 1, Ab_UserGroup::REGISTERED),
-			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, 1, Ab_UserGroup::ADMIN),
+			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::REGISTERED),
+			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::ADMIN),
 			
-			new Ab_UserRole(UserProfileAction::PROFILE_ADMIN, 1, Ab_UserGroup::ADMIN)
+			new Ab_UserRole(UserProfileAction::PROFILE_ADMIN, Ab_UserGroup::ADMIN)
 		);
         parent::__construct($module, $defRoles);
 	}
