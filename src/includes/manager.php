@@ -182,9 +182,9 @@ class UserProfileManager extends Ab_ModuleManager {
 		);
 
 		$userMan = Abricos::$user->GetManager();
-		$userMan->DisableRoles();
+		$userMan->RolesDisable();
 		$rows = $userMan->UserConfigList($userid, 'uprofile');
-		$userMan->EnableRoles();
+		$userMan->RolesEnable();
 
 		while (($row = $this->db->fetch_array($rows))){
 			$ret->values[$row['nm']] = $row['vl'];
