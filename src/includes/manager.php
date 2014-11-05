@@ -275,8 +275,7 @@ class UserProfileManager extends Ab_ModuleManager {
 	public function FriendListBuild($over){
 		$ret = array();
 
-		Abricos::$modules->RegisterAllModule();
-		$modules = Abricos::$modules->GetModules();
+		$modules = Abricos::$modules->RegisterAllModule();
 
 		if(is_array($over) && count($over) > 0){
 			$rows = UserProfileQuery::UserListById($this->db, $over);
