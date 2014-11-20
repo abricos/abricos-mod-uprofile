@@ -306,16 +306,20 @@ class UserProfileManager extends Ab_ModuleManager {
 		return UserProfileQuery::FieldList($this->db);
 	}
 
-	public function SysFieldList(){
-		if (!is_null($this->_userFields)){ return $this->_userFields; }
-		$rows = UserProfileQuery::FieldList($this->db);
-		$ret = array();
-		while (($row = $this->db->fetch_array($rows))){
-			$ret[$row['nm']] = $row;
-		}
-		$this->_userFields = $ret;
-		return $this->_userFields;
-	}
+    private $_userFields = null;
+
+    public function SysFieldList() {
+        if (!is_null($this->_userFields)) {
+            return $this->_userFields;
+        }
+        $rows = UserProfileQuery::FieldList($this->db);
+        $ret = array();
+        while (($row = $this->db->fetch_array($rows))) {
+            $ret[$row['nm']] = $row;
+        }
+        $this->_userFields = $ret;
+        return $this->_userFields;
+    }
 
 	public function FieldRemove($name){
 		UserProfileQuery::FieldRemove($this->db, $name);
