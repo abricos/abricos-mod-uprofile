@@ -8,7 +8,7 @@ var Component = new Brick.Component();
 Component.requires = {
     mod: [
         {name: 'sys', files: ['container.js']},
-        {name: 'uprofile', files: ['viewer.js']}
+        {name: '{C#MODNAME}', files: ['viewer.js']}
     ]
 };
 Component.entryPoint = function(NS){

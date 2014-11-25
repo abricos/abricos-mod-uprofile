@@ -12,14 +12,12 @@ var Component = new Brick.Component();
 Component.requires = {
     mod: [
         {name: 'sys', files: ['container.js']},
-        {name: 'uprofile', files: ['lib.js']}
+        {name: '{C#MODNAME}', files: ['lib.js']}
     ]
 };
 Component.entryPoint = function(NS){
 
-    var Dom = YAHOO.util.Dom,
-        E = YAHOO.util.Event,
-        L = YAHOO.lang;
+    var Y = Brick.YUI;
 
     var buildTemplate = this.buildTemplate;
 
@@ -29,7 +27,7 @@ Component.entryPoint = function(NS){
     };
     var DPOINT = '.';
     var dayToString = function(d){
-        if (L.isNull(d)){
+        if (Y.Lang.isNull(d)){
             return '';
         }
         return lz(d.getDate()) + DPOINT + lz(d.getMonth() + 1) + DPOINT + d.getFullYear();
@@ -58,7 +56,7 @@ Component.entryPoint = function(NS){
             if (user['birthday'] * 1 > 0){
                 lst += TM.replace('rbirthday', {'value': dayToString(dateServerToClient(user['birthday']))});
             }
-            if (L.isString(user['descript']) && user['descript'].length > 0){
+            if (Y.Lang.isString(user['descript']) && user['descript'].length > 0){
                 lst += TM.replace('rdescript', {'value': user['descript']});
             }
             if (user['dl'] * 1 > 0){

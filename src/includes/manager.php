@@ -41,7 +41,7 @@ class UserProfileManager extends Ab_ModuleManager {
     }
 
     public function IsPersonalEditRole($userid) {
-        return ($this->IsWriteRole() && $this->userid == $userid) || $this->IsAdminRole();
+        return ($this->IsWriteRole() && Abricos::$user->id == $userid) || $this->IsAdminRole();
     }
 
     public function AJAX($d) {
@@ -59,10 +59,6 @@ class UserProfileManager extends Ab_ModuleManager {
             case "friends":
                 return $this->FriendListBuild($d->over);
 
-            case "pubconf":
-                return $this->UserPublicityConfig($d->userid);
-            case 'pubconfsave':
-                return $this->UserPublicityConfigSave($d->userid, $d->data);
             case "pubcheck":
                 $ret = new stdClass();
                 $ret->userid = $d->userid;
@@ -172,75 +168,38 @@ class UserProfileManager extends Ab_ModuleManager {
         return $ret;
     }
 
-
-    private function UserPublicityConfigMethod($userid) {
-        $ret = new stdClass();
-        $ret->userid = $userid;
-        $ret->values = array(
-            "pubconftype" => 0,
-            "pubconfusers" => ""
+    public function User_OptionNames() {
+        return array(
+            "pubconftype",
+            "pubconfusers"
         );
-
-        $userMan = Abricos::$user->GetManager();
-        $userMan->RolesDisable();
-        $rows = $userMan->UserConfigList($userid, 'uprofile');
-        $userMan->RolesEnable();
-
-        while (($row = $this->db->fetch_array($rows))) {
-            $ret->values[$row['nm']] = $row['vl'];
-        }
-        return $ret;
-    }
-
-    /**
-     * Данные настройка публичности
-     */
-    public function UserPublicityConfig($userid) {
-        if (!$this->IsPersonalEditRole($userid)) {
-            return null;
-        }
-        return $this->UserPublicityConfigMethod($userid);
-    }
-
-    public function UserPublicityConfigSave($userid, $data) {
-        $userid = intval($userid);
-        if (!$this->IsPersonalEditRole($userid)) {
-            return null;
-        }
-
-        $pubtype = intval($data->pubconftype) == 1 ? 1 : 0;
-        $arr = explode(",", $data->pubconfusers);
-        $narr = array();
-        foreach ($arr as $id) {
-            array_push($narr, intval($id));
-        }
-        $pubusers = implode(",", $narr);
-
-        Abricos::$user->GetManager()->UserConfigValueSave($userid, 'uprofile', 'pubconftype', $pubtype);
-        Abricos::$user->GetManager()->UserConfigValueSave($userid, 'uprofile', 'pubconfusers', $pubusers);
-
-        return $this->UserPublicityConfig($userid);
     }
 
     /**
      * Проверка возможности отправки приглашения пользователю
      *
-     * @param unknown_type $userid
+     * @param integer $userid
      */
     public function UserPublicityCheck($userid) {
-        if ($userid == $this->userid) {
+        $userid = intval($userid);
+        if ($userid === Abricos::$user->id) {
             return true;
         }
 
-        $cfg = $this->UserPublicityConfigMethod($userid);
-        $v = $cfg->values;
-        if ($v['pubconftype'] == 0) { // все могут отправлять ему приглашения
-            return true;
+        $options = UserModule::$instance->GetManager()->GetPersonalManager()->UserOptionList('uprofile');
+        if (empty($options)) {
+            return false;
+        }
+        $optPubConfType = $options->Get('pubconftype');
+        if (empty($optPubConfType->value)) {
+            return true; // все могут отправлять ему приглашения
         }
 
-        $arr = explode(",", $v['pubconfusers']);
+        $optPubConfUsers = $options->Get('pubconfusers');
+
+        $arr = explode(",", $optPubConfUsers->value);
         foreach ($arr as $id) {
-            if ($this->userid == $id) {
+            if (Abricos::$user->id == $id) {
                 return true;
             }
         }
@@ -263,7 +222,7 @@ class UserProfileManager extends Ab_ModuleManager {
         if (!$this->IsViewRole()) {
             return null;
         }
-        $rows = UserProfileQuery::FindUser($this->db, $this->userid, $firstname, $lastname, $username);
+        $rows = UserProfileQuery::FindUser($this->db, Abricos::$user->id, $firstname, $lastname, $username);
         if (!$retarray) {
             return $rows;
         }
@@ -286,7 +245,7 @@ class UserProfileManager extends Ab_ModuleManager {
         if (is_array($over) && count($over) > 0) {
             $rows = UserProfileQuery::UserListById($this->db, $over);
             while (($row = $this->db->fetch_array($rows))) {
-                if ($row['id'] * 1 == $this->userid * 1) {
+                if (intval($row['id']) === intval(Abricos::$user->id)) {
                     continue;
                 }
                 $ret[$row['id']] = $row;
@@ -370,7 +329,7 @@ class UserProfileManager extends Ab_ModuleManager {
     }
 
     public function FieldSetValue($varname, $value) {
-        UserProfileQuery::FieldSetValue($this->db, $this->userid, $varname, $value);
+        UserProfileQuery::FieldSetValue($this->db, Abricos::$user->id, $varname, $value);
     }
 }
 

@@ -8,7 +8,7 @@ var Component = new Brick.Component();
 Component.requires = {
     mod: [
         {name: 'sys', files: ['container.js', 'date.js']},
-        {name: 'uprofile', files: ['users.js']}
+        {name: '{C#MODNAME}', files: ['users.js']}
     ]
 };
 Component.entryPoint = function(NS){
@@ -39,24 +39,17 @@ Component.entryPoint = function(NS){
                 }
             });
 
-            this.dbconf = {
-                'pubconftype': 0,
-                'pubconfusers': ''
-            };
+            this.userOptionList = null;
 
-            Brick.ajax('uprofile', {
-                'data': {
-                    'do': 'pubconf',
-                    'userid': user.id
-                },
-                'event': function(request){
-                    var rd = request.data;
-                    if (!L.isNull(rd)){
-                        __self.dbconf = rd['values'];
-                    }
-                    __self.render();
-                }
+            var instance = this;
+            Brick.appFunc('user', 'userOptionList', '{C#MODNAME}', function(err, res){
+                instance._onLoadUserOptionList(res.userOptionList);
             });
+        },
+        _onLoadUserOptionList: function(userOptionList){
+            console.log(userOptionList);
+            this.userOptionList = userOptionList;
+            this.render();
         },
         onClick: function(el){
             var tp = this._TId['widget'];
@@ -72,6 +65,11 @@ Component.entryPoint = function(NS){
             return false;
         },
         render: function(){
+            var uOptions = this.userOptionList;
+            if (!uOptions){
+                return;
+            }
+
             var TM = this._TM, gel = function(n){
                 return TM.getEl('widget.' + n);
             };
@@ -79,16 +77,14 @@ Component.entryPoint = function(NS){
             Dom.setStyle(gel('gloading'), 'display', 'none');
             Dom.setStyle(gel('editform'), 'display', '');
 
-            var cfg = this.dbconf;
-
-            if (cfg['pubconftype'] == 1){
+            if (uOptions.getValue('pubconftype', 0) == 1){
                 gel('rd1').checked = true;
             } else {
                 gel('rd0').checked = true;
             }
             this.renderStatus();
 
-            var users = (cfg['pubconfusers'] || "").split(',');
+            var users = uOptions.getValue('pubconfusers', '').split(',');
             this.usersWidget = new NS.UserSelectWidget(gel('users'), users);
         },
         getPubType: function(){
@@ -110,6 +106,11 @@ Component.entryPoint = function(NS){
 
         },
         save: function(){
+            var uOptions = this.userOptionList;
+            if (!uOptions){
+                return;
+            }
+
             var TM = this._TM,
                 gel = function(n){
                     return TM.getEl('widget.' + n);
@@ -120,20 +121,14 @@ Component.entryPoint = function(NS){
 
             var selUsers = this.usersWidget.getSelectedUsers();
 
-            var user = this.user;
-            Brick.ajax('uprofile', {
-                'data': {
-                    'do': 'pubconfsave',
-                    'userid': user.id,
-                    'data': {
-                        'pubconftype': this.getPubType(),
-                        'pubconfusers': selUsers.join(',')
-                    }
-                },
-                'event': function(request){
-                    Dom.setStyle(gel('btns'), 'display', '');
-                    Dom.setStyle(gel('bloading'), 'display', 'none');
-                }
+            uOptions.setValue('pubconftype', this.getPubType());
+            uOptions.setValue('pubconfusers', selUsers.join(','));
+
+            var instance = this;
+            Brick.appFunc('user', 'userOptionSave', '{C#MODNAME}', uOptions.getOptions('pubconftype,pubconfusers'), function(err, res){
+                instance._onLoadUserOptionList(res.userOptionList);
+                Dom.setStyle(gel('btns'), 'display', '');
+                Dom.setStyle(gel('bloading'), 'display', 'none');
             });
         }
     };
