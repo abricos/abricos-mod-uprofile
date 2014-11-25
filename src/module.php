@@ -7,58 +7,58 @@
  */
 
 /**
- * Модуль "Профиль пользователя" 
+ * Модуль "Профиль пользователя"
  */
 class UserProfileModule extends Ab_Module {
-	
-	private $_manager;
-	
-	/**
-	 * @var UserProfileModule
-	 */
-	public static $instance = null;
-	
-	function __construct(){
-		$this->version = "0.1.5";
-		$this->name = "uprofile";
-		$this->takelink = "uprofile";
-		
-		$this->permission = new UserProfilePermission($this);
-		
-		UserProfileModule::$instance = $this;
-	}
-	
-	/**
-	 * Получить менеджер
-	 *
-	 * @return UserProfileManager
-	 */
-	public function GetManager(){
-		if (is_null($this->_manager)){
-			require_once 'includes/manager.php';
-			$this->_manager = new UserProfileManager($this);
-		}
-		return $this->_manager;
-	}
-	
-	public function GetContentName(){
-		$cname = 'index';
-		$adress = Abricos::$adress;
-		
-		if ($adress->level >= 2 && $adress->dir[1] == 'upload'){
-			$cname = "upload";
-		}
-		return $cname;
-	}
-	
-	/**
-	 * Модуль URating запросил SQL скрипт по форме, который ему нужен для того, 
-	 * чтобы определить какие пользователи и их данные в модулях нуждаются 
-	 * в пересчете рейтинга 
-	 */
-	public function URating_SQLCheckCalculate(){
-		$db = Abricos::$db;
-		return "
+
+    private $_manager;
+
+    /**
+     * @var UserProfileModule
+     */
+    public static $instance = null;
+
+    function __construct() {
+        $this->version = "0.1.5";
+        $this->name = "uprofile";
+        $this->takelink = "uprofile";
+
+        $this->permission = new UserProfilePermission($this);
+
+        UserProfileModule::$instance = $this;
+    }
+
+    /**
+     * Получить менеджер
+     *
+     * @return UserProfileManager
+     */
+    public function GetManager() {
+        if (is_null($this->_manager)) {
+            require_once 'includes/manager.php';
+            $this->_manager = new UserProfileManager($this);
+        }
+        return $this->_manager;
+    }
+
+    public function GetContentName() {
+        $cname = 'index';
+        $adress = Abricos::$adress;
+
+        if ($adress->level >= 2 && $adress->dir[1] == 'upload') {
+            $cname = "upload";
+        }
+        return $cname;
+    }
+
+    /**
+     * Модуль URating запросил SQL скрипт по форме, который ему нужен для того,
+     * чтобы определить какие пользователи и их данные в модулях нуждаются
+     * в пересчете рейтинга
+     */
+    public function URating_SQLCheckCalculate() {
+        $db = Abricos::$db;
+        return "
 			SELECT 
 				DISTINCT u.userid as uid,
 				'".$this->name."' as m
@@ -70,7 +70,7 @@ class UserProfileModule extends Ab_Module {
 					OR ISNULL(mc.upddate))
 			LIMIT 30
 		";
-	}
+    }
 }
 
 
@@ -78,120 +78,131 @@ class UserProfileModule extends Ab_Module {
  * Приоритет знакомых
  */
 class UserFriendPriority {
-	/**
-	 * Прямое отношение этого пользователя к другим (например сотрудники одной организации, друзья в соцсетях) 
-	 * @var integer 0
-	 */
-	const DIRECT = 0;
+    /**
+     * Прямое отношение этого пользователя к другим (например сотрудники одной организации, друзья в соцсетях)
+     *
+     * @var integer 0
+     */
+    const DIRECT = 0;
 
-	/**
-	 * Посредственное отношение этого пользователя к другим (например: участник в одной группе на доске проектов)
-	 * @var integer 1
-	 */
-	const MIDDLING = 1;
-	
-	/**
-	 * Случайные встречи (например ответ на комментарий этого пользователя, гости в профиле соц сети и т.п.)
-	 * 
-	 * @var integer 9
-	 */
-	const RANDOM = 9;
+    /**
+     * Посредственное отношение этого пользователя к другим (например: участник в одной группе на доске проектов)
+     *
+     * @var integer 1
+     */
+    const MIDDLING = 1;
+
+    /**
+     * Случайные встречи (например ответ на комментарий этого пользователя, гости в профиле соц сети и т.п.)
+     *
+     * @var integer 9
+     */
+    const RANDOM = 9;
 }
 
 /**
  * Типы дополнительных полей учетной записи пользователя
  */
 class UserFieldType {
-	
-	/**
-	 * Тип BOOLEAN
-	 * @var integer
-	 */
-	const BOOLEAN = 0;
-	/**
-	 * Тип INTEGER
-	 * @var integer
-	 */
-	const INTEGER = 1;
-	/**
-	 * Тип STRING 
-	 * @var integer
-	 */
-	const STRING = 2;
-	/**
-	 * Тип DOUBLE 
-	 * @var integer
-	 */
-	const DOUBLE = 3;
-	/**
-	 * Тип TEXT 
-	 * @var integer
-	 */
-	const TEXT = 4;
-	
-	/**
-	 * Тип DATETIME 
-	 * @var integer
-	 */
-	const DATETIME = 5;
 
-	/**
-	 * Тип ENUM
-	 * @var integer
-	 */
-	const ENUM = 6;
-	
-	/**
-	 * Тип TABLE
-	 * @var integer
-	 */
-	const TABLE = 7;
+    /**
+     * Тип BOOLEAN
+     *
+     * @var integer
+     */
+    const BOOLEAN = 0;
+    /**
+     * Тип INTEGER
+     *
+     * @var integer
+     */
+    const INTEGER = 1;
+    /**
+     * Тип STRING
+     *
+     * @var integer
+     */
+    const STRING = 2;
+    /**
+     * Тип DOUBLE
+     *
+     * @var integer
+     */
+    const DOUBLE = 3;
+    /**
+     * Тип TEXT
+     *
+     * @var integer
+     */
+    const TEXT = 4;
+
+    /**
+     * Тип DATETIME
+     *
+     * @var integer
+     */
+    const DATETIME = 5;
+
+    /**
+     * Тип ENUM
+     *
+     * @var integer
+     */
+    const ENUM = 6;
+
+    /**
+     * Тип TABLE
+     *
+     * @var integer
+     */
+    const TABLE = 7;
 }
 
 class UserFieldAccess {
-	const VIEW_ALL 			= 0;
-	const PERSONAL_VIEW 	= 1;
-	const PERSONAL_WRITE 	= 2;
-	const ADMIN_VIEW 		= 3;
-	const ADMIN_WRITE 		= 4;
-	const SYSTEM 			= 9;
+    const VIEW_ALL = 0;
+    const PERSONAL_VIEW = 1;
+    const PERSONAL_WRITE = 2;
+    const ADMIN_VIEW = 3;
+    const ADMIN_WRITE = 4;
+    const SYSTEM = 9;
 }
 
 class UserProfileAction {
-	// Просмотр профиля пользователя
-	const PROFILE_VIEW		= 10;
-	
-	// изменение своего профиля
-	const PROFILE_WRITE		= 30;
-	
-	// администрирование настройки профиля
-	const PROFILE_ADMIN		= 50;
+    // Просмотр профиля пользователя
+    const PROFILE_VIEW = 10;
+
+    // изменение своего профиля
+    const PROFILE_WRITE = 30;
+
+    // администрирование настройки профиля
+    const PROFILE_ADMIN = 50;
 }
 
 class UserProfilePermission extends Ab_UserPermission {
-	
-	public function __construct(UserProfileModule $module){
-		$defRoles = array(
-			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::GUEST),
-			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::REGISTERED),
-			new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::ADMIN),
 
-			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::REGISTERED),
-			new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::ADMIN),
-			
-			new Ab_UserRole(UserProfileAction::PROFILE_ADMIN, Ab_UserGroup::ADMIN)
-		);
+    public function __construct(UserProfileModule $module) {
+        $defRoles = array(
+            new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::GUEST),
+            new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::REGISTERED),
+            new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::ADMIN),
+
+            new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::REGISTERED),
+            new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::ADMIN),
+
+            new Ab_UserRole(UserProfileAction::PROFILE_ADMIN, Ab_UserGroup::ADMIN)
+        );
         parent::__construct($module, $defRoles);
-	}
-	
-	public function GetRoles(){
-		return array(
-			UserProfileAction::PROFILE_VIEW => $this->CheckAction(UserProfileAction::PROFILE_VIEW),
-			UserProfileAction::PROFILE_WRITE => $this->CheckAction(UserProfileAction::PROFILE_WRITE), 
-			UserProfileAction::PROFILE_ADMIN => $this->CheckAction(UserProfileAction::PROFILE_ADMIN) 
-		);
-	}
+    }
+
+    public function GetRoles() {
+        return array(
+            UserProfileAction::PROFILE_VIEW => $this->CheckAction(UserProfileAction::PROFILE_VIEW),
+            UserProfileAction::PROFILE_WRITE => $this->CheckAction(UserProfileAction::PROFILE_WRITE),
+            UserProfileAction::PROFILE_ADMIN => $this->CheckAction(UserProfileAction::PROFILE_ADMIN)
+        );
+    }
 }
+
 Abricos::ModuleRegister(new UserProfileModule());
 
 ?>

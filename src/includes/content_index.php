@@ -11,8 +11,8 @@ $p = &$brick->param->param;
 $v = &$brick->param->var;
 
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
-	"userid" => intval(Abricos::$adress->dir[1])
+    "userid" => intval(Abricos::$adress->dir[1])
 ));
 
-
+F
 ?>
