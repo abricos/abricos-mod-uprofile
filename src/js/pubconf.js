@@ -47,7 +47,6 @@ Component.entryPoint = function(NS){
             });
         },
         _onLoadUserOptionList: function(userOptionList){
-            console.log(userOptionList);
             this.userOptionList = userOptionList;
             this.render();
         },

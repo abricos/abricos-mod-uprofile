@@ -175,6 +175,13 @@ class UserProfileManager extends Ab_ModuleManager {
         );
     }
 
+    public function User_OptionNamesOtherUser($userid){
+        return array(
+            "pubconftype",
+            "pubconfusers"
+        );
+    }
+
     /**
      * Проверка возможности отправки приглашения пользователю
      *
@@ -186,7 +193,7 @@ class UserProfileManager extends Ab_ModuleManager {
             return true;
         }
 
-        $options = UserModule::$instance->GetManager()->GetPersonalManager()->UserOptionList('uprofile');
+        $options = UserModule::$instance->GetManager()->GetPersonalManager()->UserOptionList('uprofile', $userid);
         if (empty($options)) {
             return false;
         }

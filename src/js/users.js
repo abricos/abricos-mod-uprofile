@@ -13,9 +13,10 @@ Component.requires = {
 };
 Component.entryPoint = function(NS){
 
+    var Y = Brick.YUI;
+
     var Dom = YAHOO.util.Dom,
-        E = YAHOO.util.Event,
-        L = YAHOO.lang;
+        E = YAHOO.util.Event;
 
     var buildTemplate = this.buildTemplate;
 
@@ -24,7 +25,7 @@ Component.entryPoint = function(NS){
         if (Dom.hasClass(el, className)){
             return el;
         }
-        if (L.isNull(el) || el.parentNode == document.body || cnt > 5){
+        if (Y.Lang.isNull(el) || el.parentNode == document.body || cnt > 5){
             return false;
         }
         return find(el.parentNode, className, cnt++);
@@ -39,8 +40,8 @@ Component.entryPoint = function(NS){
             this.cache = null;
         },
         load: function(callback, overUsers){
-            if (!L.isNull(this.cache)){
-                if (L.isFunction(callback)){
+            if (!Y.Lang.isNull(this.cache)){
+                if (Y.Lang.isFunction(callback)){
                     callback(this.cache);
                 }
                 return;
@@ -53,10 +54,10 @@ Component.entryPoint = function(NS){
                 },
                 'event': function(request){
                     var d = request.data;
-                    if (!L.isNull(d)){
+                    if (!Y.Lang.isNull(d)){
                         __self.cache = d;
                     }
-                    if (L.isFunction(callback)){
+                    if (Y.Lang.isFunction(callback)){
                         callback(d);
                     }
                 }
@@ -73,7 +74,7 @@ Component.entryPoint = function(NS){
     }
     UserBlockWidget.prototype = {
         init: function(container, user, cfg){
-            cfg = L.merge({
+            cfg = Y.merge({
                 'info': ''
             }, cfg || {});
             buildTemplate(this, 'userblock');
@@ -116,7 +117,7 @@ Component.entryPoint = function(NS){
             });
             NS.friends.load(function(users){
                 __self.setUsers(users, selUsersId);
-                if (L.isFunction(callback)){
+                if (Y.Lang.isFunction(callback)){
                     callback();
                 }
             }, selUsersId);
@@ -260,7 +261,7 @@ Component.entryPoint = function(NS){
                 'data': {'do': 'pubcheck', 'userid': userid},
                 'event': function(request){
 
-                    if (L.isNull(request)){
+                    if (Y.Lang.isNull(request)){
                         return;
                     }
 
@@ -270,7 +271,7 @@ Component.entryPoint = function(NS){
 
                     Dom.removeClass(elRow, 'opt-bdlg');
 
-                    if (!L.isNull(d) && d['result']){
+                    if (!Y.Lang.isNull(d) && d['result']){
                         Dom.removeClass(elRow, 'opt-error');
                     } else {
                         Dom.addClass(elRow, 'opt-error');
@@ -370,7 +371,7 @@ Component.entryPoint = function(NS){
             });
         },
         renderUsers: function(users){
-            if (L.isNull(users)){
+            if (Y.Lang.isNull(users)){
                 return;
             }
             this.users = users;
@@ -415,7 +416,7 @@ Component.entryPoint = function(NS){
             var numid = el.id.replace(prefix, "");
             switch (prefix) {
                 case (TId['firesrow']['append'] + '-'):
-                    if (L.isFunction(this.callback)){
+                    if (Y.Lang.isFunction(this.callback)){
                         this.callback(this.users[numid]);
                     }
                     this.close();
