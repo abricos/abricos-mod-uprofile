@@ -8,7 +8,7 @@ var Component = new Brick.Component();
 Component.requires = {
     mod: [
         {name: 'urating', files: ['vote.js']},
-        {name: 'widget', files: ['notice.js']},
+        {name: 'widget', files: ['notice.js', 'lib.js']},
         {name: '{C#MODNAME}', files: ['lib.js']}
     ]
 };
