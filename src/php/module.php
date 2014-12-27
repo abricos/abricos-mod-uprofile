@@ -19,7 +19,7 @@ class UserProfileModule extends Ab_Module {
     public static $instance = null;
 
     function __construct() {
-        $this->version = "0.1.5";
+        $this->version = "{C#VERSION}";
         $this->name = "uprofile";
         $this->takelink = "uprofile";
 
