@@ -1,112 +1,124 @@
 .aw-uprofile td {
-	vertical-align: top;
+    vertical-align: top;
 }
 
 .aw-uprofile a {
-	color: #2B587A;
+    color: #2B587A;
     text-decoration: none;
 }
+
 .aw-uprofile a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
+
 .aw-uprofile .wait {
-	text-align: center; 
-	height: 70px;
+    text-align: center;
+    height: 70px;
 }
 
 .aw-uprofile table.profile {
-	width: 100%;
-} 
+    width: 100%;
+}
+
 .aw-uprofile .profile .fotocont {
-	width: 200px;
-	text-align: center;
+    width: 200px;
+    text-align: center;
 }
+
 .aw-uprofile .profile .fotocont div {
-	text-align: center;
+    text-align: center;
 }
+
 .aw-uprofile .profile .fotocont .foto {
-	text-align: center;
-	margin-bottom: 6px;
+    text-align: center;
+    margin-bottom: 6px;
 }
 
 .aw-uprofile .profile .fotocont a {
-	font-size: .95em;
-	line-height: 1.7em;
+    font-size: .95em;
+    line-height: 1.7em;
 }
 
 .aw-uprofile .profile .btned {
-	width: 200px;
-	/* text-align: center; /**/
+    width: 200px;
+    /* text-align: center; /**/
 }
 
-.aw-uprofile .profile .uinfo  {
-	font-family: Verdana,sans-serif;
+.aw-uprofile .profile .uinfo {
+    font-family: Verdana, sans-serif;
 }
 
 .aw-uprofile .profile .uinfo h2 {
-	font-size: 1.7em;
-	margin-bottom: 1em;
+    font-size: 1.7em;
+    margin-bottom: 1em;
 }
 
 .aw-uprofile .profile .uinfo .fullname {
-	font-size: 2em;
-	display: block;
-	margin-bottom: .5em;
+    font-size: 2em;
+    display: block;
+    margin-bottom: .5em;
 }
+
 .aw-uprofile .profile .uinfo dl {
-	clear: left;
-	margin: 0 0 10px;
+    clear: left;
+    margin: 0 0 10px;
 }
+
 .aw-uprofile .profile .uinfo dt {
-	float: left;
-	font-weight: bold;
-	width: 11em;
-	text-align: right;
-	padding-right: .5em;
-	font-weight: normal;
-	color: #999999;
+    float: left;
+    font-weight: bold;
+    width: 11em;
+    text-align: right;
+    padding-right: .5em;
+    font-weight: normal;
+    color: #999999;
 }
+
 .aw-uprofile .profile .uinfo dd {
     margin: 0 0 0 11em;
     padding: 0 0 7px 12px;
     text-align: left;
 }
+
 .aw-uprofile .profile .uinfo dd dd {
-	padding-bottom: 1px;
+    padding-bottom: 1px;
 }
+
 .aw-uprofile .profile .uinfo dd input,
 .aw-uprofile .profile .uinfo dd textarea {
-	width: 300px;
+    width: 300px;
 }
+
 .aw-uprofile .profile .uinfo dd input.pass {
-	width: 150px;
+    width: 150px;
 }
 
 .aw-uprofile .profile .uinfo dd textarea {
-	height: 100px;
+    height: 100px;
 }
 
 .aw-uprofile .profile .uinfo dd select {
-	margin-right: 1em;
+    margin-right: 1em;
 }
 
 .aw-uprofile .profile .uinfo dd input.btn {
-	width: auto;
+    width: auto;
 }
 
 .aw-uprofile .profile .uinfo .line {
-	border-top: 1px solid #D9D9D9;
-	font-size: 1px;
-	margin: 10px 0 ;
+    border-top: 1px solid #D9D9D9;
+    font-size: 1px;
+    margin: 10px 0;
 }
 
 /* * * * * Editor * * * * * */
 .aw-uprofile .editor .uinfo .editor dl {
-	margin: 0 0 3px;
+    margin: 0 0 3px;
 }
+
 .aw-uprofile .editor .err {
-	margin-top: 10px;
-	color: red;
+    margin-top: 10px;
+    color: red;
 }
 
  

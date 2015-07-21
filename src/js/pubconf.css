@@ -2,37 +2,47 @@
     background-color: #F9F5DF;
     padding: 10px 0;
 }
+
 .aw-uprofile .editform .dsc {
     color: #555555;
     font-size: 0.9em;
 }
+
 .aw-uprofile .editform .baction input {
     margin-right: 10px;
     padding: 2px 5px;
 }
+
 .aw-uprofile .editform .buttons {
     padding-right: 10px;
 }
+
 .aw-uprofile .editform .group {
     border-bottom: 1px solid #E3E3D7;
     margin: 0 20px 1em;
     padding-bottom: 0.8em;
 }
+
 .aw-uprofile table.pubconf {
-	width: 100%;
-} 
+    width: 100%;
+}
+
 .aw-uprofile .pubconf td.col1 {
-	width: 200px;
+    width: 200px;
 }
+
 .aw-uprofile .pubconf .ceacctp0 .ceacctp1 {
-	display: none;
+    display: none;
 }
+
 .aw-uprofile .pubconf .ceacctp1 .ceacctp0 {
-	display: none;
+    display: none;
 }
+
 .aw-uprofile .pubconf .rdvl {
     margin-bottom: 3px;
 }
+
 .aw-uprofile .pubconf .rdvl label {
     margin-left: 5px;
 }

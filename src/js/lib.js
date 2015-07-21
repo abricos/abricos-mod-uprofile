@@ -1,13 +1,3 @@
-/*
- * @copyright Copyright (C) 2008 Abricos. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
-
-/**
- * @module UserProfile
- * @namespace Brick.mod.uprofile
- */
-
 var Component = new Brick.Component();
 Component.requires = {
     mod: [
@@ -180,7 +170,7 @@ Component.entryPoint = function(NS){
                 t = template || '<a href="#" class="show-user-profile user-{v#uid}" title="{v#unm}">{v#avatar}</a>',
                 userid = user['uid'] || user['id'];
 
-            return Brick.util.Template.setPropertyArray(t, {
+            return Abricos.TemplateManager.replace(t, {
                 'uid': userid,
                 'unm': unm,
                 'avatar': NS.avatar.build(user, size)
@@ -191,7 +181,7 @@ Component.entryPoint = function(NS){
                 t = template || '<a href="#" class="show-user-profile user-{v#uid}" title="{v#unm}">{v#unm}</a>',
                 userid = user['uid'] || user['id'];
 
-            return Brick.util.Template.setPropertyArray(t, {
+            return Abricos.TemplateManager.replace(t, {
                 'uid': userid,
                 'unm': unm
             });

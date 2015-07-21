@@ -1,9 +1,3 @@
-/*
- @package Abricos
- @copyright Copyright (C) 2008 Abricos All rights reserved.
- @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
-
 var Component = new Brick.Component();
 Component.requires = {
     mod: [
@@ -147,7 +141,7 @@ Component.entryPoint = function(NS){
 
             for (var i = 0; i < pgs.length; i++){
                 var pg = pgs[i];
-                var el = Dom.get(TM.getElId('tlrow.id') + '-' + pg.id);
+                var el = Dom.get(TM.gelid('tlrow.id') + '-' + pg.id);
 
                 if (page == pg.id){
                     Dom.addClass(el, 'sel');
@@ -158,7 +152,7 @@ Component.entryPoint = function(NS){
 
             if (this.user.initData){
                 this.user.initData.appInfoList.foreach(function(app){
-                    var el = Dom.get(TM.getElId('tlrow.id') + '-' + app.name);
+                    var el = Dom.get(TM.gelid('tlrow.id') + '-' + app.name);
 
                     if (page == app.name){
                         Dom.addClass(el, 'sel');

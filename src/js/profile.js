@@ -1,13 +1,3 @@
-/*
- * @copyright Copyright (C) 2008 Abricos. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
-
-/**
- * @module User
- * @namespace Brick.mod.user
- */
-
 var Component = new Brick.Component();
 Component.requires = {
     yahoo: ['tabview'],
