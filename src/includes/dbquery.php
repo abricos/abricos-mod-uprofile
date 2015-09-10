@@ -1,18 +1,22 @@
 <?php
-
 /**
  * @package Abricos
  * @subpackage UProfile
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright 2009-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
  * @author Alexander Kuzmin <roosit@abricos.org>
+ */
+
+/**
+ * Class UserProfileQuery
  */
 class UserProfileQuery {
 
-    public static function UserRatingSQLExt(Ab_Database $db) {
+    public static function UserRatingSQLExt(Ab_Database $db){
         $ret = new stdClass();
         $ret->fld = "";
         $ret->tbl = "";
-        if (UserProfileManager::$instance->IsUserRating()) {
+        if (UserProfileManager::$instance->IsUserRating()){
             $ret->fld = "
 				,
 				IF(ISNULL(urt.reputation), 0, urt.reputation) as rep,
@@ -25,7 +29,7 @@ class UserProfileQuery {
 			";
 
             $userid = Abricos::$user->id;
-            if ($userid > 0) { // необходимо показать отношение к пользователю
+            if ($userid > 0){ // необходимо показать отношение к пользователю
                 $ret->fld .= "
 					,IF(ISNULL(vt.userid), null, IF(vt.voteup>0, 1, IF(vt.votedown>0, -1, 0))) as repmy
 				";
@@ -39,13 +43,13 @@ class UserProfileQuery {
     }
 
 
-    public static function UserListById(Ab_Database $db, $ids) {
+    public static function UserListById(Ab_Database $db, $ids){
         $urt = UserProfileQuery::UserRatingSQLExt($db);
 
         $limit = 10;
         $where = " ";
         $sa = array("u.userid=0");
-        for ($i = 0; $i < min(count($ids), $limit); $i++) {
+        for ($i = 0; $i < min(count($ids), $limit); $i++){
             array_push($sa, " u.userid=".bkint($ids[$i]));
         }
         $sql = "
@@ -65,7 +69,7 @@ class UserProfileQuery {
         return $db->query_read($sql);
     }
 
-    public static function Profile(Ab_Database $db, $userid, $personal = false) {
+    public static function Profile(Ab_Database $db, $userid, $personal = false){
         $urt = UserProfileQuery::UserRatingSQLExt($db);
         $sql = "
 			SELECT
@@ -91,7 +95,7 @@ class UserProfileQuery {
         return $db->query_read($sql);
     }
 
-    public static function ProfileUpdate(Ab_Database $db, $userid, $d, $isAdmin = false) {
+    public static function ProfileUpdate(Ab_Database $db, $userid, $d, $isAdmin = false){
         $sql = "
 			UPDATE ".$db->prefix."user
 			SET
@@ -119,15 +123,15 @@ class UserProfileQuery {
      * @param string $lastname
      * @param string $username
      */
-    public static function FindUser(Ab_Database $db, $userid, $firstname, $lastname, $username) {
+    public static function FindUser(Ab_Database $db, $userid, $firstname, $lastname, $username){
         $where = array();
-        if (!empty($firstname)) {
+        if (!empty($firstname)){
             array_push($where, " UPPER(u.firstname)=UPPER('".bkstr($firstname)."') ");
         }
-        if (!empty($lastname)) {
+        if (!empty($lastname)){
             array_push($where, " UPPER(u.lastname)=UPPER('".bkstr($lastname)."') ");
         }
-        if (!empty($username)) {
+        if (!empty($username)){
             array_push($where, " UPPER(u.username)=UPPER('".bkstr($username)."') ");
         }
         array_push($where, " u.userid<>".bkint($userid));
@@ -150,7 +154,7 @@ class UserProfileQuery {
         return $db->query_read($sql);
     }
 
-    public static function FieldSetValue(Ab_Database $db, $userid, $varname, $value) {
+    public static function FieldSetValue(Ab_Database $db, $userid, $varname, $value){
         $sql = "
 			UPDATE ".$db->prefix."user
 			SET ".bkstr($varname)."='".bkstr($value)."'
@@ -159,7 +163,7 @@ class UserProfileQuery {
         $db->query_write($sql);
     }
 
-    public static function FieldList(Ab_Database $db) {
+    public static function FieldList(Ab_Database $db){
         $sql = "
 			SELECT
 				fieldid as id, 
@@ -176,14 +180,14 @@ class UserProfileQuery {
         return $db->query_read($sql);
     }
 
-    public static function FieldAppend(Ab_Database $db, $name, $title, $type, $size = '1', $options) {
+    public static function FieldAppend(Ab_Database $db, $name, $title, $type, $size = '1', $options){
         $name = bkstr($name);
         $title = bkstr($title);
         $size = bkstr($size);
         $unsignedStr = $options['unsigned'] ? 'unsigned' : '';
         $defvalue = bkstr($options['default']);
         $sql = "";
-        switch ($type) {
+        switch ($type){
             case UserFieldType::BOOLEAN:
                 $sql = "`".$name."` tinyint(1) unsigned NOT NULL default ".bkint($defvalue);
                 break;
@@ -209,14 +213,14 @@ class UserProfileQuery {
                 $sql = "`".$name."id` int(".$size.") unsigned NOT NULL default 0";
                 break;
         }
-        if (empty($sql)) {
+        if (empty($sql)){
             return;
         }
         $sql = "ALTER TABLE `".$db->prefix."user` ADD ".$sql." COMMENT '".$title."'";
         $db->query_write($sql);
     }
 
-    public static function FieldInfoAppend(Ab_Database $db, $name, $title, $type, $ops) {
+    public static function FieldInfoAppend(Ab_Database $db, $name, $title, $type, $ops){
         $sql = "
 			INSERT INTO ".$db->prefix."upfl_field (fieldname, title, fieldtype, fieldaccess, options, ord) VALUES (
 				'".bkstr($name)."',
@@ -230,7 +234,7 @@ class UserProfileQuery {
         $db->query_write($sql);
     }
 
-    public static function FieldRemove(Ab_Database $db, $name) {
+    public static function FieldRemove(Ab_Database $db, $name){
         $sql = "
 			ALTER TABLE `".$db->prefix."user` DROP `".bkstr($name)."`
 		";
@@ -242,7 +246,7 @@ class UserProfileQuery {
         $db->query_write($sql);
     }
 
-    public static function FieldAccessUpdate(Ab_Database $db, $name, $access) {
+    public static function FieldAccessUpdate(Ab_Database $db, $name, $access){
         $sql = "
 			UPDATE ".$db->prefix."upfl_field
 			SET fieldaccess=".bkint($access)."

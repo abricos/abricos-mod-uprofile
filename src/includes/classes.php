@@ -2,7 +2,8 @@
 /**
  * @package Abricos
  * @subpackage UProfile
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright 2009-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
@@ -18,7 +19,7 @@ class UserProfile extends UserItem {
     public $avatar;
     public $twitter;
 
-    public function __construct(UserItem $user) {
+    public function __construct(UserItem $user){
         $d = $user->_data;
         parent::__construct($d);
 
@@ -70,10 +71,10 @@ class UProfileAppInfo extends AbricosItem {
      */
     public $title;
 
-    public function __construct($modName, $name = '', $widget = '', $title = '') {
+    public function __construct($modName, $name = '', $widget = '', $title = ''){
         $this->id = UProfileAppInfo::$idCounter++;
 
-        if (is_array($modName)) {
+        if (is_array($modName)){
             $a = $modName;
             $modName = $a['modName'];
             $name = $a['name'];
@@ -83,12 +84,12 @@ class UProfileAppInfo extends AbricosItem {
 
         $this->moduleName = $modName;
 
-        if (empty($name)) {
+        if (empty($name)){
             $name = $modName;
         }
         $this->name = $name;
 
-        if (empty($widget)) {
+        if (empty($widget)){
             $widget = $modName;
         }
         $this->widget = $widget;
@@ -96,7 +97,7 @@ class UProfileAppInfo extends AbricosItem {
         $this->title = strval($title);
     }
 
-    public function ToAJAX() {
+    public function ToAJAX(){
         $ret = parent::ToAJAX();
         $ret->mnm = $this->moduleName;
         $ret->nm = $this->name;
@@ -125,15 +126,15 @@ class UProfileInitData {
      */
     public $typeList;
 
-    public function __construct($userid) {
+    public function __construct($userid){
 
         $this->appList = new UProfileAppInfoList();
 
         // зарегистрировать все модули
         $modules = Abricos::$modules->RegisterAllModule();
 
-        foreach ($modules as $name => $module) {
-            if (!method_exists($module, 'UProfile_GetAppInfo')) {
+        foreach ($modules as $name => $module){
+            if (!method_exists($module, 'UProfile_GetAppInfo')){
                 continue;
             }
             $appInfo = $module->UProfile_GetAppInfo($userid);
@@ -141,18 +142,18 @@ class UProfileInitData {
         }
     }
 
-    public function RegApp($appInfo) {
-        if (is_array($appInfo)) {
-            foreach ($appInfo as $item) {
+    public function RegApp($appInfo){
+        if (is_array($appInfo)){
+            foreach ($appInfo as $item){
                 $this->RegApp($item);
             }
-        } else if ($appInfo instanceof UProfileAppInfo) {
+        } else if ($appInfo instanceof UProfileAppInfo){
             $this->appList->Add($appInfo);
         }
     }
 
 
-    public function ToAJAX() {
+    public function ToAJAX(){
         $ret = new stdClass();
 
         $apps = $this->appList->ToAJAX();

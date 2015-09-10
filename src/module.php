@@ -2,7 +2,8 @@
 /**
  * @package Abricos
  * @subpackage UProfile
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright 2009-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
@@ -18,7 +19,7 @@ class UserProfileModule extends Ab_Module {
      */
     public static $instance = null;
 
-    function __construct() {
+    function __construct(){
         $this->version = "0.1.5";
         $this->name = "uprofile";
         $this->takelink = "uprofile";
@@ -33,19 +34,19 @@ class UserProfileModule extends Ab_Module {
      *
      * @return UserProfileManager
      */
-    public function GetManager() {
-        if (is_null($this->_manager)) {
+    public function GetManager(){
+        if (is_null($this->_manager)){
             require_once 'includes/manager.php';
             $this->_manager = new UserProfileManager($this);
         }
         return $this->_manager;
     }
 
-    public function GetContentName() {
+    public function GetContentName(){
         $cname = 'index';
         $adress = Abricos::$adress;
 
-        if ($adress->level >= 2 && $adress->dir[1] == 'upload') {
+        if ($adress->level >= 2 && $adress->dir[1] == 'upload'){
             $cname = "upload";
         }
         return $cname;
@@ -56,7 +57,7 @@ class UserProfileModule extends Ab_Module {
      * чтобы определить какие пользователи и их данные в модулях нуждаются
      * в пересчете рейтинга
      */
-    public function URating_SQLCheckCalculate() {
+    public function URating_SQLCheckCalculate(){
         $db = Abricos::$db;
         return "
 			SELECT 
@@ -180,7 +181,7 @@ class UserProfileAction {
 
 class UserProfilePermission extends Ab_UserPermission {
 
-    public function __construct(UserProfileModule $module) {
+    public function __construct(UserProfileModule $module){
         $defRoles = array(
             new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::GUEST),
             new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::REGISTERED),
@@ -194,7 +195,7 @@ class UserProfilePermission extends Ab_UserPermission {
         parent::__construct($module, $defRoles);
     }
 
-    public function GetRoles() {
+    public function GetRoles(){
         return array(
             UserProfileAction::PROFILE_VIEW => $this->CheckAction(UserProfileAction::PROFILE_VIEW),
             UserProfileAction::PROFILE_WRITE => $this->CheckAction(UserProfileAction::PROFILE_WRITE),

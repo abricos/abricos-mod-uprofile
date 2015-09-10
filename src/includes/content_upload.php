@@ -2,7 +2,8 @@
 /**
  * @package Abricos
  * @subpackage UProfile
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright 2009-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
@@ -10,12 +11,12 @@ $user = Abricos::$user;
 
 $userid = $user->id;
 $db = Abricos::$db;
-if (empty($userid)) {
+if (empty($userid)){
     return;
 }
 
 $modFM = Abricos::GetModule('filemanager');
-if (empty($modFM)) {
+if (empty($modFM)){
     return;
 }
 
@@ -27,7 +28,7 @@ $fmManager = $modFM->GetFileManager();
 $manager = Abricos::GetModule('uprofile')->GetManager();
 
 $p_act = Abricos::CleanGPC('p', 'act', TYPE_STR);
-if ($p_act != "upload") {
+if ($p_act != "upload"){
     return;
 }
 
@@ -38,7 +39,7 @@ $fmManager->CheckSizeDisable();
 
 // проверка, нет ли уже загруженного фото
 $avatarid = $user->info['avatar'];
-if (!empty($avatarid)) {
+if (!empty($avatarid)){
     $fmManager->FileRemove($avatarid);
     $manager->FieldSetValue('avatar', '');
 }
@@ -53,7 +54,7 @@ $upload->filePublicName = 'avatar.gif';
 
 $errornum = $upload->Upload();
 
-if ($errornum == 0) {
+if ($errornum == 0){
     $manager->FieldSetValue('avatar', $upload->uploadFileHash);
 }
 

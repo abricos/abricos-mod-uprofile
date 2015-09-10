@@ -2,9 +2,11 @@
 /**
  * @package Abricos
  * @subpackage UProfile
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright 2009-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
+
 
 require_once 'classes.php';
 require_once 'dbquery.php';
@@ -23,29 +25,29 @@ class UserProfileManager extends Ab_ModuleManager {
     public static $instance = null;
 
 
-    public function __construct(UserProfileModule $module) {
+    public function __construct(UserProfileModule $module){
         UserProfileManager::$instance = $this;
         parent::__construct($module);
     }
 
-    public function IsAdminRole() {
+    public function IsAdminRole(){
         return $this->IsRoleEnable(UserProfileAction::PROFILE_ADMIN);
     }
 
-    public function IsWriteRole() {
+    public function IsWriteRole(){
         return $this->IsRoleEnable(UserProfileAction::PROFILE_WRITE);
     }
 
-    public function IsViewRole() {
+    public function IsViewRole(){
         return $this->IsRoleEnable(UserProfileAction::PROFILE_VIEW);
     }
 
-    public function IsPersonalEditRole($userid) {
+    public function IsPersonalEditRole($userid){
         return ($this->IsWriteRole() && Abricos::$user->id == $userid) || $this->IsAdminRole();
     }
 
-    public function AJAX($d) {
-        switch ($d->do) {
+    public function AJAX($d){
+        switch ($d->do){
 
             case "viewprofile":
                 return $this->Profile($d->userid, true);
@@ -68,23 +70,23 @@ class UserProfileManager extends Ab_ModuleManager {
         return -1;
     }
 
-    public function IsUserRating() {
+    public function IsUserRating(){
         $modURating = Abricos::GetModule('urating');
         return !empty($modURating);
     }
 
-    public function UsersRatingCheck($isClear = false) {
+    public function UsersRatingCheck($isClear = false){
         $modURating = Abricos::GetModule('urating');
-        if (!empty($modURating)) {
+        if (!empty($modURating)){
             URatingModule::$instance->GetManager()->Calculate($isClear);
         }
     }
 
-    public function Profile($userid, $retarray = false, $recalcRating = false) {
+    public function Profile($userid, $retarray = false, $recalcRating = false){
         $this->UsersRatingCheck($recalcRating);
         $res = UserProfileQuery::Profile($this->db, $userid, $this->IsPersonalEditRole($userid));
 
-        if (!$retarray) {
+        if (!$retarray){
             return $res;
         }
 
@@ -96,8 +98,8 @@ class UserProfileManager extends Ab_ModuleManager {
         return $ret;
     }
 
-    public function PasswordSave($userid, $d) {
-        if (!$this->IsPersonalEditRole($userid)) {
+    public function PasswordSave($userid, $d){
+        if (!$this->IsPersonalEditRole($userid)){
             return null;
         }
         $ret = new stdClass();
@@ -109,8 +111,8 @@ class UserProfileManager extends Ab_ModuleManager {
         return $ret;
     }
 
-    public function ProfileSave($userid, $d) {
-        if (!$this->IsPersonalEditRole($userid)) {
+    public function ProfileSave($userid, $d){
+        if (!$this->IsPersonalEditRole($userid)){
             return null;
         }
         $ret = new stdClass();
@@ -141,25 +143,25 @@ class UserProfileManager extends Ab_ModuleManager {
      *
      * @param integer $userid
      */
-    public function URating_UserCalculate($userid) {
+    public function URating_UserCalculate($userid){
         $uMan = UserModule::$instance->GetManager();
         $user = $uMan->User($userid);
-        if (empty($user)) {
+        if (empty($user)){
             return;
         }
         $user = new UserProfile($user);
 
         $skill = 0;
 
-        if (!empty($user->firstname) && !empty($user->lastname)) {
+        if (!empty($user->firstname) && !empty($user->lastname)){
             $skill += 25;
         }
 
-        if (!empty($user->avatar)) {
+        if (!empty($user->avatar)){
             $skill += 25;
         }
 
-        if (!empty($user->descript)) {
+        if (!empty($user->descript)){
             $skill += 25;
         }
 
@@ -168,7 +170,7 @@ class UserProfileManager extends Ab_ModuleManager {
         return $ret;
     }
 
-    public function User_OptionNames() {
+    public function User_OptionNames(){
         return array(
             "pubconftype",
             "pubconfusers"
@@ -187,26 +189,26 @@ class UserProfileManager extends Ab_ModuleManager {
      *
      * @param integer $userid
      */
-    public function UserPublicityCheck($userid) {
+    public function UserPublicityCheck($userid){
         $userid = intval($userid);
-        if ($userid === Abricos::$user->id) {
+        if ($userid === Abricos::$user->id){
             return true;
         }
 
         $options = UserModule::$instance->GetManager()->GetPersonalManager()->UserOptionList('uprofile', $userid);
-        if (empty($options)) {
+        if (empty($options)){
             return false;
         }
         $optPubConfType = $options->Get('pubconftype');
-        if (empty($optPubConfType->value)) {
+        if (empty($optPubConfType->value)){
             return true; // все могут отправлять ему приглашения
         }
 
         $optPubConfUsers = $options->Get('pubconfusers');
 
         $arr = explode(",", $optPubConfUsers->value);
-        foreach ($arr as $id) {
-            if (Abricos::$user->id == $id) {
+        foreach ($arr as $id){
+            if (Abricos::$user->id == $id){
                 return true;
             }
         }
@@ -221,20 +223,20 @@ class UserProfileManager extends Ab_ModuleManager {
      * @param string $username
      * @param boolean $retarray
      */
-    public function FindUser($firstname, $lastname, $username, $retarray = false) {
-        if (!(!empty($firstname) || !empty($lastname) || !empty($username))) {
+    public function FindUser($firstname, $lastname, $username, $retarray = false){
+        if (!(!empty($firstname) || !empty($lastname) || !empty($username))){
             return null;
         }
 
-        if (!$this->IsViewRole()) {
+        if (!$this->IsViewRole()){
             return null;
         }
         $rows = UserProfileQuery::FindUser($this->db, Abricos::$user->id, $firstname, $lastname, $username);
-        if (!$retarray) {
+        if (!$retarray){
             return $rows;
         }
         $ret = array();
-        while (($row = $this->db->fetch_array($rows))) {
+        while (($row = $this->db->fetch_array($rows))){
             $ret[$row['id']] = $row;
         }
         return $ret;
@@ -244,31 +246,31 @@ class UserProfileManager extends Ab_ModuleManager {
     /**
      * Построить список знакомых
      */
-    public function FriendListBuild($over) {
+    public function FriendListBuild($over){
         $ret = array();
 
         $modules = Abricos::$modules->RegisterAllModule();
 
-        if (is_array($over) && count($over) > 0) {
+        if (is_array($over) && count($over) > 0){
             $rows = UserProfileQuery::UserListById($this->db, $over);
-            while (($row = $this->db->fetch_array($rows))) {
-                if (intval($row['id']) === intval(Abricos::$user->id)) {
+            while (($row = $this->db->fetch_array($rows))){
+                if (intval($row['id']) === intval(Abricos::$user->id)){
                     continue;
                 }
                 $ret[$row['id']] = $row;
             }
         }
 
-        foreach ($modules as $name => $module) {
-            if (!method_exists($module, 'UProfile_UserFriendList')) {
+        foreach ($modules as $name => $module){
+            if (!method_exists($module, 'UProfile_UserFriendList')){
                 continue;
             }
             $o = $module->UProfile_UserFriendList();
-            if (is_null($o)) {
+            if (is_null($o)){
                 continue;
             }
             $o->mod = $name;
-            foreach ($o->users as $key => $user) {
+            foreach ($o->users as $key => $user){
                 $ret[$key] = $user;
             }
         }
@@ -276,30 +278,30 @@ class UserProfileManager extends Ab_ModuleManager {
         return $ret;
     }
 
-    public function FieldList() {
+    public function FieldList(){
         return UserProfileQuery::FieldList($this->db);
     }
 
     private $_userFields = null;
 
-    public function SysFieldList() {
-        if (!is_null($this->_userFields)) {
+    public function SysFieldList(){
+        if (!is_null($this->_userFields)){
             return $this->_userFields;
         }
         $rows = UserProfileQuery::FieldList($this->db);
         $ret = array();
-        while (($row = $this->db->fetch_array($rows))) {
+        while (($row = $this->db->fetch_array($rows))){
             $ret[$row['nm']] = $row;
         }
         $this->_userFields = $ret;
         return $this->_userFields;
     }
 
-    public function FieldRemove($name) {
+    public function FieldRemove($name){
         UserProfileQuery::FieldRemove($this->db, $name);
     }
 
-    public function FieldAppend($name, $title, $type, $size = '1', $options = array()) {
+    public function FieldAppend($name, $title, $type, $size = '1', $options = array()){
         $options = array_merge(array(
             "order" => 0,
             "default" => '',
@@ -308,16 +310,16 @@ class UserProfileManager extends Ab_ModuleManager {
             "access" => UserFieldAccess::VIEW_ALL
         ), $options);
 
-        if ($type == UserFieldType::TABLE && empty($options['options'])) {
+        if ($type == UserFieldType::TABLE && empty($options['options'])){
             // настройка опций для типа Таблица
             $options['options'] = $name."|title";
         }
 
         $fields = $this->SysFieldList();
-        if (!empty($fields[$name])) {
+        if (!empty($fields[$name])){
             return;
         }
-        if (UserModule::$instance->GetManager()->UserFieldCheck($name)) {
+        if (UserModule::$instance->GetManager()->UserFieldCheck($name)){
             return;
         }
 
@@ -326,16 +328,16 @@ class UserProfileManager extends Ab_ModuleManager {
     }
 
 
-    public function FieldAccessUpdate($name, $access) {
+    public function FieldAccessUpdate($name, $access){
         UserProfileQuery::FieldAccessUpdate($this->db, $name, $access);
     }
 
-    public function FieldCacheClear() {
+    public function FieldCacheClear(){
         $this->_userFields = null;
         UserModule::$instance->GetManager()->UserFieldCacheClear();
     }
 
-    public function FieldSetValue($varname, $value) {
+    public function FieldSetValue($varname, $value){
         UserProfileQuery::FieldSetValue($this->db, Abricos::$user->id, $varname, $value);
     }
 }
