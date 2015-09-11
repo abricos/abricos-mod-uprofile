@@ -10,12 +10,12 @@
 /**
  * Модуль "Профиль пользователя"
  */
-class UserProfileModule extends Ab_Module {
+class UProfileModule extends Ab_Module {
 
     private $_manager;
 
     /**
-     * @var UserProfileModule
+     * @var UProfileModule
      */
     public static $instance = null;
 
@@ -24,20 +24,20 @@ class UserProfileModule extends Ab_Module {
         $this->name = "uprofile";
         $this->takelink = "uprofile";
 
-        $this->permission = new UserProfilePermission($this);
+        $this->permission = new UProfilePermission($this);
 
-        UserProfileModule::$instance = $this;
+        UProfileModule::$instance = $this;
     }
 
     /**
      * Получить менеджер
      *
-     * @return UserProfileManager
+     * @return UProfileManager
      */
     public function GetManager(){
         if (is_null($this->_manager)){
             require_once 'includes/manager.php';
-            $this->_manager = new UserProfileManager($this);
+            $this->_manager = new UProfileManager($this);
         }
         return $this->_manager;
     }
@@ -104,7 +104,7 @@ class UserFriendPriority {
 /**
  * Типы дополнительных полей учетной записи пользователя
  */
-class UserFieldType {
+class UProfileFieldType {
 
     /**
      * Тип BOOLEAN
@@ -168,42 +168,42 @@ class UserFieldAccess {
     const SYSTEM = 9;
 }
 
-class UserProfileAction {
+class UProfileAction {
     // Просмотр профиля пользователя
-    const PROFILE_VIEW = 10;
+    const VIEW = 10;
 
     // изменение своего профиля
-    const PROFILE_WRITE = 30;
+    const WRITE = 30;
 
     // администрирование настройки профиля
-    const PROFILE_ADMIN = 50;
+    const ADMIN = 50;
 }
 
-class UserProfilePermission extends Ab_UserPermission {
+class UProfilePermission extends Ab_UserPermission {
 
-    public function __construct(UserProfileModule $module){
+    public function __construct(UProfileModule $module){
         $defRoles = array(
-            new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::GUEST),
-            new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::REGISTERED),
-            new Ab_UserRole(UserProfileAction::PROFILE_VIEW, Ab_UserGroup::ADMIN),
+            new Ab_UserRole(UProfileAction::VIEW, Ab_UserGroup::GUEST),
+            new Ab_UserRole(UProfileAction::VIEW, Ab_UserGroup::REGISTERED),
+            new Ab_UserRole(UProfileAction::VIEW, Ab_UserGroup::ADMIN),
 
-            new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::REGISTERED),
-            new Ab_UserRole(UserProfileAction::PROFILE_WRITE, Ab_UserGroup::ADMIN),
+            new Ab_UserRole(UProfileAction::WRITE, Ab_UserGroup::REGISTERED),
+            new Ab_UserRole(UProfileAction::WRITE, Ab_UserGroup::ADMIN),
 
-            new Ab_UserRole(UserProfileAction::PROFILE_ADMIN, Ab_UserGroup::ADMIN)
+            new Ab_UserRole(UProfileAction::ADMIN, Ab_UserGroup::ADMIN)
         );
         parent::__construct($module, $defRoles);
     }
 
     public function GetRoles(){
         return array(
-            UserProfileAction::PROFILE_VIEW => $this->CheckAction(UserProfileAction::PROFILE_VIEW),
-            UserProfileAction::PROFILE_WRITE => $this->CheckAction(UserProfileAction::PROFILE_WRITE),
-            UserProfileAction::PROFILE_ADMIN => $this->CheckAction(UserProfileAction::PROFILE_ADMIN)
+            UProfileAction::VIEW => $this->CheckAction(UProfileAction::VIEW),
+            UProfileAction::WRITE => $this->CheckAction(UProfileAction::WRITE),
+            UProfileAction::ADMIN => $this->CheckAction(UProfileAction::ADMIN)
         );
     }
 }
 
-Abricos::ModuleRegister(new UserProfileModule());
+Abricos::ModuleRegister(new UProfileModule());
 
 ?>

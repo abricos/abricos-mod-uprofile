@@ -11,46 +11,66 @@
 require_once 'classes.php';
 require_once 'dbquery.php';
 
-class UserProfileManager extends Ab_ModuleManager {
+/**
+ * Class UProfileManager
+ *
+ * @property UProfileModule $module
+ */
+class UProfileManager extends Ab_ModuleManager {
 
     /**
-     *
-     * @var UserProfileModule
-     */
-    public $module = null;
-
-    /**
-     * @var UserProfileManager
+     * @var UProfileManager
      */
     public static $instance = null;
 
-
-    public function __construct(UserProfileModule $module){
-        UserProfileManager::$instance = $this;
+    public function __construct(UProfileModule $module){
+        UProfileManager::$instance = $this;
         parent::__construct($module);
     }
 
     public function IsAdminRole(){
-        return $this->IsRoleEnable(UserProfileAction::PROFILE_ADMIN);
+        return $this->IsRoleEnable(UProfileAction::ADMIN);
     }
 
     public function IsWriteRole(){
-        return $this->IsRoleEnable(UserProfileAction::PROFILE_WRITE);
+        if ($this->IsAdminRole()){
+            return true;
+        }
+        return $this->IsRoleEnable(UProfileAction::WRITE);
     }
 
     public function IsViewRole(){
-        return $this->IsRoleEnable(UserProfileAction::PROFILE_VIEW);
+        if ($this->IsWriteRole()){
+            return true;
+        }
+        return $this->IsRoleEnable(UProfileAction::VIEW);
     }
 
     public function IsPersonalEditRole($userid){
-        return ($this->IsWriteRole() && Abricos::$user->id == $userid) || $this->IsAdminRole();
+        return ($this->IsWriteRole() && Abricos::$user->id === $userid) || $this->IsAdminRole();
+    }
+
+    private $_uprofile = null;
+
+    /**
+     * @return UProfile
+     */
+    public function GetUProfile(){
+        if (!is_null($this->_uprofile)){
+            return $this->_uprofile;
+        }
+        require_once 'classes/uprofile.php';
+        return $this->_uprofile = new UProfile($this);
     }
 
     public function AJAX($d){
+        return $this->GetUProfile()->AJAX($d);
+    }
+
+    /*
+    public function AJAX($d){
         switch ($d->do){
 
-            case "viewprofile":
-                return $this->Profile($d->userid, true);
             case 'profilesave':
                 return $this->ProfileSave($d->userid, $d->data);
             case 'passwordsave':
@@ -69,34 +89,7 @@ class UserProfileManager extends Ab_ModuleManager {
         }
         return -1;
     }
-
-    public function IsUserRating(){
-        $modURating = Abricos::GetModule('urating');
-        return !empty($modURating);
-    }
-
-    public function UsersRatingCheck($isClear = false){
-        $modURating = Abricos::GetModule('urating');
-        if (!empty($modURating)){
-            URatingModule::$instance->GetManager()->Calculate($isClear);
-        }
-    }
-
-    public function Profile($userid, $retarray = false, $recalcRating = false){
-        $this->UsersRatingCheck($recalcRating);
-        $res = UserProfileQuery::Profile($this->db, $userid, $this->IsPersonalEditRole($userid));
-
-        if (!$retarray){
-            return $res;
-        }
-
-        $ret = $this->db->fetch_array($res);
-
-        $initData = new UProfileInitData($userid);
-        $ret['initdata'] = $initData->ToAJAX();
-
-        return $ret;
-    }
+    /**/
 
     public function PasswordSave($userid, $d){
         if (!$this->IsPersonalEditRole($userid)){
@@ -126,7 +119,7 @@ class UserProfileManager extends Ab_ModuleManager {
         $d->dsc = $utmf->Parser($d->dsc);
         $d->sex = intval($d->sex);
         $d->bd = intval($d->bd);
-        UserProfileQuery::ProfileUpdate($this->db, $userid, $d, $this->IsAdminRole());
+        UProfileQuery::ProfileUpdate($this->db, $userid, $d, $this->IsAdminRole());
 
         $ret->udata = $this->Profile($userid, true, true);
         return $ret;
@@ -231,7 +224,7 @@ class UserProfileManager extends Ab_ModuleManager {
         if (!$this->IsViewRole()){
             return null;
         }
-        $rows = UserProfileQuery::FindUser($this->db, Abricos::$user->id, $firstname, $lastname, $username);
+        $rows = UProfileQuery::FindUser($this->db, Abricos::$user->id, $firstname, $lastname, $username);
         if (!$retarray){
             return $rows;
         }
@@ -252,7 +245,7 @@ class UserProfileManager extends Ab_ModuleManager {
         $modules = Abricos::$modules->RegisterAllModule();
 
         if (is_array($over) && count($over) > 0){
-            $rows = UserProfileQuery::UserListById($this->db, $over);
+            $rows = UProfileQuery::UserListById($this->db, $over);
             while (($row = $this->db->fetch_array($rows))){
                 if (intval($row['id']) === intval(Abricos::$user->id)){
                     continue;
@@ -279,7 +272,7 @@ class UserProfileManager extends Ab_ModuleManager {
     }
 
     public function FieldList(){
-        return UserProfileQuery::FieldList($this->db);
+        return UProfileQuery::FieldList($this->db);
     }
 
     private $_userFields = null;
@@ -288,7 +281,7 @@ class UserProfileManager extends Ab_ModuleManager {
         if (!is_null($this->_userFields)){
             return $this->_userFields;
         }
-        $rows = UserProfileQuery::FieldList($this->db);
+        $rows = UProfileQuery::FieldList($this->db);
         $ret = array();
         while (($row = $this->db->fetch_array($rows))){
             $ret[$row['nm']] = $row;
@@ -298,7 +291,7 @@ class UserProfileManager extends Ab_ModuleManager {
     }
 
     public function FieldRemove($name){
-        UserProfileQuery::FieldRemove($this->db, $name);
+        UProfileQuery::FieldRemove($this->db, $name);
     }
 
     public function FieldAppend($name, $title, $type, $size = '1', $options = array()){
@@ -310,7 +303,7 @@ class UserProfileManager extends Ab_ModuleManager {
             "access" => UserFieldAccess::VIEW_ALL
         ), $options);
 
-        if ($type == UserFieldType::TABLE && empty($options['options'])){
+        if ($type == UProfileFieldType::TABLE && empty($options['options'])){
             // настройка опций для типа Таблица
             $options['options'] = $name."|title";
         }
@@ -323,13 +316,13 @@ class UserProfileManager extends Ab_ModuleManager {
             return;
         }
 
-        UserProfileQuery::FieldAppend($this->db, $name, $title, $type, $size, $options);
-        UserProfileQuery::FieldInfoAppend($this->db, $name, $title, $type, $options);
+        UProfileQuery::FieldAppend($this->db, $name, $title, $type, $size, $options);
+        UProfileQuery::FieldInfoAppend($this->db, $name, $title, $type, $options);
     }
 
 
     public function FieldAccessUpdate($name, $access){
-        UserProfileQuery::FieldAccessUpdate($this->db, $name, $access);
+        UProfileQuery::FieldAccessUpdate($this->db, $name, $access);
     }
 
     public function FieldCacheClear(){
@@ -337,9 +330,6 @@ class UserProfileManager extends Ab_ModuleManager {
         UserModule::$instance->GetManager()->UserFieldCacheClear();
     }
 
-    public function FieldSetValue($varname, $value){
-        UserProfileQuery::FieldSetValue($this->db, Abricos::$user->id, $varname, $value);
-    }
 }
 
 ?>

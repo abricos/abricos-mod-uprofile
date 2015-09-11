@@ -32,14 +32,14 @@ if ($updateManager->isInstall()){
     );
     // TODO: необходимо создать таблицу для персональной настройки дополнительных полей учетной записи пользователя
 
-    $uprofileManager->FieldAppend('lastname', 'Фамилия', UserFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('firstname', 'Имя', UserFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('patronymic', 'Отчество', UserFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('sex', 'Пол', UserFieldType::ENUM, 1, array("options" => "мужской|женский"));
-    $uprofileManager->FieldAppend('birthday', 'Дата рождения', UserFieldType::DATETIME);
-    $uprofileManager->FieldAppend('descript', 'О себе', UserFieldType::TEXT);
-    $uprofileManager->FieldAppend('site', 'Сайт', UserFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('icq', 'ICQ', UserFieldType::STRING, 10);
+    $uprofileManager->FieldAppend('lastname', 'Фамилия', UProfileFieldType::STRING, 100);
+    $uprofileManager->FieldAppend('firstname', 'Имя', UProfileFieldType::STRING, 100);
+    $uprofileManager->FieldAppend('patronymic', 'Отчество', UProfileFieldType::STRING, 100);
+    $uprofileManager->FieldAppend('sex', 'Пол', UProfileFieldType::ENUM, 1, array("options" => "мужской|женский"));
+    $uprofileManager->FieldAppend('birthday', 'Дата рождения', UProfileFieldType::DATETIME);
+    $uprofileManager->FieldAppend('descript', 'О себе', UProfileFieldType::TEXT);
+    $uprofileManager->FieldAppend('site', 'Сайт', UProfileFieldType::STRING, 100);
+    $uprofileManager->FieldAppend('icq', 'ICQ', UProfileFieldType::STRING, 10);
     $uprofileManager->FieldCacheClear();
 }
 
@@ -52,12 +52,12 @@ if ($updateManager->isUpdate('0.1.1.2') && !$updateManager->isInstall()){
 }
 
 if ($updateManager->isUpdate('0.1.1.3')){
-    $uprofileManager->FieldAppend('avatar', 'avatar', UserFieldType::STRING, 8, array("access" => UserFieldAccess::SYSTEM));
+    $uprofileManager->FieldAppend('avatar', 'avatar', UProfileFieldType::STRING, 8, array("access" => UserFieldAccess::SYSTEM));
     $uprofileManager->FieldCacheClear();
 }
 
 if ($updateManager->isUpdate('0.1.4.1')){
-    $uprofileManager->FieldAppend('twitter', 'Twitter', UserFieldType::STRING, 50);
+    $uprofileManager->FieldAppend('twitter', 'Twitter', UProfileFieldType::STRING, 50);
     $uprofileManager->FieldCacheClear();
 }
 

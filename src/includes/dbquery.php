@@ -8,15 +8,15 @@
  */
 
 /**
- * Class UserProfileQuery
+ * Class UProfileQuery
  */
-class UserProfileQuery {
+class UProfileQuery {
 
     public static function UserRatingSQLExt(Ab_Database $db){
         $ret = new stdClass();
         $ret->fld = "";
         $ret->tbl = "";
-        if (UserProfileManager::$instance->IsUserRating()){
+        if (UProfileManager::$instance->GetUProfile()->IsUserRating()){
             $ret->fld = "
 				,
 				IF(ISNULL(urt.reputation), 0, urt.reputation) as rep,
@@ -44,7 +44,7 @@ class UserProfileQuery {
 
 
     public static function UserListById(Ab_Database $db, $ids){
-        $urt = UserProfileQuery::UserRatingSQLExt($db);
+        $urt = UProfileQuery::UserRatingSQLExt($db);
 
         $limit = 10;
         $where = " ";
@@ -69,30 +69,17 @@ class UserProfileQuery {
         return $db->query_read($sql);
     }
 
-    public static function Profile(Ab_Database $db, $userid, $personal = false){
-        $urt = UserProfileQuery::UserRatingSQLExt($db);
+    public static function Profile(Ab_Database $db, $userid){
+        $urt = UProfileQuery::UserRatingSQLExt($db);
         $sql = "
-			SELECT
-				u.userid as id, 
-				u.username as unm,
-				u.firstname as fnm,
-				u.lastname as lnm,
-				u.avatar as avt,
-				u.descript as dsc,
-				u.birthday as bd,
-				u.site,
-				u.twitter as twt,
-				u.sex,
-				u.lastvisit as lv,
-				u.joindate as dl
-				".($personal ? ",u.email as eml" : "")."
+			SELECT u.*
 				".$urt->fld."
 			FROM ".$db->prefix."user u
 			".$urt->tbl."
 			WHERE u.userid=".bkint($userid)."
 			LIMIT 1
 		";
-        return $db->query_read($sql);
+        return $db->query_first($sql);
     }
 
     public static function ProfileUpdate(Ab_Database $db, $userid, $d, $isAdmin = false){
@@ -136,7 +123,7 @@ class UserProfileQuery {
         }
         array_push($where, " u.userid<>".bkint($userid));
 
-        $urt = UserProfileQuery::UserRatingSQLExt($db);
+        $urt = UProfileQuery::UserRatingSQLExt($db);
 
         $sql = "
 			SELECT
@@ -188,28 +175,28 @@ class UserProfileQuery {
         $defvalue = bkstr($options['default']);
         $sql = "";
         switch ($type){
-            case UserFieldType::BOOLEAN:
+            case UProfileFieldType::BOOLEAN:
                 $sql = "`".$name."` tinyint(1) unsigned NOT NULL default ".bkint($defvalue);
                 break;
-            case UserFieldType::INTEGER:
+            case UProfileFieldType::INTEGER:
                 $sql = "`".$name."` int(".$size.") ".$unsignedStr." NOT NULL default ".intval($defvalue)."";
                 break;
-            case UserFieldType::STRING:
+            case UProfileFieldType::STRING:
                 $sql = "`".$name."` varchar(".$size.") NOT NULL default '".$defvalue."'";
                 break;
-            case UserFieldType::DOUBLE:
+            case UProfileFieldType::DOUBLE:
                 $sql = "`".$name."` double(".$size.") ".$unsignedStr." NOT NULL default ".doubleval($defvalue)."";
                 break;
-            case UserFieldType::TEXT:
+            case UProfileFieldType::TEXT:
                 $sql = "`".$name."` TEXT";
                 break;
-            case UserFieldType::DATETIME:
+            case UProfileFieldType::DATETIME:
                 $sql = "`".$name."` int(10) unsigned NOT NULL default 0";
                 break;
-            case UserFieldType::ENUM:
+            case UProfileFieldType::ENUM:
                 $sql = "`".$name."` int(".$size.") unsigned NOT NULL default 0";
                 break;
-            case UserFieldType::TABLE:
+            case UProfileFieldType::TABLE:
                 $sql = "`".$name."id` int(".$size.") unsigned NOT NULL default 0";
                 break;
         }

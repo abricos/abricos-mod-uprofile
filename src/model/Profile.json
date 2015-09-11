@@ -1,0 +1,30 @@
+{
+  "version": "0.1.0",
+  "type": "model",
+  "idField": "userid",
+  "fields": {
+    "userid": {
+      "type": "int"
+    },
+    "username": {
+      "type": "string",
+      "json": "unm"
+    },
+    "firstname": {
+      "type": "string",
+      "json": "fnm"
+    },
+    "lastname": {
+      "type": "string",
+      "json": "lnm"
+    },
+    "avatar": {
+      "type": "string",
+      "json": "avt"
+    },
+    "upddate": {
+      "type": "int",
+      "json": "upd"
+    }
+  }
+}

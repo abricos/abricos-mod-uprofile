@@ -10,8 +10,15 @@
 $user = Abricos::$user;
 
 $userid = $user->id;
-$db = Abricos::$db;
 if (empty($userid)){
+    return;
+}
+
+$brick = Brick::$builder->brick;
+$brick->param->var['url'] = Abricos::$adress->requestURI;
+
+$p_act = Abricos::CleanGPC('p', 'act', TYPE_STR);
+if ($p_act != "upload"){
     return;
 }
 
@@ -20,28 +27,23 @@ if (empty($modFM)){
     return;
 }
 
-$brick = Brick::$builder->brick;
-$brick->param->var['url'] = Abricos::$adress->requestURI;
-
 $fmManager = $modFM->GetFileManager();
 
-$manager = Abricos::GetModule('uprofile')->GetManager();
-
-$p_act = Abricos::CleanGPC('p', 'act', TYPE_STR);
-if ($p_act != "upload"){
-    return;
-}
+/** @var UProfile $uprofile */
+$uprofile = Abricos::GetModule('uprofile')->GetManager()->GetUProfile();
 
 // отключить проверку ролей в менеджере файлов
 $fmManager->RolesDisable();
 // отключить проверку свободного места в профиле пользователя
 $fmManager->CheckSizeDisable();
 
+$profile = $uprofile->Profile($userid);
+
 // проверка, нет ли уже загруженного фото
-$avatarid = $user->info['avatar'];
+$avatarid = $profile->avatar;
 if (!empty($avatarid)){
     $fmManager->FileRemove($avatarid);
-    $manager->FieldSetValue('avatar', '');
+    $uprofile->FieldSetValue('avatar', '');
 }
 
 $upload = FileManagerModule::$instance->GetManager()->CreateUploadByVar('file0');
@@ -54,14 +56,16 @@ $upload->filePublicName = 'avatar.gif';
 
 $errornum = $upload->Upload();
 
-if ($errornum == 0){
-    $manager->FieldSetValue('avatar', $upload->uploadFileHash);
+if ($errornum === 0){
+    $uprofile->FieldSetValue('avatar', $upload->uploadFileHash);
 }
 
+$dir = Abricos::$adress->dir;
+
 $brick->param->var['command'] = Brick::ReplaceVarByData($brick->param->var['ok'], array(
+    "idWidget" => isset($dir['3']) ? $dir[3] : '',
     "uid" => intval($userid),
     "fid" => $upload->uploadFileHash
 ));
-
 
 ?>
