@@ -22,6 +22,12 @@
       "type": "string",
       "json": "avt"
     },
+    "email": {
+      "type": "string",
+      "json": "eml",
+      "personal": true,
+      "rolefn": "IsAdminRole"
+    },
     "upddate": {
       "type": "int",
       "json": "upd"

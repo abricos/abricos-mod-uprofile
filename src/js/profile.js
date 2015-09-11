@@ -179,7 +179,7 @@ Component.entryPoint = function(NS){
         renderProfile: function(){
             var profile = this.get('profile');
 
-            console.log(profile.toJSON());
+            console.log(profile.toJSON().email);
         }
     }, {
         ATTRS: {
