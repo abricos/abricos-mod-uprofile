@@ -32,8 +32,7 @@ Component.entryPoint = function(NS){
             this._initDate = true;
         },
         _setterDate: function(date){
-            var tp = this.template,
-                date = this.get('date');
+            var tp = this.template;
 
             if (date){
                 tp.setValue({
@@ -60,12 +59,24 @@ Component.entryPoint = function(NS){
                 getter: function(val){
                     if (this._initDate){
                         var tp = this.template,
-                            day = tp.getValue('day'),
-                            month = tp.getValue('month')-1,
-                            year = tp.getValue('year');
+                            day = tp.getValue('day') | 0,
+                            month = (tp.getValue('month') - 1) | 0,
+                            year = tp.getValue('year') | 0;
+
+                        if (day === 0 || month === 0 || year === 0){
+                            return null;
+                        }
                         val = new Date(year, month, day);
                     }
                     return val;
+                }
+            },
+            dateUnix: {
+                readOnly: true,
+                getter: function(){
+                    var date = this.get('date');
+                    console.log(date);
+                    return !date ? 0 : (date.getTime() / 1000);
                 }
             }
         }
@@ -93,13 +104,33 @@ Component.entryPoint = function(NS){
                 firstname: profile.get('firstname'),
                 lastname: profile.get('lastname'),
                 sex: profile.get('sex'),
+                descript: profile.get('descript'),
+                site: profile.get('site'),
+                twitter: profile.get('twitter'),
             });
+
             this.birthDayWidget = new NS.DateSelectWidget({
-                srcNode: tp.one('birthday')
+                srcNode: tp.one('birthday'),
+                date: profile.get('birthday')
             });
         },
         save: function(){
+            if (this.get('waiting')){
+                return;
+            }
 
+            var tp = this.template;
+
+            var d = Y.merge(tp.getValue('email,firstname,lastname,sex,descript,site,twitter'), {
+                id: this.get('userid'),
+                birthday: this.birthDayWidget.get('dateUnix')
+            });
+            console.log(d);
+
+            this.set('waiting', true);
+            this.get('appInstance').profileSave(d, function(err, result){
+                console.log();
+            }, this);
         },
         cancel: function(){
         }
@@ -109,7 +140,7 @@ Component.entryPoint = function(NS){
             templateBlockName: {value: 'widget'},
         },
         CLICKS: {
-            save: '', cancel: ''
+            save: 'save', cancel: 'cancel'
         }
     });
 

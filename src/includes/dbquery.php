@@ -86,20 +86,20 @@ class UProfileQuery {
         $sql = "
 			UPDATE ".$db->prefix."user
 			SET
-				".($isAdmin ? "email='".bkstr($d->eml)."'," : "")."
-				firstname='".bkstr($d->fnm)."',
-				lastname='".bkstr($d->lnm)."',
-				descript='".bkstr($d->dsc)."',
+				".($isAdmin ? "email='".bkstr($d->email)."'," : "")."
+				firstname='".bkstr($d->firstname)."',
+				lastname='".bkstr($d->lastname)."',
+				descript='".bkstr($d->descript)."',
 				site='".bkstr($d->site)."',
-				twitter='".bkstr($d->twt)."',
+				twitter='".bkstr($d->twitter)."',
 				sex=".bkint($d->sex).",
-				birthday=".bkint($d->bd).",
+				birthday=".bkint($d->birthday).",
 				upddate=".TIMENOW."
 			WHERE userid=".bkint($userid)."
+			LIMIT 1
 		";
         $db->query_write($sql);
     }
-
 
     /**
      * Поиск пользователя по имени, фамилии или логину

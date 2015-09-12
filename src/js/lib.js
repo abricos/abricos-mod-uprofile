@@ -60,6 +60,9 @@ Component.entryPoint = function(NS){
                     return profile;
                 }
             },
+            profileSave: {
+                args: ['profile']
+            },
             avatarRemove: {
                 args: ['userid'],
                 attribute: false

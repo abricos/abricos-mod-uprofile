@@ -67,31 +67,7 @@ class UProfileManager extends Ab_ModuleManager {
         return $this->GetUProfile()->AJAX($d);
     }
 
-    /*
-    public function AJAX($d){
-        switch ($d->do){
-
-            case 'profilesave':
-                return $this->ProfileSave($d->userid, $d->data);
-            case 'passwordsave':
-                return $this->PasswordSave($d->userid, $d->data);
-
-            case 'finduser':
-                return $this->FindUser($d->firstname, $d->lastname, $d->username, true);
-            case "friends":
-                return $this->FriendListBuild($d->over);
-
-            case "pubcheck":
-                $ret = new stdClass();
-                $ret->userid = $d->userid;
-                $ret->result = $this->UserPublicityCheck($d->userid);
-                return $ret;
-        }
-        return -1;
-    }
-    /**/
-
-    public function PasswordSave($userid, $d){
+      public function PasswordSave($userid, $d){
         if (!$this->IsPersonalEditRole($userid)){
             return null;
         }
@@ -110,16 +86,6 @@ class UProfileManager extends Ab_ModuleManager {
         }
         $ret = new stdClass();
         $ret->err = 0;
-
-        $utmf = Abricos::TextParser(true);
-        $d->fnm = $utmf->Parser($d->fnm);
-        $d->lnm = $utmf->Parser($d->lnm);
-        $d->site = $utmf->Parser($d->site);
-        $d->twt = $utmf->Parser($d->twt);
-        $d->dsc = $utmf->Parser($d->dsc);
-        $d->sex = intval($d->sex);
-        $d->bd = intval($d->bd);
-        UProfileQuery::ProfileUpdate($this->db, $userid, $d, $this->IsAdminRole());
 
         $ret->udata = $this->Profile($userid, true, true);
         return $ret;

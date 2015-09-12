@@ -30,6 +30,8 @@ class UProfile extends AbricosApplication {
         switch ($d->do){
             case "profile":
                 return $this->ProfileToJSON($d->userid);
+            case "profileSave":
+                return $this->ProfileSaveToJSON($d->profile);
             case "avatarRemove":
                 return $this->AvatarRemoveToJSON($d->userid);
         }
@@ -84,6 +86,37 @@ class UProfile extends AbricosApplication {
         }
 
         UProfileQuery::FieldSetValue($this->db, $userid, $varname, $value);
+    }
+
+    public function ProfileSaveToJSON($d){
+        $userid = intval($d->id);
+        $res = $this->ProfileSave($d);
+        return $this->ImplodeJSON(
+            $this->ProfileToJSON($userid),
+            $this->ResultToJSON('profileSave', $res)
+        );
+    }
+
+    public function ProfileSave($d){
+        $userid = intval($d->id);
+        if (!$this->manager->IsPersonalEditRole($userid)){
+            return 403;
+        }
+
+        $utmf = Abricos::TextParser(true);
+        $d->firstname = $utmf->Parser($d->firstname);
+        $d->lastname = $utmf->Parser($d->lastname);
+        $d->site = $utmf->Parser($d->site);
+        $d->twitter = $utmf->Parser($d->twitter);
+        $d->descript = $utmf->Parser($d->descript);
+        $d->sex = intval($d->sex);
+        $d->birthday = intval($d->birthday);
+
+        UProfileQuery::ProfileUpdate($this->db, $userid, $d, $this->manager->IsAdminRole());
+
+        $ret = new stdClass();
+        $ret->userid = $userid;
+        return $ret;
     }
 
     public function AvatarRemoveToJSON($userid){

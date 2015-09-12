@@ -19,6 +19,7 @@
                     </div>
                     <div class="col-sm-9">
                         <input id="{i#email}" placeholder="E-mail"
+                               data-wait="disable"
                                type="email" class="form-control">
                     </div>
                 </div>
@@ -28,7 +29,7 @@
                         <span class="title">Имя</span>
                     </div>
                     <div class="col-sm-9">
-                        <input id="{i#firstname}"
+                        <input id="{i#firstname}" data-wait="disable"
                                type="text" class="form-control">
                     </div>
                 </div>
@@ -38,7 +39,7 @@
                         <span class="title">Фамилия</span>
                     </div>
                     <div class="col-sm-9">
-                        <input id="{i#lastname}"
+                        <input id="{i#lastname}" data-wait="disable"
                                type="text" class="form-control">
                     </div>
                 </div>
@@ -48,7 +49,7 @@
                         <span class="title">Пол</span>
                     </div>
                     <div class="col-sm-9">
-                        <select id="{i#sex}" class="form-control">
+                        <select id="{i#sex}" class="form-control" data-wait="disable">
                             <option value="0">мужской</option>
                             <option value="1">женский</option>
                         </select>
@@ -61,6 +62,35 @@
                     </div>
                     <div class="col-sm-9">
                         <div id="{i#birthday}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">О себе</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <textarea id="{i#descript}" data-wait="disable" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Сайт</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <input id="{i#site}" data-wait="disable"
+                               type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Twitter</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <input id="{i#twitter}" data-wait="disable"
+                               type="text" class="form-control">
                     </div>
                 </div>
 
@@ -85,13 +115,13 @@
 <!--{dateSelect}-->
 <div class="dateSelect row">
     <div class="col-sm-4">
-        <select id="{i#day}" class="form-control">
+        <select id="{i#day}" class="form-control" data-wait="disable">
             <option value="0">- день -</option>
             {v#rowsDay}
         </select>
     </div>
     <div class="col-sm-4">
-        <select id="{i#month}" class="form-control col-sm-4">
+        <select id="{i#month}" class="form-control col-sm-4" data-wait="disable">
             <option value="0">- месяц -</option>
             <option value="1">январь</option>
             <option value="2">февраль</option>
@@ -108,7 +138,7 @@
         </select>
     </div>
     <div class="col-sm-4">
-        <select id="{i#year}" class="form-control col-sm-4">
+        <select id="{i#year}" class="form-control col-sm-4" data-wait="disable">
             <option value="0">- год -</option>
             {v#rowsYear}
         </select>
