@@ -28,9 +28,32 @@
       "personal": true,
       "rolefn": "IsAdminRole"
     },
-    "upddate": {
-      "type": "int",
-      "json": "upd"
+    "sex": {
+      "type": "int"
+    },
+    "birthday": {
+      "type": "date",
+      "json": "bday"
+    },
+    "descript": {
+      "type": "string",
+      "json": "dsc"
+    },
+    "twitter": {
+      "type": "string",
+      "json": "tvt"
+    },
+    "site": {
+      "type": "string",
+      "json": "site"
+    },
+    "lastvisit": {
+      "type": "date",
+      "json": "ldt"
+    },
+    "joindate": {
+      "type": "date",
+      "json": "jdt"
     }
   }
 }

@@ -1,0 +1,119 @@
+<!--{widget}-->
+<div class="editor">
+
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Учетная запись</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <div id="{i#username}" class="value"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">E-mail</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <input id="{i#email}" placeholder="E-mail"
+                               type="email" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Имя</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <input id="{i#firstname}"
+                               type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Фамилия</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <input id="{i#lastname}"
+                               type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Пол</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <select id="{i#sex}" class="form-control">
+                            <option value="0">мужской</option>
+                            <option value="1">женский</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Дата рождения</span>
+                    </div>
+                    <div class="col-sm-9">
+                        <div id="{i#birthday}"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-4">
+            <div data-wait="show" class="text-right">
+                <img src="/images/loading.gif"/>
+            </div>
+            <div id="{i#buttons}" data-wait="hide" class="text-right">
+                <a data-click="save" href="#">Сохранить</a>
+                &nbsp;
+                <a data-click="cancel" href="#">Отмена</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!--{dateSelect}-->
+<div class="dateSelect row">
+    <div class="col-sm-4">
+        <select id="{i#day}" class="form-control">
+            <option value="0">- день -</option>
+            {v#rowsDay}
+        </select>
+    </div>
+    <div class="col-sm-4">
+        <select id="{i#month}" class="form-control col-sm-4">
+            <option value="0">- месяц -</option>
+            <option value="1">январь</option>
+            <option value="2">февраль</option>
+            <option value="3">март</option>
+            <option value="4">апрель</option>
+            <option value="5">май</option>
+            <option value="6">июнь</option>
+            <option value="7">июль</option>
+            <option value="8">август</option>
+            <option value="9">сентябрь</option>
+            <option value="10">октябрь</option>
+            <option value="11">ноябрь</option>
+            <option value="12">декабрь</option>
+        </select>
+    </div>
+    <div class="col-sm-4">
+        <select id="{i#year}" class="form-control col-sm-4">
+            <option value="0">- год -</option>
+            {v#rowsYear}
+        </select>
+    </div>
+</div>
+
+<!--{option}-->
+<option value="{v#id}">{v#title}</option>

@@ -1,6 +1,7 @@
 var Component = new Brick.Component();
 Component.requires = {
     mod: [
+        {name: 'sys', files: ['date.js']},
         {name: '{C#MODNAME}', files: ['lib.js']}
     ]
 };
@@ -9,47 +10,6 @@ Component.entryPoint = function(NS){
     var Y = Brick.YUI,
         COMPONENT = this,
         SYS = Brick.mod.sys;
-
-    var ProfileWidgetExt = function(){
-    };
-    ProfileWidgetExt.prototype = {
-        onInitAppWidget: function(err, appInstance){
-            if (this.get('userid') === 0){
-                this.set('userid', Brick.env.user.id);
-            }
-            var userid = this.get('userid');
-
-            this.set('waiting', true);
-            appInstance.profile(userid, function(err, result){
-                this.set('waiting', false);
-                this.onInitProfileWidget(err, appInstance);
-                if (result.profile){
-                    this.renderProfile();
-                }
-            }, this);
-        },
-        onInitProfileWidget: function(){
-        },
-        renderProfile: function(){
-        }
-    };
-    ProfileWidgetExt.NAME = 'profileWidgetExt';
-    ProfileWidgetExt.ATTRS = {
-        profile: {
-            readOnly: true,
-            getter: function(){
-                var app = this.get('appInstance');
-                if (!app){
-                    return null;
-                }
-                return app.get('profileList').getById(this.get('userid'));
-            }
-        },
-        userid: {
-            validator: Y.Lang.isNumber
-        },
-    };
-    NS.ProfileWidgetExt = ProfileWidgetExt;
 
     NS.AvatarWidget = Y.Base.create('avatarWidget', SYS.AppWidget, [
         NS.ProfileWidgetExt
@@ -135,10 +95,14 @@ Component.entryPoint = function(NS){
 
             tp.setHTML({
                 username: profile.get('username'),
-                email: profile.get('email')
+                email: profile.get('email'),
+                birthday: SYS.dateToString(profile.get('birthday')),
+                joindate: Brick.dateExt.convert(profile.get('joindate')),
+                lastvisit: Brick.dateExt.convert(profile.get('lastvisit')),
             });
 
-            var rows = 'email'.split(','),
+            var rows = 'email,descript,site,twitter,birthday,' +
+                    'joindate,lastvisit'.split(','),
                 name, value;
 
             for (var i = 0; i < rows.length; i++){
@@ -171,20 +135,58 @@ Component.entryPoint = function(NS){
             });
         },
         destructor: function(){
+            this.closeEditor();
             if (this.avatarWidget){
                 this.avatarWidget.destroy();
                 this.avatarWidget = null;
             }
         },
-        renderProfile: function(){
-            var profile = this.get('profile');
+        closeEditor: function(){
+            if (!this._editor){
+                return;
+            }
+            this._editor.destroy();
+            this._editor = null;
 
-            console.log(profile.toJSON().email);
-        }
+            var tp = this.template;
+            tp.show('viewer');
+        },
+        renderProfile: function(){
+        },
+        _showEditor: function(editor){
+            this.closeEditor();
+            var tp = this.template;
+
+            this.set('waiting', true);
+            Brick.use('uprofile', 'editor', function(){
+                this.set('waiting', true);
+
+                var options = {
+                    srcNode: tp.append('editor', '<div></div>'),
+                    userid: this.get('userid')
+                };
+                if (editor === 'password'){
+                    this._editor = new NS.PasswordEditorWidget(options);
+                } else {
+                    this._editor = new NS.ProfileEditorWidget(options);
+                }
+                tp.hide('viewer');
+            }, this);
+        },
+        showProfileEditor: function(){
+            this._showEditor('profile');
+        },
+        showPasswordEditor: function(){
+            this._showEditor('password');
+        },
     }, {
         ATTRS: {
             component: {value: COMPONENT},
             templateBlockName: {value: 'widget'},
+        },
+        CLICKS: {
+            editProfile: 'showProfileEditor',
+            changePassword: 'showPasswordEditor'
         }
     });
 
