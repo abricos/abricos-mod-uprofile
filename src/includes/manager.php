@@ -47,7 +47,7 @@ class UProfileManager extends Ab_ModuleManager {
     }
 
     public function IsPersonalEditRole($userid){
-        return ($this->IsWriteRole() && Abricos::$user->id === $userid) || $this->IsAdminRole();
+        return ($this->IsWriteRole() && intval(Abricos::$user->id) === intval($userid)) || $this->IsAdminRole();
     }
 
     private $_uprofile = null;
@@ -67,7 +67,7 @@ class UProfileManager extends Ab_ModuleManager {
         return $this->GetUProfile()->AJAX($d);
     }
 
-      public function PasswordSave($userid, $d){
+    public function PasswordSave($userid, $d){
         if (!$this->IsPersonalEditRole($userid)){
             return null;
         }

@@ -152,6 +152,9 @@ Component.entryPoint = function(NS){
             tp.show('viewer');
         },
         renderProfile: function(){
+            var tp = this.template,
+                profile = this.get('profile');
+            tp.toggleView(profile.isEdit(), 'buttons');
         },
         _showEditor: function(editor){
             this.closeEditor();
@@ -159,11 +162,16 @@ Component.entryPoint = function(NS){
 
             this.set('waiting', true);
             Brick.use('uprofile', 'editor', function(){
-                this.set('waiting', true);
+                this.set('waiting', false);
 
                 var options = {
                     srcNode: tp.append('editor', '<div></div>'),
-                    userid: this.get('userid')
+                    userid: this.get('userid'),
+                    CLICKS: {
+                        cancel: {
+                            event: this.closeEditor, context: this
+                        }
+                    }
                 };
                 if (editor === 'password'){
                     this._editor = new NS.PasswordEditorWidget(options);

@@ -88,7 +88,7 @@ Component.entryPoint = function(NS){
     ], {
         destructor: function(){
             if (this.birthDayWidget){
-                birthDayWidget.destroy();
+                this.birthDayWidget.destroy();
             }
         },
         renderProfile: function(){
@@ -96,7 +96,8 @@ Component.entryPoint = function(NS){
                 profile = this.get('profile');
 
             tp.setHTML({
-                username: profile.get('username')
+                username: profile.get('username'),
+                emailro: profile.get('email')
             });
 
             tp.setValue({
@@ -113,6 +114,8 @@ Component.entryPoint = function(NS){
                 srcNode: tp.one('birthday'),
                 date: profile.get('birthday')
             });
+
+            tp.toggleView(NS.roles.isAdmin, 'email', 'emailro');
         },
         save: function(){
             if (this.get('waiting')){
