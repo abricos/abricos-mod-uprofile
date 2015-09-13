@@ -75,7 +75,6 @@ Component.entryPoint = function(NS){
                 readOnly: true,
                 getter: function(){
                     var date = this.get('date');
-                    console.log(date);
                     return !date ? 0 : (date.getTime() / 1000);
                 }
             }
@@ -86,6 +85,9 @@ Component.entryPoint = function(NS){
     NS.ProfileEditorWidget = Y.Base.create('profileEditorWidget', SYS.AppWidget, [
         NS.ProfileWidgetExt
     ], {
+        onInitProfileWidget: function(err, appInstance){
+            this.publish('saved');
+        },
         destructor: function(){
             if (this.birthDayWidget){
                 this.birthDayWidget.destroy();
@@ -128,11 +130,12 @@ Component.entryPoint = function(NS){
                 id: this.get('userid'),
                 birthday: this.birthDayWidget.get('dateUnix')
             });
-            console.log(d);
-
             this.set('waiting', true);
             this.get('appInstance').profileSave(d, function(err, result){
-                console.log();
+                this.set('waiting', false);
+                if (!err){
+                    this.fire('saved', result.profileSave);
+                }
             }, this);
         },
         cancel: function(){

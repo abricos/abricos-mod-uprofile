@@ -86,24 +86,43 @@ Component.entryPoint = function(NS){
         NS.ProfileWidgetExt
     ], {
         onInitProfileWidget: function(err, appInstance){
+            appInstance.on('appResponses', this._onProfileAppResponses, this);
         },
         destructor: function(){
+            this.get('appInstance').detach('appResponses', this._onProfileAppResponses, this);
+        },
+        _onProfileAppResponses: function(e){
+            var profile = e.result.profile;
+            if (!profile || this.get('userid') !== profile.get('id')){
+                return;
+            }
+            this.renderProfile();
         },
         renderProfile: function(){
             var tp = this.template,
                 profile = this.get('profile');
 
+            var site = 'http://' + profile.get('site'),
+                twitter = 'https://twitter.com/' + profile.get('twitter');
+
+            tp.one('site').set('href', site);
+            tp.one('twitter').set('href', twitter);
+
             tp.setHTML({
                 username: profile.get('username'),
                 email: profile.get('email'),
+                descript: profile.get('descript'),
+                site: site, twitter: twitter,
                 birthday: SYS.dateToString(profile.get('birthday')),
                 joindate: Brick.dateExt.convert(profile.get('joindate')),
                 lastvisit: Brick.dateExt.convert(profile.get('lastvisit')),
             });
 
-            var rows = 'email,descript,site,twitter,birthday,' +
-                    'joindate,lastvisit'.split(','),
-                name, value;
+            tp.one('twitter').set('src', 'https://twiter.com/' + profile.get('twitter'));
+
+            var name, value,
+                rows = ('email,descript,site,twitter,birthday,' +
+                    'joindate,lastvisit').split(',');
 
             for (var i = 0; i < rows.length; i++){
                 name = rows[i];
@@ -145,11 +164,15 @@ Component.entryPoint = function(NS){
             if (!this._editor){
                 return;
             }
+            this._editor.detach('saved', this._onEditorSaved, this);
             this._editor.destroy();
             this._editor = null;
 
             var tp = this.template;
             tp.show('viewer');
+        },
+        _onEditorSaved: function(){
+            this.closeEditor();
         },
         renderProfile: function(){
             var tp = this.template,
@@ -178,6 +201,7 @@ Component.entryPoint = function(NS){
                 } else {
                     this._editor = new NS.ProfileEditorWidget(options);
                 }
+                this._editor.on('saved', this._onEditorSaved, this);
                 tp.hide('viewer');
             }, this);
         },

@@ -16,6 +16,7 @@ Component.entryPoint = function(NS){
             appInstance.profile(userid, function(err, result){
                 this.set('waiting', false);
                 this.onInitProfileWidget(err, appInstance);
+
                 if (result.profile){
                     this.renderProfile();
                 }

@@ -9,6 +9,7 @@ Component.entryPoint = function(NS){
         COMPONENT = this,
         SYS = Brick.mod.sys;
 
+    // TODO: show user name and icon in header
     NS.WorkspaceWidget = Y.Base.create('workspaceWidget', SYS.AppWidget, [
         SYS.AppWorkspace
     ], {}, {
