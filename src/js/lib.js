@@ -25,6 +25,8 @@ Component.entryPoint = function(NS){
     }, [], {
         ATTRS: {
             isLoadAppStructure: {value: true},
+            User: {value: NS.User},
+            UserList: {value: NS.UserList},
             Profile: {value: NS.Profile},
             profileList: {
                 readOnly: true,
@@ -66,6 +68,10 @@ Component.entryPoint = function(NS){
             avatarRemove: {
                 args: ['userid'],
                 attribute: false
+            },
+            friendList: {
+                attribute: true,
+                type: 'modelList:UserList'
             }
         },
         URLS: {

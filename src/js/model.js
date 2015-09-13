@@ -11,29 +11,29 @@ Component.entryPoint = function(NS){
         UID = Brick.env.user.id | 0;
 
     var _getterAvatar24 = function(){
-            return NS.Profile.avatarSrc(this, 24);
+            return NS.User.avatarSrc(this, 24);
         },
         _getterAvatar45 = function(){
-            return NS.Profile.avatarSrc(this, 45);
+            return NS.User.avatarSrc(this, 45);
         },
         _getterAvatar90 = function(){
-            return NS.Profile.avatarSrc(this, 90);
+            return NS.User.avatarSrc(this, 90);
         },
         _getterAvatar180 = function(){
-            return NS.Profile.avatarSrc(this, 180);
+            return NS.User.avatarSrc(this, 180);
         },
         _getterViewName = function(){
-            return NS.Profile.viewName(this);
+            return NS.User.viewName(this);
         },
         _getterViewNameAbbr = function(){
-            return NS.Profile.viewName(this, true);
+            return NS.User.viewName(this, true);
         },
         _getterViewURL = function(){
-            return NS.Profile.viewURL(this);
+            return NS.User.viewURL(this);
         };
 
-    NS.Profile = Y.Base.create('profile', SYS.AppModel, [], {
-        structureName: 'Profile',
+    NS.User = Y.Base.create('user', SYS.AppModel, [], {
+        structureName: 'User',
         isEdit: function(){
             return NS.roles.isAdmin || (NS.roles.isWrite && this.get('id') === UID);
         }
@@ -49,7 +49,7 @@ Component.entryPoint = function(NS){
         }
     });
 
-    NS.Profile.avatarSrc = function(avatar, size){
+    NS.User.avatarSrc = function(avatar, size){
         if (Y.Lang.isObject(avatar) && Y.Lang.isFunction(avatar.toJSON)){
             avatar = avatar.get('avatar');
         }
@@ -73,7 +73,7 @@ Component.entryPoint = function(NS){
         return '/filemanager/i/' + avatar + '/w_' + size + '-h_' + size + '/avatar.gif';
     };
 
-    NS.Profile.viewName = function(profile, isAbbr){
+    NS.User.viewName = function(profile, isAbbr){
         if (!Y.Lang.isObject(profile) || !Y.Lang.isFunction(profile.toJSON)){
             return '';
         }
@@ -95,7 +95,7 @@ Component.entryPoint = function(NS){
         return fnm + ' ' + lnm;
     };
 
-    NS.Profile.viewURL = function(profile){
+    NS.User.viewURL = function(profile){
         if (!Y.Lang.isObject(profile) || !Y.Lang.isFunction(profile.toJSON)){
             return '';
         }
@@ -103,7 +103,15 @@ Component.entryPoint = function(NS){
     };
 
 
-    NS.ProfileList = Y.Base.create('profileList', SYS.AppModelList, [], {
+    NS.UserList = Y.Base.create('userList', SYS.AppModelList, [], {
+        appItem: NS.User
+    });
+
+    NS.Profile = Y.Base.create('profile', NS.User, [], {
+        structureName: 'Profile'
+    });
+
+    NS.UserList = Y.Base.create('profileList', NS.UserList, [], {
         appItem: NS.Profile
     });
 };

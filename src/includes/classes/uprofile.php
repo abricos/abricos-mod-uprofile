@@ -17,13 +17,15 @@ require_once 'models.php';
 class UProfile extends AbricosApplication {
     protected function GetClasses(){
         return array(
+            'User' => 'UProfileUser',
+            'UserList' => 'UProfileUserList',
             'Profile' => 'UProfileItem',
-            'ProfileList' => 'UProfileList'
+            'ProfileList' => 'UProfileList',
         );
     }
 
     protected function GetStructures(){
-        return 'Profile';
+        return 'User,Profile';
     }
 
     public function ResponseToJSON($d){
@@ -34,6 +36,8 @@ class UProfile extends AbricosApplication {
                 return $this->ProfileSaveToJSON($d->profile);
             case "avatarRemove":
                 return $this->AvatarRemoveToJSON($d->userid);
+            case "friendList":
+                return $this->FriendListToJSON();
         }
     }
 
@@ -152,6 +156,58 @@ class UProfile extends AbricosApplication {
         return $ret;
     }
 
+    public function FriendListToJSON(){
+        $ret = $this->FriendList();
+        return $this->ResultToJSON('friendList', $ret);
+    }
+
+    public function FriendList(){
+        if (isset($this->_cache['FriendList'])){
+            return $this->_cache['FriendList'];
+        }
+        $userid = Abricos::$user->id;
+        if (empty($userid)){
+            return 403;
+        }
+
+        $modules = Abricos::$modules->RegisterAllModule();
+
+        $friendIds = array();
+        foreach ($modules as $name => $module){
+            if (!method_exists($module, 'UProfile_IsFriendIds')){
+                continue;
+            }
+            if (!$module->UProfile_IsFriendList){
+                continue;
+            }
+            $manager = $module->GetManager();
+            if (empty($manager) || !method_exists($manager, 'UProfile_FriendIds')){
+                continue;
+            }
+            $ids = $manager->UProfile_FriendIds();
+            if (!is_array($ids)){
+                continue;
+            }
+            for ($i = 0; $i < count($ids); $i++){
+                $friendIds[$ids[$i]] = true;
+            }
+        }
+
+        $uids = array();
+        foreach ($friendIds as $uid => $key){
+            $uids[] = $uid;
+        }
+
+        $models = $this->models;
+        $list = $models->InstanceClass('UserList');
+
+        $rows = UProfileQuery::UserListById($this->db, $uids);
+        while (($d = $this->db->fetch_array($rows))){
+            $list->Add($models->InstanceClass('User', $d));
+        }
+
+        return $this->_cache['FriendList'] = $list;
+    }
 
 }
 

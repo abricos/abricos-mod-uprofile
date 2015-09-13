@@ -202,41 +202,6 @@ class UProfileManager extends Ab_ModuleManager {
     }
 
 
-    /**
-     * Построить список знакомых
-     */
-    public function FriendListBuild($over){
-        $ret = array();
-
-        $modules = Abricos::$modules->RegisterAllModule();
-
-        if (is_array($over) && count($over) > 0){
-            $rows = UProfileQuery::UserListById($this->db, $over);
-            while (($row = $this->db->fetch_array($rows))){
-                if (intval($row['id']) === intval(Abricos::$user->id)){
-                    continue;
-                }
-                $ret[$row['id']] = $row;
-            }
-        }
-
-        foreach ($modules as $name => $module){
-            if (!method_exists($module, 'UProfile_UserFriendList')){
-                continue;
-            }
-            $o = $module->UProfile_UserFriendList();
-            if (is_null($o)){
-                continue;
-            }
-            $o->mod = $name;
-            foreach ($o->users as $key => $user){
-                $ret[$key] = $user;
-            }
-        }
-
-        return $ret;
-    }
-
     public function FieldList(){
         return UProfileQuery::FieldList($this->db);
     }

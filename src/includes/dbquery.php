@@ -47,7 +47,6 @@ class UProfileQuery {
         $urt = UProfileQuery::UserRatingSQLExt($db);
 
         $limit = 10;
-        $where = " ";
         $sa = array("u.userid=0");
         for ($i = 0; $i < min(count($ids), $limit); $i++){
             array_push($sa, " u.userid=".bkint($ids[$i]));
@@ -55,11 +54,7 @@ class UProfileQuery {
         $sql = "
 			SELECT
 				DISTINCT
-				u.userid as id,
-				u.username as unm,
-				u.firstname as fnm,
-				u.lastname as lnm,
-				u.avatar as avt
+				u.*
 				".$urt->fld."
 			FROM ".$db->prefix."user u
 			".$urt->tbl."
