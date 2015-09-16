@@ -111,7 +111,7 @@ Component.entryPoint = function(NS){
         structureName: 'Profile'
     });
 
-    NS.UserList = Y.Base.create('profileList', NS.UserList, [], {
+    NS.ProfileList = Y.Base.create('profileList', NS.UserList, [], {
         appItem: NS.Profile
     });
 };
