@@ -80,17 +80,6 @@ class UProfileManager extends Ab_ModuleManager {
         return $ret;
     }
 
-    public function ProfileSave($userid, $d){
-        if (!$this->IsPersonalEditRole($userid)){
-            return null;
-        }
-        $ret = new stdClass();
-        $ret->err = 0;
-
-        $ret->udata = $this->Profile($userid, true, true);
-        return $ret;
-    }
-
     /**
      * Расчет рейтинга пользователя
      *
