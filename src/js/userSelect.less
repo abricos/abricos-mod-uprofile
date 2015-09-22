@@ -1,0 +1,39 @@
+.aw-uprofile.userSelect {
+
+  height: 300px;
+
+  border: 1px solid #ddd;
+  table {
+    width: 100%;
+  }
+  h4 {
+    margin-top: 0;
+  }
+
+  .colLeft, .colRight {
+    width: 48%;
+    padding: 10px;
+  }
+  .colLeft, .colCenter .colRight {
+    & > div {
+      height: 298px;
+    }
+  }
+
+  .colCenter {
+    width: 30px;
+    & > div {
+      padding-top: 10px;
+      text-align: center;
+      height: 298px;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      background-color: #f5f5f5;;
+    }
+    .btn {
+      margin: 5px;
+      margin-top: 0;
+    }
+  }
+
+}

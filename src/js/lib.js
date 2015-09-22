@@ -17,6 +17,33 @@ Component.entryPoint = function(NS){
     });
 
     SYS.Application.build(COMPONENT, {}, {
+        _checkUsersInCache: function(userids){
+            if (!Y.Lang.isArray(userids)){
+                userids = [userids];
+            }
+            var userList = this.get('userList');
+            for (var i = 0; i < userids.length; i++){
+                if (!userList.getById(userids[i] | 0)){
+                    return false;
+                }
+            }
+            return true;
+        },
+        _setUsersToCache: function(userList){
+            if (!userList){
+                return;
+            }
+            var cacheUserList = this.get('userList');
+            userList.each(function(user){
+
+                var userid = user.get('id');
+
+                if (cacheUserList.getById(userid)){
+                    cacheUserList.removeById(userid);
+                }
+                cacheUserList.add(user);
+            }, this);
+        },
         initializer: function(){
             NS.roles.load(function(){
                 this.initCallbackFire();
@@ -32,11 +59,18 @@ Component.entryPoint = function(NS){
                 readOnly: true,
                 getter: function(){
                     if (!this._profileList){
-                        this._profileList = new NS.ProfileList({
-                            appInstance: this
-                        })
+                        this._profileList = new NS.ProfileList({appInstance: this})
                     }
                     return this._profileList;
+                }
+            },
+            userList: {
+                readOnly: true,
+                getter: function(){
+                    if (!this._userList){
+                        this._userList = new NS.UserList({appInstance: this})
+                    }
+                    return this._userList;
                 }
             }
         },
@@ -66,12 +100,26 @@ Component.entryPoint = function(NS){
                 args: ['profile']
             },
             avatarRemove: {
-                args: ['userid'],
-                attribute: false
+                args: ['userid']
             },
             friendList: {
                 attribute: true,
                 type: 'modelList:UserList'
+            },
+            userSearch: {
+                args: ['search'],
+                type: 'modelList:UserList'
+            },
+            userListByIds: {
+                args: ['userids'],
+                type: 'modelList:UserList',
+                cache: function(userids){
+                    return this._checkUsersInCache(userids);
+                },
+                onResponse: function(userList){
+                    this._setUsersToCache(userList);
+                    return userList;
+                }
             }
         },
         URLS: {

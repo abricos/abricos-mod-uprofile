@@ -96,42 +96,30 @@ class UProfileQuery {
         $db->query_write($sql);
     }
 
-    /**
-     * Поиск пользователя по имени, фамилии или логину
-     *
-     * @param Ab_Database $db
-     * @param integer $userid
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $username
-     */
-    public static function FindUser(Ab_Database $db, $userid, $firstname, $lastname, $username){
+    public static function UserSearch(Ab_Database $db, $d){
         $where = array();
-        if (!empty($firstname)){
-            array_push($where, " UPPER(u.firstname)=UPPER('".bkstr($firstname)."') ");
+        if (!empty($d->firstname)){
+            array_push($where, " UPPER(u.firstname)=UPPER('".bkstr($d->firstname)."') ");
         }
-        if (!empty($lastname)){
-            array_push($where, " UPPER(u.lastname)=UPPER('".bkstr($lastname)."') ");
+        if (!empty($d->lastname)){
+            array_push($where, " UPPER(u.lastname)=UPPER('".bkstr($d->lastname)."') ");
         }
-        if (!empty($username)){
-            array_push($where, " UPPER(u.username)=UPPER('".bkstr($username)."') ");
+        if (!empty($d->username)){
+            array_push($where, " UPPER(u.username)=UPPER('".bkstr($d->username)."') ");
         }
-        array_push($where, " u.userid<>".bkint($userid));
+        array_push($where, " u.userid<>".bkint(Abricos::$user->id));
 
         $urt = UProfileQuery::UserRatingSQLExt($db);
 
         $sql = "
 			SELECT
-			 	u.userid as id,
-				u.username as unm,
-				u.firstname as fnm,
-				u.lastname as lnm,
-				u.avatar as avt
+			    DISTINCT
+			 	u.*
 				".$urt->fld."
 			FROM ".$db->prefix."user u
 			".$urt->tbl."
 			WHERE ".implode(" AND ", $where)."
-			LIMIT 50
+			LIMIT 25
 		";
         return $db->query_read($sql);
     }

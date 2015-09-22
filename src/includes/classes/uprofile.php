@@ -38,6 +38,10 @@ class UProfile extends AbricosApplication {
                 return $this->AvatarRemoveToJSON($d->userid);
             case "friendList":
                 return $this->FriendListToJSON();
+            case "userSearch":
+                return $this->UserSearchToJSON($d->search);
+            case "userListByIds":
+                return $this->UserListByIdsToJSON($d->userids);
         }
     }
 
@@ -209,6 +213,54 @@ class UProfile extends AbricosApplication {
         return $this->_cache['FriendList'] = $list;
     }
 
+    public function UserSearchToJSON($d){
+        $ret = $this->UserSearch($d);
+        return $this->ResultToJSON('userSearch', $ret);
+    }
+
+    public function UserSearch($d){
+        if (!$this->manager->IsViewRole()){
+            return 403;
+        }
+
+        $utmf = Abricos::TextParser(true);
+        $d->username = $utmf->Parser($d->username);
+        $d->firstname = $utmf->Parser($d->firstname);
+        $d->lastname = $utmf->Parser($d->lastname);
+
+        $models = $this->models;
+        $list = $models->InstanceClass('UserList');
+
+        if (empty($d->username) && empty($d->firstname) && empty($d->lastname)){
+            return $list;
+        }
+
+        $rows = UProfileQuery::UserSearch($this->db, $d);
+        while (($d = $this->db->fetch_array($rows))){
+            $list->Add($models->InstanceClass('User', $d));
+        }
+        return $list;
+    }
+
+    public function UserListByIdsToJSON($d){
+        $ret = $this->UserListByIds($d);
+        return $this->ResultToJSON('userListByIds', $ret);
+    }
+
+    public function UserListByIds($d){
+        if (!$this->manager->IsViewRole()){
+            return 403;
+        }
+
+        $models = $this->models;
+        $list = $models->InstanceClass('UserList');
+
+        $rows = UProfileQuery::UserListById($this->db, $d);
+        while (($d = $this->db->fetch_array($rows))){
+            $list->Add($models->InstanceClass('User', $d));
+        }
+        return $list;
+    }
 }
 
 ?>
