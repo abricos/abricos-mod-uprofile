@@ -21,15 +21,23 @@ Component.entryPoint = function(NS){
             if (!Y.Lang.isArray(userids)){
                 userids = [userids];
             }
-            var userList = this.get('userList');
+            var userList = this.get('userList'),
+                user,
+                retUserList;
+
             for (var i = 0; i < userids.length; i++){
-                if (!userList.getById(userids[i] | 0)){
-                    return false;
+                user = userList.getById(userids[i] | 0);
+                if (!user){
+                    return null;
                 }
+                if (!retUserList){
+                    retUserList = new NS.UserList({appInstance: this});
+                }
+                retUserList.add(user);
             }
-            return true;
+            return retUserList;
         },
-        _setUsersToCache: function(userList){
+        _addUsersToCache: function(userList){
             if (!userList){
                 return;
             }
@@ -59,7 +67,7 @@ Component.entryPoint = function(NS){
                 readOnly: true,
                 getter: function(){
                     if (!this._profileList){
-                        this._profileList = new NS.ProfileList({appInstance: this})
+                        this._profileList = new NS.ProfileList({appInstance: this});
                     }
                     return this._profileList;
                 }
@@ -68,7 +76,7 @@ Component.entryPoint = function(NS){
                 readOnly: true,
                 getter: function(){
                     if (!this._userList){
-                        this._userList = new NS.UserList({appInstance: this})
+                        this._userList = new NS.UserList({appInstance: this});
                     }
                     return this._userList;
                 }
@@ -104,11 +112,19 @@ Component.entryPoint = function(NS){
             },
             friendList: {
                 attribute: true,
-                type: 'modelList:UserList'
+                type: 'modelList:UserList',
+                onResponse: function(userList){
+                    this._addUsersToCache(userList);
+                    return userList;
+                }
             },
             userSearch: {
                 args: ['search'],
-                type: 'modelList:UserList'
+                type: 'modelList:UserList',
+                onResponse: function(userList){
+                    this._addUsersToCache(userList);
+                    return userList;
+                }
             },
             userListByIds: {
                 args: ['userids'],
@@ -117,7 +133,7 @@ Component.entryPoint = function(NS){
                     return this._checkUsersInCache(userids);
                 },
                 onResponse: function(userList){
-                    this._setUsersToCache(userList);
+                    this._addUsersToCache(userList);
                     return userList;
                 }
             }
