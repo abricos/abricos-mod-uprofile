@@ -12,6 +12,7 @@ $updateManager = Ab_UpdateManager::$current;
 $db = Abricos::$db;
 $pfx = $db->prefix;
 
+/** @var UProfileManager $uprofilemanager */
 $uprofileManager = $updateManager->module->GetManager();
 
 if ($updateManager->isInstall()){

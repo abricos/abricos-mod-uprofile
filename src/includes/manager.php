@@ -163,34 +163,6 @@ class UProfileManager extends Ab_ModuleManager {
         return false;
     }
 
-    /**
-     * Поиск пользователя в базе
-     *
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $username
-     * @param boolean $retarray
-     */
-    public function FindUser($firstname, $lastname, $username, $retarray = false){
-        if (!(!empty($firstname) || !empty($lastname) || !empty($username))){
-            return null;
-        }
-
-        if (!$this->IsViewRole()){
-            return null;
-        }
-        $rows = UProfileQuery::FindUser($this->db, Abricos::$user->id, $firstname, $lastname, $username);
-        if (!$retarray){
-            return $rows;
-        }
-        $ret = array();
-        while (($row = $this->db->fetch_array($rows))){
-            $ret[$row['id']] = $row;
-        }
-        return $ret;
-    }
-
-
     public function FieldList(){
         return UProfileQuery::FieldList($this->db);
     }

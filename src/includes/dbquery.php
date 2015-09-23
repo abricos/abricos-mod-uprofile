@@ -159,34 +159,34 @@ class UProfileQuery {
         $sql = "";
         switch ($type){
             case UProfileFieldType::BOOLEAN:
-                $sql = "`".$name."` tinyint(1) unsigned NOT NULL default ".bkint($defvalue);
+                $sql = "".$name." tinyint(1) unsigned NOT NULL default ".bkint($defvalue);
                 break;
             case UProfileFieldType::INTEGER:
-                $sql = "`".$name."` int(".$size.") ".$unsignedStr." NOT NULL default ".intval($defvalue)."";
+                $sql = "".$name." int(".$size.") ".$unsignedStr." NOT NULL default ".intval($defvalue)."";
                 break;
             case UProfileFieldType::STRING:
-                $sql = "`".$name."` varchar(".$size.") NOT NULL default '".$defvalue."'";
+                $sql = "".$name." varchar(".$size.") NOT NULL default '".$defvalue."'";
                 break;
             case UProfileFieldType::DOUBLE:
-                $sql = "`".$name."` double(".$size.") ".$unsignedStr." NOT NULL default ".doubleval($defvalue)."";
+                $sql = "".$name." double(".$size.") ".$unsignedStr." NOT NULL default ".doubleval($defvalue)."";
                 break;
             case UProfileFieldType::TEXT:
-                $sql = "`".$name."` TEXT";
+                $sql = "".$name." TEXT";
                 break;
             case UProfileFieldType::DATETIME:
-                $sql = "`".$name."` int(10) unsigned NOT NULL default 0";
+                $sql = "".$name." int(10) unsigned NOT NULL default 0";
                 break;
             case UProfileFieldType::ENUM:
-                $sql = "`".$name."` int(".$size.") unsigned NOT NULL default 0";
+                $sql = "".$name." int(".$size.") unsigned NOT NULL default 0";
                 break;
             case UProfileFieldType::TABLE:
-                $sql = "`".$name."id` int(".$size.") unsigned NOT NULL default 0";
+                $sql = "".$name."id int(".$size.") unsigned NOT NULL default 0";
                 break;
         }
         if (empty($sql)){
             return;
         }
-        $sql = "ALTER TABLE `".$db->prefix."user` ADD ".$sql." COMMENT '".$title."'";
+        $sql = "ALTER TABLE ".$db->prefix."user ADD ".$sql." COMMENT '".$title."'";
         $db->query_write($sql);
     }
 
@@ -206,7 +206,7 @@ class UProfileQuery {
 
     public static function FieldRemove(Ab_Database $db, $name){
         $sql = "
-			ALTER TABLE `".$db->prefix."user` DROP `".bkstr($name)."`
+			ALTER TABLE ".$db->prefix."user DROP ".bkstr($name)."
 		";
         $db->query_write($sql);
         $sql = "
