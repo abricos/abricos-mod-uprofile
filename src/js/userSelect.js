@@ -228,6 +228,7 @@ Component.entryPoint = function(NS){
                 lastname: ''
             });
             tp.toggleView(true, 'searchPanel', 'selectPanel');
+            tp.one('username').focus();
         },
         searchCancel: function(){
             this.template.toggleView(false, 'searchPanel', 'selectPanel');
