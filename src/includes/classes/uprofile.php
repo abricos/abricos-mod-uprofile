@@ -40,6 +40,8 @@ class UProfile extends AbricosApplication {
                 return $this->FriendListToJSON();
             case "userSearch":
                 return $this->UserSearchToJSON($d->search);
+            case "user":
+                return $this->UserToJSON($d->userid);
             case "userListByIds":
                 return $this->UserListByIdsToJSON($d->userids);
         }
@@ -247,6 +249,10 @@ class UProfile extends AbricosApplication {
         return $this->ResultToJSON('userListByIds', $ret);
     }
 
+    /**
+     * @param array $d
+     * @return UProfileUserList
+     */
     public function UserListByIds($d){
         if (!$this->manager->IsViewRole()){
             return 403;
@@ -260,6 +266,27 @@ class UProfile extends AbricosApplication {
             $list->Add($models->InstanceClass('User', $d));
         }
         return $list;
+    }
+
+    public function UserToJSON($userid){
+        $ret = $this->User($userid);
+        return $this->ResultToJSON('user', $ret);
+    }
+
+    /**
+     * @param $userid
+     * @return UProfileUser|int
+     */
+    public function User($userid){
+        $list = $this->UserListByIds(array($userid));
+        if (is_integer($list)){
+            return $list;
+        }
+        $user = $list->Get($userid);
+        if (!$user){
+            return 404;
+        }
+        return $user;
     }
 }
 

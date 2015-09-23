@@ -8,7 +8,8 @@ Component.requires = {
 Component.entryPoint = function(NS){
 
     var COMPONENT = this,
-        SYS = Brick.mod.sys;
+        SYS = Brick.mod.sys,
+        UID = Brick.env.user.id;
 
     NS.roles = new Brick.AppRoles('{C#MODNAME}', {
         isAdmin: 50,
@@ -41,20 +42,31 @@ Component.entryPoint = function(NS){
             if (!userList){
                 return;
             }
-            var cacheUserList = this.get('userList');
             userList.each(function(user){
-
-                var userid = user.get('id');
-
-                if (cacheUserList.getById(userid)){
-                    cacheUserList.removeById(userid);
-                }
-                cacheUserList.add(user);
+                this._addUserToCache(user);
             }, this);
+        },
+        _addUserToCache: function(user){
+            if (!user){
+                return;
+            }
+            var cacheUserList = this.get('userList'),
+                userid = user.get('id');
+
+            if (cacheUserList.getById(userid)){
+                cacheUserList.removeById(userid);
+            }
+            cacheUserList.add(user);
         },
         initializer: function(){
             NS.roles.load(function(){
-                this.initCallbackFire();
+                if (UID > 0){
+                    this.user(UID, function(err, result){
+                        this.initCallbackFire();
+                    }, this);
+                } else {
+                    this.initCallbackFire();
+                }
             }, this);
         }
     }, [], {
@@ -124,6 +136,19 @@ Component.entryPoint = function(NS){
                 onResponse: function(userList){
                     this._addUsersToCache(userList);
                     return userList;
+                }
+            },
+            user: {
+                args: ['userid'],
+                type: 'model:User',
+                cache: function(userid){
+                    var userList = this._checkUsersInCache([userid]),
+                        user = userList ? userList.getById(userid) : null;
+                    return user;
+                },
+                onResponse: function(user){
+                    this._addUserToCache(user);
+                    return user;
                 }
             },
             userListByIds: {

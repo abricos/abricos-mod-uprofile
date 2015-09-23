@@ -152,7 +152,6 @@ Component.entryPoint = function(NS){
             });
 
             var users = this.get('users');
-            users = [2];
             this.set('waiting', true);
             appInstance.friendList(function(err, result){
                 if (!err){

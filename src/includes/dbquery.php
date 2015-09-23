@@ -46,7 +46,7 @@ class UProfileQuery {
     public static function UserListById(Ab_Database $db, $ids){
         $urt = UProfileQuery::UserRatingSQLExt($db);
 
-        $limit = 10;
+        $limit = 25;
         $sa = array("u.userid=0");
         for ($i = 0; $i < min(count($ids), $limit); $i++){
             array_push($sa, " u.userid=".bkint($ids[$i]));
