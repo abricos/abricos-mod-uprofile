@@ -10,11 +10,11 @@
 require_once 'models.php';
 
 /**
- * Class UProfile
+ * Class UProfileApp
  *
  * @property UProfileManager $manager
  */
-class UProfile extends AbricosApplication {
+class UProfileApp extends AbricosApplication {
     protected function GetClasses(){
         return array(
             'User' => 'UProfileUser',
@@ -47,6 +47,12 @@ class UProfile extends AbricosApplication {
         }
     }
 
+    protected $_cache = array();
+
+    public function ClearCache(){
+        $this->_cache = array();
+    }
+
     public function IsUserRating(){
         $modURating = Abricos::GetModule('urating');
         return !empty($modURating);
@@ -57,12 +63,6 @@ class UProfile extends AbricosApplication {
             return;
         }
         URatingModule::$instance->GetManager()->Calculate($isClear);
-    }
-
-    protected $_cache = array();
-
-    public function ClearCache(){
-        $this->_cache = array();
     }
 
     public function ProfileToJSON($userid){
@@ -204,12 +204,11 @@ class UProfile extends AbricosApplication {
             $uids[] = $uid;
         }
 
-        $models = $this->models;
-        $list = $models->InstanceClass('UserList');
+        $list = $this->InstanceClass('UserList');
 
         $rows = UProfileQuery::UserListById($this->db, $uids);
         while (($d = $this->db->fetch_array($rows))){
-            $list->Add($models->InstanceClass('User', $d));
+            $list->Add($this->InstanceClass('User', $d));
         }
 
         return $this->_cache['FriendList'] = $list;
@@ -230,8 +229,7 @@ class UProfile extends AbricosApplication {
         $d->firstname = $utmf->Parser($d->firstname);
         $d->lastname = $utmf->Parser($d->lastname);
 
-        $models = $this->models;
-        $list = $models->InstanceClass('UserList');
+        $list = $this->InstanceClass('UserList');
 
         if (empty($d->username) && empty($d->firstname) && empty($d->lastname)){
             return $list;
@@ -239,7 +237,7 @@ class UProfile extends AbricosApplication {
 
         $rows = UProfileQuery::UserSearch($this->db, $d);
         while (($d = $this->db->fetch_array($rows))){
-            $list->Add($models->InstanceClass('User', $d));
+            $list->Add($this->InstanceClass('User', $d));
         }
         return $list;
     }
@@ -258,12 +256,39 @@ class UProfile extends AbricosApplication {
             return 403;
         }
 
-        $models = $this->models;
-        $list = $models->InstanceClass('UserList');
+        /** @var UProfileUserList $list */
+        $list = $this->InstanceClass('UserList');
 
-        $rows = UProfileQuery::UserListById($this->db, $d);
+        if (!is_array($d)){
+            return 400;
+        }
+        if (!isset($this->_cache['User'])){
+            $this->_cache['User'] = array();
+        }
+        $distinct = new stdClass();
+        $userids = array();
+        $count = count($d);
+        for ($i = 0; $i < $count; $i++){
+            $userid = intval($d[$i]);
+
+            if (isset($this->_cache['User'][$userid])){
+                $list->Add($this->_cache['User'][$userid]);
+            } else if (!isset($distinct->$userid)){
+                $userids[] = $userid;
+                $distinct->$userid = $userid;
+            }
+        }
+
+        if (count($userids) === 0){
+            return $list;
+        }
+
+        $rows = UProfileQuery::UserListById($this, $userids);
         while (($d = $this->db->fetch_array($rows))){
-            $list->Add($models->InstanceClass('User', $d));
+            /** @var UProfileUser $user */
+            $user = $this->InstanceClass('User', $d);
+            $this->_cache['User'][$user->id] = $user;
+            $list->Add($user);
         }
         return $list;
     }
@@ -283,7 +308,7 @@ class UProfile extends AbricosApplication {
             return $list;
         }
         $user = $list->Get($userid);
-        if (!$user){
+        if (empty($user)){
             return 404;
         }
         return $user;

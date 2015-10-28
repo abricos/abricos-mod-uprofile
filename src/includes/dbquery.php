@@ -12,6 +12,7 @@
  */
 class UProfileQuery {
 
+    /*
     public static function UserRatingSQLExt(Ab_Database $db){
         $ret = new stdClass();
         $ret->fld = "";
@@ -41,12 +42,13 @@ class UProfileQuery {
         }
         return $ret;
     }
+    /**/
 
+    public static function UserListById(UProfileApp $app, $ids){
+        // $urt = UProfileQuery::UserRatingSQLExt($db);
+        $db = $app->db;
 
-    public static function UserListById(Ab_Database $db, $ids){
-        $urt = UProfileQuery::UserRatingSQLExt($db);
-
-        $limit = 25;
+        $limit = 50;
         $sa = array("u.userid=0");
         for ($i = 0; $i < min(count($ids), $limit); $i++){
             array_push($sa, " u.userid=".bkint($ids[$i]));
@@ -55,9 +57,7 @@ class UProfileQuery {
 			SELECT
 				DISTINCT
 				u.*
-				".$urt->fld."
 			FROM ".$db->prefix."user u
-			".$urt->tbl."
 			WHERE ".implode(" OR ", $sa)."
 			LIMIT ".bkint($limit)."
 		";

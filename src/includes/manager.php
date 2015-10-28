@@ -50,21 +50,21 @@ class UProfileManager extends Ab_ModuleManager {
         return ($this->IsWriteRole() && intval(Abricos::$user->id) === intval($userid)) || $this->IsAdminRole();
     }
 
-    private $_uprofile = null;
+    private $_app = null;
 
     /**
-     * @return UProfile
+     * @return UProfileApp
      */
-    public function GetUProfile(){
-        if (!is_null($this->_uprofile)){
-            return $this->_uprofile;
+    public function GetApp(){
+        if (!is_null($this->_app)){
+            return $this->_app;
         }
-        require_once 'classes/uprofile.php';
-        return $this->_uprofile = new UProfile($this);
+        $this->module->ScriptRequireOnce('includes/app.php');
+        return $this->_app = new UProfileApp($this);
     }
 
     public function AJAX($d){
-        return $this->GetUProfile()->AJAX($d);
+        return $this->GetApp()->AJAX($d);
     }
 
     public function PasswordSave($userid, $d){

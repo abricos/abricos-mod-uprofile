@@ -20,6 +20,17 @@
 class UProfileUser extends AbricosModel {
     protected $_structModule = 'uprofile';
     protected $_structName = 'User';
+
+    public function GetViewName(){
+        if ($this->firstname === "" && $this->lastname === ""){
+            return $this->username;
+        }
+        return $this->firstname." ".$this->lastname;
+    }
+
+    public function URI(){
+        return "#";
+    }
 }
 
 /**
