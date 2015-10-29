@@ -248,7 +248,7 @@ class UProfileApp extends AbricosApplication {
     }
 
     /**
-     * @param array $d
+     * @param array|int $d
      * @return UProfileUserList
      */
     public function UserListByIds($d){
@@ -258,8 +258,9 @@ class UProfileApp extends AbricosApplication {
 
         /** @var UProfileUserList $list */
         $list = $this->InstanceClass('UserList');
-
-        if (!is_array($d)){
+        if (is_integer($d)){
+            $d = array($d);
+        } else if (!is_array($d)){
             return 400;
         }
         if (!isset($this->_cache['User'])){
