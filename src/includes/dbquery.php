@@ -12,40 +12,7 @@
  */
 class UProfileQuery {
 
-    /*
-    public static function UserRatingSQLExt(Ab_Database $db){
-        $ret = new stdClass();
-        $ret->fld = "";
-        $ret->tbl = "";
-        if (UProfileManager::$instance->GetUProfile()->IsUserRating()){
-            $ret->fld = "
-				,
-				IF(ISNULL(urt.reputation), 0, urt.reputation) as rep,
-				IF(ISNULL(urt.votecount), 0, urt.votecount) as repcnt,
-				IF(ISNULL(urt.skill), 0, urt.skill) as rtg
-			";
-
-            $ret->tbl = "
-				LEFT JOIN ".$db->prefix."urating_user urt ON u.userid=urt.userid
-			";
-
-            $userid = Abricos::$user->id;
-            if ($userid > 0){ // необходимо показать отношение к пользователю
-                $ret->fld .= "
-					,IF(ISNULL(vt.userid), null, IF(vt.voteup>0, 1, IF(vt.votedown>0, -1, 0))) as repmy
-				";
-                $ret->tbl .= "
-					LEFT JOIN ".$db->prefix."urating_vote vt ON vt.module='urating' 
-						AND vt.elementtype='user' AND vt.elementid=u.userid AND vt.userid=".bkint($userid)."
-				";
-            }
-        }
-        return $ret;
-    }
-    /**/
-
     public static function UserListById(UProfileApp $app, $ids){
-        // $urt = UProfileQuery::UserRatingSQLExt($db);
         $db = $app->db;
 
         $limit = 50;
@@ -65,12 +32,9 @@ class UProfileQuery {
     }
 
     public static function Profile(Ab_Database $db, $userid){
-        $urt = UProfileQuery::UserRatingSQLExt($db);
         $sql = "
 			SELECT u.*
-				".$urt->fld."
 			FROM ".$db->prefix."user u
-			".$urt->tbl."
 			WHERE u.userid=".bkint($userid)."
 			LIMIT 1
 		";
@@ -109,15 +73,11 @@ class UProfileQuery {
         }
         array_push($where, " u.userid<>".bkint(Abricos::$user->id));
 
-        $urt = UProfileQuery::UserRatingSQLExt($db);
-
         $sql = "
 			SELECT
 			    DISTINCT
 			 	u.*
-				".$urt->fld."
 			FROM ".$db->prefix."user u
-			".$urt->tbl."
 			WHERE ".implode(" AND ", $where)."
 			LIMIT 25
 		";
