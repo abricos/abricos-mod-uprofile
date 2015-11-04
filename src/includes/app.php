@@ -34,6 +34,8 @@ class UProfileApp extends AbricosApplication {
                 return $this->ProfileToJSON($d->userid);
             case "profileSave":
                 return $this->ProfileSaveToJSON($d->profile);
+            case "passwordSave":
+                return $this->PasswordSaveToJSON($d->password);
             case "avatarRemove":
                 return $this->AvatarRemoveToJSON($d->userid);
             case "friendList":
@@ -77,14 +79,14 @@ class UProfileApp extends AbricosApplication {
      */
     public function Profile($userid, $recalcRating = false){
         if (!$this->manager->IsViewRole()){
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
         $this->UsersRatingCheck($recalcRating);
 
         $d = UProfileQuery::Profile($this->db, $userid);
         if (empty($d)){
             sleep(3);
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
         return $this->models->InstanceClass('Profile', $d);
     }
@@ -92,7 +94,7 @@ class UProfileApp extends AbricosApplication {
     public function FieldSetValue($varname, $value){
         $userid = Abricos::$user->id;
         if (!$this->manager->IsPersonalEditRole($userid)){
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
 
         UProfileQuery::FieldSetValue($this->db, $userid, $varname, $value);
@@ -110,7 +112,7 @@ class UProfileApp extends AbricosApplication {
     public function ProfileSave($d){
         $userid = intval($d->id);
         if (!$this->manager->IsPersonalEditRole($userid)){
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
 
         $utmf = Abricos::TextParser(true);
@@ -129,6 +131,42 @@ class UProfileApp extends AbricosApplication {
         return $ret;
     }
 
+    public function PasswordSaveToJSON($d){
+        $userid = intval($d->id);
+        $res = $this->PasswordSave($d);
+        return $this->ImplodeJSON(
+            $this->PasswordToJSON($userid),
+            $this->ResultToJSON('passwordSave', $res)
+        );
+    }
+
+    public function PasswordSave($d){
+        $userid = intval($d->id);
+        if (!$this->manager->IsPersonalEditRole($userid)){
+            return AbricosResponse::ERR_FORBIDDEN;
+        }
+
+        $d->currentPassword = isset($d->currentPassword) ? $d->currentPassword : "";
+        $d->password = isset($d->password) ? $d->password : "";
+        $d->checkPassword = isset($d->checkPassword) ? $d->checkPassword : "";
+
+        if ($d->password !== $d->checkPassword){
+            return AbricosResponse::ERR_BAD_REQUEST;
+        }
+
+        /** @var UserModule $module */
+        $module = Abricos::GetModule('user');
+        $errCode = $module->GetManager()->UserPasswordChange($userid, $d->currentPassword, $d->password);
+        if ($errCode > 0){
+            return $errCode;
+        }
+
+        $ret = new stdClass();
+        $ret->userid = $userid;
+        return $ret;
+    }
+
+
     public function AvatarRemoveToJSON($userid){
         $res = $this->AvatarRemove($userid);
         return $this->ImplodeJSON(
@@ -139,7 +177,7 @@ class UProfileApp extends AbricosApplication {
 
     public function AvatarRemove($userid){
         if (!$this->manager->IsPersonalEditRole($userid)){
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
 
         $profile = $this->Profile($userid);
@@ -173,7 +211,7 @@ class UProfileApp extends AbricosApplication {
         }
         $userid = Abricos::$user->id;
         if (empty($userid)){
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
 
         $modules = Abricos::$modules->RegisterAllModule();
@@ -221,7 +259,7 @@ class UProfileApp extends AbricosApplication {
 
     public function UserSearch($d){
         if (!$this->manager->IsViewRole()){
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
 
         $utmf = Abricos::TextParser(true);
@@ -253,7 +291,7 @@ class UProfileApp extends AbricosApplication {
      */
     public function UserListByIds($d){
         if (!$this->manager->IsViewRole()){
-            return 403;
+            return AbricosResponse::ERR_FORBIDDEN;
         }
 
         /** @var UProfileUserList $list */

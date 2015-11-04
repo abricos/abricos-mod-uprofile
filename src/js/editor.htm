@@ -148,3 +148,55 @@
 
 <!--{option}-->
 <option value="{v#id}">{v#title}</option>
+
+<!--{password}-->
+<div class="editor">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-4 text-right">
+                        <span class="title">Текущий пароль</span>
+                    </div>
+                    <div class="col-sm-8">
+                        <input id="{i#currentPassword}"
+                               data-wait="disable"
+                               type="password" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4 text-right">
+                        <span class="title">Новый пароль</span>
+                    </div>
+                    <div class="col-sm-8">
+                        <input id="{i#password}"
+                               data-wait="disable"
+                               type="password" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4 text-right">
+                        <span class="title">Повторите пароль</span>
+                    </div>
+                    <div class="col-sm-8">
+                        <input id="{i#checkPassword}"
+                               data-wait="disable"
+                               type="password" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-4">
+            <div data-wait="show" class="text-right">
+                <img src="/images/loading.gif"/>
+            </div>
+            <div id="{i#buttons}" data-wait="hide" class="text-right">
+                <a data-click="save" href="#">Сохранить</a>
+                &nbsp;
+                <a data-click="cancel" href="#">Отмена</a>
+            </div>
+
+        </div>
+    </div>
+</div>

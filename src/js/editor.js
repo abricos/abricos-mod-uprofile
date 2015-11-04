@@ -151,4 +151,45 @@ Component.entryPoint = function(NS){
     });
 
 
+    NS.PasswordEditorWidget = Y.Base.create('passwordEditorWidget', SYS.AppWidget, [
+        NS.ProfileWidgetExt
+    ], {
+        onInitProfileWidget: function(err, appInstance){
+            this.publish('saved');
+        },
+        destructor: function(){
+        },
+        renderProfile: function(){
+        },
+        save: function(){
+            if (this.get('waiting')){
+                return;
+            }
+
+            var tp = this.template;
+
+            var d = Y.merge(tp.getValue('currentPassword,password,checkPassword'), {
+                id: this.get('userid')
+            });
+
+            this.set('waiting', true);
+            this.get('appInstance').passwordSave(d, function(err, result){
+                this.set('waiting', false);
+                if (!err){
+                    this.fire('saved', result.passwordSave);
+                }
+            }, this);
+        },
+        cancel: function(){
+        }
+    }, {
+        ATTRS: {
+            component: {value: COMPONENT},
+            templateBlockName: {value: 'password'},
+        },
+        CLICKS: {
+            save: 'save', cancel: 'cancel'
+        }
+    });
+
 };

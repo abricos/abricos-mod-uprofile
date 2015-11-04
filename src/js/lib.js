@@ -119,6 +119,9 @@ Component.entryPoint = function(NS){
             profileSave: {
                 args: ['profile']
             },
+            passwordSave: {
+                args: ['password']
+            },
             avatarRemove: {
                 args: ['userid']
             },
