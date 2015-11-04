@@ -122,7 +122,7 @@ Component.entryPoint = function(NS){
 
             var name, value,
                 rows = ('email,descript,site,twitter,birthday,' +
-                    'joindate,lastvisit').split(',');
+                'joindate,lastvisit').split(',');
 
             for (var i = 0; i < rows.length; i++){
                 name = rows[i];
@@ -149,7 +149,7 @@ Component.entryPoint = function(NS){
                 userid: userid
             });
             this.infoWidget = new NS.InfoWidget({
-                srcNode: tp.one('info'),
+                boundingBox: tp.one('info'),
                 userid: userid
             });
         },
@@ -158,6 +158,8 @@ Component.entryPoint = function(NS){
             if (this.avatarWidget){
                 this.avatarWidget.destroy();
                 this.avatarWidget = null;
+                this.infoWidget.destroy();
+                this.infoWidget = null;
             }
         },
         closeEditor: function(){
@@ -169,15 +171,14 @@ Component.entryPoint = function(NS){
             this._editor = null;
 
             var tp = this.template;
-            tp.show('viewer');
+            tp.show('info,buttons');
         },
         _onEditorSaved: function(){
             this.closeEditor();
         },
         renderProfile: function(){
-            var tp = this.template,
-                profile = this.get('profile');
-            tp.toggleView(profile.isEdit(), 'buttons');
+            var profile = this.get('profile');
+            this.template.toggleView(profile.isEdit(), 'buttons');
         },
         _showEditor: function(editor){
             this.closeEditor();
@@ -202,7 +203,7 @@ Component.entryPoint = function(NS){
                     this._editor = new NS.ProfileEditorWidget(options);
                 }
                 this._editor.on('saved', this._onEditorSaved, this);
-                tp.hide('viewer');
+                tp.hide('info,buttons');
             }, this);
         },
         showProfileEditor: function(){
@@ -219,13 +220,13 @@ Component.entryPoint = function(NS){
         CLICKS: {
             editProfile: 'showProfileEditor',
             changePassword: 'showPasswordEditor'
+        },
+        parseURLParam: function(args){
+            args = args || [];
+            return {
+                userid: (args[0] | 0)
+            };
         }
     });
 
-    NS.ProfileWidget.parseURLParam = function(args){
-        args = args || [];
-        return {
-            userid: (args[0] | 0)
-        };
-    };
 };

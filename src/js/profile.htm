@@ -1,26 +1,32 @@
 <!--{widget}-->
 <div class="panel panel-default profile">
+    <div class="panel-heading text-center">
+        <div class="pull-left">
+            <h3 class="panel-title">Основная информация</h3>
+        </div>
+
+        <img src="/images/loading.gif" data-wait="show"/>
+
+        <div id="{i#buttons}" class="pull-right hide btn-toolbar" data-wait="disable">
+            <button data-click="editProfile" type="button"
+                    class="btn btn-default btn-xs">
+                Редактировать профиль
+            </button>
+
+            <button data-click="changePassword" type="button"
+                    class="btn btn-default btn-xs">
+                Изменить пароль
+            </button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-3">
                 <div id="{i#avatar}"></div>
             </div>
             <div class="col-sm-9">
-                <div id="{i#viewer}" class="row">
-                    <div class="col-sm-8">
-                        <div id="{i#info}"></div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div data-wait="show" class="text-right">
-                            <img src="/images/loading.gif"/>
-                        </div>
-                        <div id="{i#buttons}" data-wait="hide" class="hide">
-                            <a data-click="editProfile" href="#">Редактировать профиль</a>
-                            <br/>
-                            <a data-click="changePassword" href="#">Изменить пароль</a>
-                        </div>
-                    </div>
-                </div>
+                <div id="{i#info}"></div>
                 <div id="{i#editor}"></div>
             </div>
         </div>

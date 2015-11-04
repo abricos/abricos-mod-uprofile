@@ -170,7 +170,12 @@ Component.entryPoint = function(NS){
             ws: "#app={C#MODNAMEURI}/wspace/ws/",
             profile: {
                 view: function(userid){
-                    return this.getURL('ws') + 'profile/ProfileWidget/' + (userid | 0) + '/'
+                    return this.getURL('ws') + 'profile/ProfileWidget/' + (userid | 0) + '/';
+                }
+            },
+            config: {
+                subscribe: function(){
+                    return this.getURL('ws') + 'subscribe/SubscribeConfigWidget/';
                 }
             }
         }
