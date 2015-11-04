@@ -135,7 +135,7 @@ class UProfileApp extends AbricosApplication {
         $userid = intval($d->id);
         $res = $this->PasswordSave($d);
         return $this->ImplodeJSON(
-            $this->PasswordToJSON($userid),
+            $this->ProfileToJSON($userid),
             $this->ResultToJSON('passwordSave', $res)
         );
     }
@@ -156,9 +156,10 @@ class UProfileApp extends AbricosApplication {
 
         /** @var UserModule $module */
         $module = Abricos::GetModule('user');
-        $errCode = $module->GetManager()->UserPasswordChange($userid, $d->currentPassword, $d->password);
-        if ($errCode > 0){
-            return $errCode;
+        $isChange = $module->GetManager()->GetPasswordManager()->PasswordChange($userid, $d->currentPassword, $d->password);
+
+        if (!$isChange){
+            return AbricosResponse::ERR_BAD_REQUEST;
         }
 
         $ret = new stdClass();
