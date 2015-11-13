@@ -1,7 +1,7 @@
 var Component = new Brick.Component();
 Component.requires = {
     mod: [
-        {name: 'notify', files: ['button.js']},
+        {name: 'notify', files: ['profileConfig.js']},
         {name: '{C#MODNAME}', files: ['lib.js']}
     ]
 };
@@ -15,24 +15,18 @@ Component.entryPoint = function(NS){
 
     NS.SubscribeConfigWidget = Y.Base.create('subscribeWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
-            this.set('waiting', true);
+            var tp = this.template;
 
-            var instance = this;
-
-            NOTIFY.initApp({
-                initCallback: function(err, appInstance){
-                    instance._onInitNotifyApp(err, appInstance);
-                }
+            this.profileConfigWidget = new NOTIFY.ProfileConfigWidget({
+                srcNode: tp.one('notifyConfig')
             });
         },
         destructor: function(){
+            if (this.profileConfigWidget){
+                this.profileConfigWidget.destroy();
+                this.profileConfigWidget = null;
+            }
         },
-        _onInitNotifyApp: function(err, notifyApp){
-            this.set('waiting', false);
-
-            var tp = this.template,
-                subscribeList = notifyApp.get('subscribeBaseList');
-        }
     }, {
         ATTRS: {
             component: {value: COMPONENT},
@@ -41,7 +35,7 @@ Component.entryPoint = function(NS){
                 validator: Y.Lang.isNumber,
                 getter: function(val){
                     if (!val){
-                        val = Brick.env.user.id|0;
+                        val = Brick.env.user.id | 0;
                     }
                     return val;
                 }
@@ -56,18 +50,5 @@ Component.entryPoint = function(NS){
         }
     });
 
-    NS.SubscribeButtonWidget = Y.Base.create('subscribeButtonWidget', SYS.AppWidget, [
-        NOTIFY.SwitcherStatusExt
-    ], {
-
-    }, {
-        ATTRS: {
-            component: {value: COMPONENT},
-            templateBlockName: {value: 'subscribeButton'},
-            ownerDefine: {
-                value: {}
-            }
-        }
-    });
 
 };
