@@ -12,13 +12,16 @@ Component.entryPoint = function(NS){
 
     NS.UserMiniListWidget = Y.Base.create('userMiniListWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
+            this.cleanList();
+            this.after('userListChange', this.renderList, this);
+            this.after('selectedChange', this.renderList, this);
+        },
+        cleanList: function(){
             this._userAdded = [];
             this._userRemoved = [];
             this._users = [];
 
             this.renderList();
-            this.after('userListChange', this.renderList, this);
-            this.after('selectedChange', this.renderList, this);
         },
         renderList: function(){
             var userList = this.get('userList'),
@@ -111,6 +114,46 @@ Component.entryPoint = function(NS){
         }
     });
 
+    NS.UserSearchFormWidget = Y.Base.create('userSearchFormWidget', SYS.AppWidget, [], {
+        onInitAppWidget: function(err, appInstance){
+            var tp = this.template;
+            tp.one('form').on('submit', function(e){
+                e.halt();
+                this.searchUser();
+            }, this);
+        },
+        searchUser: function(){
+            var tp = this.template,
+                search = tp.getValue('username,firstname,lastname'),
+                callback = this.get('callback'),
+                context = this.get('context');
+
+            this.set('waiting', true);
+            this.get('appInstance').userSearch(search, function(err, result){
+                this.set('waiting', false);
+                if (!err && Y.Lang.isFunction(callback)){
+                    callback.call(context || this, result.userSearch);
+                }
+            }, this);
+        },
+        focus: function(){
+            var tp = this.template;
+            tp.setValue({
+                username: '',
+                firstname: '',
+                lastname: ''
+            });
+            tp.one('username').focus();
+        }
+    }, {
+        ATTRS: {
+            component: {value: COMPONENT},
+            templateBlockName: {value: 'searchForm'},
+            callback: {},
+            context: {}
+        }
+    });
+
     NS.UserSelectWidget = Y.Base.create('userSelectWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
             var tp = this.template;
@@ -151,32 +194,47 @@ Component.entryPoint = function(NS){
                 }
             });
 
-            var users = this.get('users');
-            this.set('waiting', true);
-            appInstance.friendList(function(err, result){
-                if (!err){
-                    this.friendListWidget.set('userList', result.friendList);
-                }
-                appInstance.userListByIds(users, function(err, result){
-                    this.set('waiting', false);
-                    if (!err){
-                        this.selectedListWidget.set('userList', result.userListByIds);
-                    }
-                }, this);
-            }, this);
+            this.searchFormWidget = new NS.UserSearchFormWidget({
+                srcNode: tp.one('searchForm'),
+                callback: function(userList){
+                    this.searchResultList.set('userList', userList);
+                    tp.toggleView(userList.size() === 0, 'emptySearchResult', 'searchResult');
+                },
+                context: this
+            });
 
-            var tp = this.template;
-            tp.one('searchForm').on('submit', function(e){
-                e.halt();
-                this.searchUser();
-            }, this);
+            if (this.get('useFriends')){
+                appInstance.friendList(function(err, result){
+                    if (!err){
+                        this.friendListWidget.set('userList', result.friendList);
+                    }
+                    this._loadUsers();
+                }, this);
+            } else {
+                this._loadUsers();
+            }
         },
         destructor: function(){
             if (this.friendListWidget){
                 this.selectedListWidget.destroy();
                 this.friendListWidget.destroy();
                 this.searchResultList.destroy();
+                this.searchFormWidget.destroy();
             }
+        },
+        _loadUsers: function(){
+            var users = this.get('users');
+            if (users.length === 0){
+                this.searchShow();
+                return;
+            }
+            this.set('waiting', true);
+            this.get('appInstance').userListByIds(users, function(err, result){
+                this.set('waiting', false);
+                if (!err){
+                    this.selectedListWidget.set('userList', result.userListByIds);
+                }
+            }, this);
         },
         _selectUser: function(source, userid){
             var friendLW = this.friendListWidget,
@@ -221,39 +279,18 @@ Component.entryPoint = function(NS){
             selectedLW.userRemove(userid);
         },
         searchShow: function(){
-            var tp = this.template;
-            tp.setValue({
-                username: '',
-                firstname: '',
-                lastname: ''
-            });
-            tp.toggleView(true, 'searchPanel', 'selectPanel');
-            tp.one('username').focus();
+            this.template.toggleView(true, 'searchPanel', 'selectPanel');
+            this.searchFormWidget.focus();
         },
         searchCancel: function(){
             this.template.toggleView(false, 'searchPanel', 'selectPanel');
+            this.searchResultList.cleanList();
         },
-        searchUser: function(){
-            var tp = this.template,
-                search = tp.getValue('username,firstname,lastname');
-
-            this.set('waiting', true);
-            this.get('appInstance').userSearch(search, function(err, result){
-                this.set('waiting', false);
-                if (!err){
-                    this.setUserSearchResult(result.userSearch);
-                }
-            }, this);
-        },
-        setUserSearchResult: function(userList){
-            var tp = this.template;
-            this.searchResultList.set('userList', userList);
-            tp.toggleView(userList.size() === 0, 'emptySearchResult', 'searchResult');
-        }
     }, {
         ATTRS: {
             component: {value: COMPONENT},
             templateBlockName: {value: 'widget'},
+            useFriends: {value: false},
             users: {
                 validator: Y.Lang.isArray,
                 value: [],

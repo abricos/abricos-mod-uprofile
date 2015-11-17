@@ -245,7 +245,7 @@ class UProfileApp extends AbricosApplication {
 
         $list = $this->InstanceClass('UserList');
 
-        $rows = UProfileQuery::UserListById($this->db, $uids);
+        $rows = UProfileQuery::UserListById($this, $uids);
         while (($d = $this->db->fetch_array($rows))){
             $list->Add($this->InstanceClass('User', $d));
         }

@@ -6,13 +6,18 @@
   table {
     width: 100%;
   }
+  td {
+    vertical-align: top;
+  }
   h4 {
     margin-top: 0;
   }
 
   .colLeft, .colRight {
     width: 48%;
-    padding: 10px;
+    & > div {
+      padding: 10px;
+    }
   }
   .colLeft, .colCenter .colRight {
     & > div {

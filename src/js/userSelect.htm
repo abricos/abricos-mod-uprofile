@@ -6,28 +6,9 @@
             <tr>
                 <td class="colLeft">
                     <div>
-                        <form id="{i#searchForm}">
-                            <h4>Поиск пользователя</h4>
+                        <h4>Поиск пользователя</h4>
 
-                            <div class="form-group">
-                                Учетная запись
-                                <input id="{i#username}" data-wait="disable" type="text" class="form-control input-sm"/>
-                            </div>
-                            <div class="form-group">
-                                Имя
-                                <input id="{i#firstname}" data-wait="disable" type="text"
-                                       class="form-control input-sm"/>
-                            </div>
-                            <div class="form-group">
-                                Фамилия
-                                <input id="{i#lastname}" data-wait="disable" type="text" class="form-control input-sm"/>
-                            </div>
-                            <div class="text-right">
-                                <button type="submit" class="btn btn-default btn-xs">
-                                    Найти
-                                </button>
-                            </div>
-                        </form>
+                        <div id="{i#searchForm}"></div>
                     </div>
                 </td>
                 <td class="colCenter">
@@ -97,7 +78,6 @@
     </div>
 </div>
 
-
 <!--{list}-->
 <div id="{i#list}" class="userList list-group"></div>
 
@@ -106,3 +86,25 @@
     <img class="img-rounded" src="{v#avatarSrc}"/>
     {v#username}
 </a>
+
+<!--{searchForm}-->
+<form id="{i#form}">
+    <div class="form-group">
+        Учетная запись
+        <input id="{i#username}" data-wait="disable" type="text" class="form-control input-sm"/>
+    </div>
+    <div class="form-group">
+        Имя
+        <input id="{i#firstname}" data-wait="disable" type="text"
+               class="form-control input-sm"/>
+    </div>
+    <div class="form-group">
+        Фамилия
+        <input id="{i#lastname}" data-wait="disable" type="text" class="form-control input-sm"/>
+    </div>
+    <div class="text-right">
+        <button type="submit" class="btn btn-default btn-xs">
+            Найти
+        </button>
+    </div>
+</form>
