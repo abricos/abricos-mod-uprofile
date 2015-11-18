@@ -25,7 +25,7 @@ Component.entryPoint = function(NS){
         },
         renderList: function(){
             var userList = this.get('userList'),
-                users = [];
+                users = this.get('initUsers');
 
             if (userList){
                 userList.each(function(user){
@@ -109,6 +109,10 @@ Component.entryPoint = function(NS){
         ATTRS: {
             component: {value: COMPONENT},
             templateBlockName: {value: 'list,row'},
+            initUsers: {
+                validator: Y.Lang.isArray,
+                value: []
+            },
             userList: {},
             selected: {value: 0}
         }
@@ -172,6 +176,7 @@ Component.entryPoint = function(NS){
 
             this.selectedListWidget = new NS.UserMiniListWidget({
                 srcNode: tp.one('selectedList'),
+                initUsers: this.get('users'),
                 CLICKS: {
                     select: {
                         event: function(e){
@@ -224,6 +229,7 @@ Component.entryPoint = function(NS){
         },
         _loadUsers: function(){
             var users = this.get('users');
+
             if (users.length === 0){
                 this.searchShow();
                 return;
