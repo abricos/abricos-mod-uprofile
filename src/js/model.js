@@ -104,7 +104,28 @@ Component.entryPoint = function(NS){
 
 
     NS.UserList = Y.Base.create('userList', SYS.AppModelList, [], {
-        appItem: NS.User
+        appItem: NS.User,
+        updateByData: function(d){
+            d = Y.merge({}, d || {});
+
+            d.username = d.username || d.unm || '';
+            d.id = (d.userid || d.id) | 0;
+            if (d.username === '' || d.id === 0){
+                return null;
+            }
+
+            var user = this.getById(d.id);
+            if (user){
+                return user;
+            }
+            var User = this.appInstance.get('User'),
+                user = new User(d, {
+                    appInstance: this.appInstance
+                });
+            this.add(user);
+            return user;
+        }
+
     });
 
     NS.Profile = Y.Base.create('profile', NS.User, [], {
