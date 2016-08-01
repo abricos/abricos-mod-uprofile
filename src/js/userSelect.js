@@ -204,6 +204,10 @@ Component.entryPoint = function(NS){
                 callback: function(userList){
                     this.searchResultList.set('userList', userList);
                     tp.toggleView(userList.size() === 0, 'emptySearchResult', 'searchResult');
+
+                    if (userList.size() === 1){
+                        this._selectUser('search', userList.item(0).get('id'));
+                    }
                 },
                 context: this
             });
