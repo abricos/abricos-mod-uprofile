@@ -296,6 +296,9 @@ Component.entryPoint = function(NS){
             this.template.toggleView(false, 'searchPanel', 'selectPanel');
             this.searchResultList.cleanList();
         },
+        toJSON: function(){
+            return this.get('users');
+        },
     }, {
         ATTRS: {
             component: {value: COMPONENT},
