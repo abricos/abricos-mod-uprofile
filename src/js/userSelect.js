@@ -290,7 +290,6 @@ Component.entryPoint = function(NS){
         },
         searchShow: function(){
             this.template.toggleView(true, 'searchPanel', 'selectPanel');
-            this.searchFormWidget.focus();
         },
         searchCancel: function(){
             this.template.toggleView(false, 'searchPanel', 'selectPanel');
@@ -316,7 +315,12 @@ Component.entryPoint = function(NS){
             }
         },
         CLICKS: {
-            searchShow: 'searchShow',
+            searchShow: {
+                event: function(){
+                    this.searchShow();
+                    this.searchFormWidget.focus();
+                }
+            },
             searchCancel: 'searchCancel',
             searchUser: 'searchUser',
             userSelect: 'moveToSelected',
