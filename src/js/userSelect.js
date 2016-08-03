@@ -10,6 +10,8 @@ Component.entryPoint = function(NS){
         COMPONENT = this,
         SYS = Brick.mod.sys;
 
+    var UID = Brick.env.user.id | 0;
+
     NS.UserMiniListWidget = Y.Base.create('userMiniListWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
             this.cleanList();
@@ -70,10 +72,17 @@ Component.entryPoint = function(NS){
                 if (err){
                     return;
                 }
-                var selected = this.get('selected') | 0;
+                var userid,
+                    hideCurrent = this.get('hideCurrent'),
+                    selected = this.get('selected') | 0;
+
                 result.userListByIds.each(function(user){
+                    userid = user.get('id') | 0;
+                    if (hideCurrent && UID === userid){
+                        return;
+                    }
                     lst += tp.replace('row', {
-                        id: user.get('id'),
+                        id: userid,
                         avatarSrc: user.get('avatarSrc24'),
                         username: user.get('viewName'),
                         active: selected === user.get('id') ? 'active' : ''
@@ -114,7 +123,8 @@ Component.entryPoint = function(NS){
                 value: []
             },
             userList: {},
-            selected: {value: 0}
+            selected: {value: 0},
+            hideCurrent: {value: false}
         }
     });
 
@@ -160,10 +170,12 @@ Component.entryPoint = function(NS){
 
     NS.UserSelectWidget = Y.Base.create('userSelectWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
-            var tp = this.template;
+            var tp = this.template,
+                hideCurrent = this.get('hideCurrent');
 
             this.friendListWidget = new NS.UserMiniListWidget({
                 srcNode: tp.one('friendList'),
+                hideCurrent: hideCurrent,
                 CLICKS: {
                     select: {
                         event: function(e){
@@ -177,6 +189,7 @@ Component.entryPoint = function(NS){
             this.selectedListWidget = new NS.UserMiniListWidget({
                 srcNode: tp.one('selectedList'),
                 initUsers: this.get('users'),
+                hideCurrent: hideCurrent,
                 CLICKS: {
                     select: {
                         event: function(e){
@@ -189,6 +202,7 @@ Component.entryPoint = function(NS){
 
             this.searchResultList = new NS.UserMiniListWidget({
                 srcNode: tp.one('searchResult'),
+                hideCurrent: hideCurrent,
                 CLICKS: {
                     select: {
                         event: function(e){
@@ -303,6 +317,7 @@ Component.entryPoint = function(NS){
             component: {value: COMPONENT},
             templateBlockName: {value: 'widget'},
             useFriends: {value: false},
+            hideCurrent: {value: false},
             users: {
                 validator: Y.Lang.isArray,
                 value: [],
