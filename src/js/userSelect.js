@@ -171,7 +171,18 @@ Component.entryPoint = function(NS){
     NS.UserSelectWidget = Y.Base.create('userSelectWidget', SYS.AppWidget, [], {
         onInitAppWidget: function(err, appInstance){
             var tp = this.template,
-                hideCurrent = this.get('hideCurrent');
+                hideCurrent = this.get('hideCurrent'),
+                initUsers = this.get('users');
+
+            if (hideCurrent){
+                var na = [];
+                for (var i = 0; i < initUsers.length; i++){
+                    if ((initUsers[i] | 0) !== UID){
+                        na[na.length] = initUsers[i];
+                    }
+                }
+                initUsers = na;
+            }
 
             this.friendListWidget = new NS.UserMiniListWidget({
                 srcNode: tp.one('friendList'),
@@ -188,7 +199,7 @@ Component.entryPoint = function(NS){
 
             this.selectedListWidget = new NS.UserMiniListWidget({
                 srcNode: tp.one('selectedList'),
-                initUsers: this.get('users'),
+                initUsers: initUsers,
                 hideCurrent: hideCurrent,
                 CLICKS: {
                     select: {
@@ -229,7 +240,17 @@ Component.entryPoint = function(NS){
             if (this.get('useFriends')){
                 appInstance.friendList(function(err, result){
                     if (!err){
-                        this.friendListWidget.set('userList', result.friendList);
+                        var friendList = result.friendList;
+
+                        for (var i = 0, userid; i < initUsers.length; i++){
+                            userid = initUsers[i];
+
+                            if (friendList.getById(userid)){
+                                friendList.removeById(userid);
+                            }
+                        }
+
+                        this.friendListWidget.set('userList', friendList);
                     }
                     this._loadUsers();
                 }, this);
@@ -248,10 +269,11 @@ Component.entryPoint = function(NS){
         _loadUsers: function(){
             var users = this.get('users');
 
-            if (users.length === 0){
+            if (this.friendListWidget.get('userList').size() === 0 && users.length === 0){
                 this.searchShow();
                 return;
             }
+
             this.set('waiting', true);
             this.get('appInstance').userListByIds(users, function(err, result){
                 this.set('waiting', false);

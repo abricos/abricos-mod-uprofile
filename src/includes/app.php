@@ -49,12 +49,6 @@ class UProfileApp extends AbricosApplication {
         }
     }
 
-    protected $_cache = array();
-
-    public function ClearCache(){
-        $this->_cache = array();
-    }
-
     public function IsUserRating(){
         $modURating = Abricos::GetModule('urating');
         return !empty($modURating);
@@ -218,18 +212,23 @@ class UProfileApp extends AbricosApplication {
         $modules = Abricos::$modules->RegisterAllModule();
 
         $friendIds = array();
+        /**
+         * @var string $name
+         * @var Ab_Module $module
+         */
         foreach ($modules as $name => $module){
             if (!method_exists($module, 'UProfile_IsFriendIds')){
                 continue;
             }
-            if (!$module->UProfile_IsFriendList){
+            if (!$module->UProfile_IsFriendIds()){
                 continue;
             }
-            $manager = $module->GetManager();
-            if (empty($manager) || !method_exists($manager, 'UProfile_FriendIds')){
+
+            $app = Abricos::GetApp($name);
+            if (empty($app) || !method_exists($app, 'UProfile_FriendIds')){
                 continue;
             }
-            $ids = $manager->UProfile_FriendIds();
+            $ids = $app->UProfile_FriendIds();
             if (!is_array($ids)){
                 continue;
             }
@@ -240,9 +239,14 @@ class UProfileApp extends AbricosApplication {
 
         $uids = array();
         foreach ($friendIds as $uid => $key){
+            $uid = intval($uid);
+            if ($userid === $uid){
+                continue;
+            }
             $uids[] = $uid;
         }
 
+        /** @var UProfileUserList $list */
         $list = $this->InstanceClass('UserList');
 
         $rows = UProfileQuery::UserListById($this, $uids);
