@@ -21,6 +21,14 @@ class UProfileUser extends AbricosModel {
     protected $_structModule = 'uprofile';
     protected $_structName = 'User';
 
+    public $email = '';
+
+    public function ToJSON(){
+        $ret = parent::ToJSON();
+        unset($ret->email);
+        return $ret;
+    }
+
     public function GetViewName(){
         if ($this->firstname === "" && $this->lastname === ""){
             return $this->username;
@@ -93,6 +101,3 @@ class UProfileItem extends UProfileUser {
  */
 class UProfileList extends AbricosModelList {
 }
-
-
-?>

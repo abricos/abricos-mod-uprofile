@@ -20,5 +20,3 @@ if (isset(Abricos::$adress->dir[1])){
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
     "userid" => $userid
 ));
-
-?>

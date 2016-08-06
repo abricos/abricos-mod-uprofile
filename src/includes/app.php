@@ -331,6 +331,7 @@ class UProfileApp extends AbricosApplication {
         while (($d = $this->db->fetch_array($rows))){
             /** @var UProfileUser $user */
             $user = $this->InstanceClass('User', $d);
+            $user->email = $d['email'];
             $this->_cache['User'][$user->id] = $user;
             $list->Add($user);
         }
@@ -358,5 +359,3 @@ class UProfileApp extends AbricosApplication {
         return $user;
     }
 }
-
-?>

@@ -67,5 +67,3 @@ $brick->param->var['command'] = Brick::ReplaceVarByData($brick->param->var['ok']
     "uid" => intval($userid),
     "fid" => $upload->uploadFileHash
 ));
-
-?>

@@ -162,5 +162,3 @@ class UProfileInitData {
         return $ret;
     }
 }
-
-?>

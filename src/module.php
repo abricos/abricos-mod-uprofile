@@ -205,5 +205,3 @@ class UProfilePermission extends Ab_UserPermission {
 }
 
 Abricos::ModuleRegister(new UProfileModule());
-
-?>

@@ -221,7 +221,4 @@ class UProfileManager extends Ab_ModuleManager {
         $this->_userFields = null;
         UserModule::$instance->GetManager()->UserFieldCacheClear();
     }
-
 }
-
-?>

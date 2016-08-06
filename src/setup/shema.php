@@ -61,6 +61,3 @@ if ($updateManager->isUpdate('0.1.4.1')){
     $uprofileManager->FieldAppend('twitter', 'Twitter', UProfileFieldType::STRING, 50);
     $uprofileManager->FieldCacheClear();
 }
-
-
-?>
