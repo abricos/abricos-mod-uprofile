@@ -18,26 +18,6 @@ Component.entryPoint = function(NS){
     });
 
     SYS.Application.build(COMPONENT, {}, {
-        _checkUsersInCache: function(userids){
-            if (!Y.Lang.isArray(userids)){
-                userids = [userids];
-            }
-            var userList = this.get('userList'),
-                user,
-                retUserList;
-
-            for (var i = 0; i < userids.length; i++){
-                user = userList.getById(userids[i] | 0);
-                if (!user){
-                    return null;
-                }
-                if (!retUserList){
-                    retUserList = new NS.UserList({appInstance: this});
-                }
-                retUserList.add(user);
-            }
-            return retUserList;
-        },
         _addUsersToCache: function(userList){
             if (!userList){
                 return;
@@ -145,9 +125,7 @@ Component.entryPoint = function(NS){
                 args: ['userid'],
                 type: 'model:User',
                 cache: function(userid){
-                    var userList = this._checkUsersInCache([userid]),
-                        user = userList ? userList.getById(userid) : null;
-                    return user;
+                    return this.get('userList').getById(userid | 0);
                 },
                 onResponse: function(user){
                     this._addUserToCache(user);
@@ -157,11 +135,45 @@ Component.entryPoint = function(NS){
             userListByIds: {
                 args: ['userids'],
                 type: 'modelList:UserList',
+                requestDataHandle: function(rData){
+                    var userList = this.get('userList'),
+                        orig = rData.userids,
+                        userids = [],
+                        cacheUsers = new NS.UserList({appInstance: this});
+
+                    for (var i = 0, userid, user; i < orig.length; i++){
+                        userid = orig[i] | 0;
+                        user = userList.getById(userid);
+                        if (user){
+                            cacheUsers.add(user);
+                        } else {
+                            userids[userids.length] = userid;
+                        }
+                    }
+                    this._tempCacheUsers = cacheUsers;
+
+                    rData.userids = userids;
+                    return rData;
+                },
                 cache: function(userids){
-                    return this._checkUsersInCache(userids);
+                    var retUserList = this._tempCacheUsers;
+
+                    if (userids.length === 0){
+                        this._tempCacheUsers = null;
+                        return retUserList;
+                    }
+
+                    return null;
                 },
                 onResponse: function(userList){
                     this._addUsersToCache(userList);
+
+                    this._tempCacheUsers.each(function(user){
+                        userList.add(user);
+                    });
+
+                    this._tempCacheUsers = null;
+
                     return userList;
                 }
             }

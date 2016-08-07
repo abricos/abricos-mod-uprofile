@@ -15,7 +15,7 @@ class UProfileQuery {
     public static function UserListById(UProfileApp $app, $ids){
         $db = $app->db;
 
-        $limit = 50;
+        $limit = 500;
         $sa = array("u.userid=0");
         for ($i = 0; $i < min(count($ids), $limit); $i++){
             array_push($sa, " u.userid=".bkint($ids[$i]));
