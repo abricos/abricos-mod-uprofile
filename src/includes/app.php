@@ -82,7 +82,7 @@ class UProfileApp extends AbricosApplication {
             sleep(3);
             return AbricosResponse::ERR_FORBIDDEN;
         }
-        return $this->models->InstanceClass('Profile', $d);
+        return $this->InstanceClass('Profile', $d);
     }
 
     public function FieldSetValue($varname, $value){

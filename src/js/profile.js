@@ -28,10 +28,16 @@ Component.entryPoint = function(NS){
                 return;
             }
             var tp = this.template;
-            tp.one('avatarSrc').set('src', profile.get('avatarSrc' + this.get('avatarSize')));
 
             tp.toggleView(profile.isEdit(), 'buttons');
             tp.toggleView(profile.get('avatar') !== '', 'btnRemove,btnUpload', 'btnUploadNew');
+            this.renderAvatar();
+        },
+        renderAvatar: function(){
+            var tp = this.template,
+                profile = this.get('profile');
+
+            tp.one('avatarSrc').set('src', profile.get('avatarSrc' + this.get('avatarSize')));
         },
         upload: function(){
             var userid = this.get('userid'),

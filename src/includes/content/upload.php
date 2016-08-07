@@ -7,15 +7,16 @@
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
-$user = Abricos::$user;
+/** @var UProfileApp $app */
+$app = Abricos::GetApp('uprofile');
 
-$userid = $user->id;
-if (empty($userid)){
+if (!$app->manager->IsWriteRole()){
     return;
 }
 
 $brick = Brick::$builder->brick;
-$brick->param->var['url'] = Abricos::$adress->requestURI;
+$v = &$brick->param->var;
+$v['url'] = Abricos::$adress->requestURI;
 
 $p_act = Abricos::CleanGPC('p', 'act', TYPE_STR);
 if ($p_act != "upload"){
@@ -27,23 +28,21 @@ if (empty($modFM)){
     return;
 }
 
+/** @var FileManager $fmManager */
 $fmManager = $modFM->GetFileManager();
-
-/** @var UProfile $uprofile */
-$uprofile = Abricos::GetModule('uprofile')->GetManager()->GetUProfile();
 
 // отключить проверку ролей в менеджере файлов
 $fmManager->RolesDisable();
 // отключить проверку свободного места в профиле пользователя
 $fmManager->CheckSizeDisable();
 
-$profile = $uprofile->Profile($userid);
+$profile = $app->Profile(Abricos::$user->id);
 
 // проверка, нет ли уже загруженного фото
 $avatarid = $profile->avatar;
 if (!empty($avatarid)){
     $fmManager->FileRemove($avatarid);
-    $uprofile->FieldSetValue('avatar', '');
+    $app->FieldSetValue('avatar', '');
 }
 
 $upload = FileManagerModule::$instance->GetManager()->CreateUploadByVar('file0');
@@ -54,16 +53,16 @@ $upload->imageConvertTo = 'gif';
 $upload->ignoreUploadRole = true;
 $upload->filePublicName = 'avatar.gif';
 
-$errornum = $upload->Upload();
+$error = $upload->Upload();
 
-if ($errornum === 0){
-    $uprofile->FieldSetValue('avatar', $upload->uploadFileHash);
+if ($error === 0){
+    $app->FieldSetValue('avatar', $upload->uploadFileHash);
 }
 
 $dir = Abricos::$adress->dir;
 
-$brick->param->var['command'] = Brick::ReplaceVarByData($brick->param->var['ok'], array(
+$v['command'] = Brick::ReplaceVarByData($v['ok'], array(
     "idWidget" => isset($dir['3']) ? $dir[3] : '',
-    "uid" => intval($userid),
+    "uid" => intval(Abricos::$user->id),
     "fid" => $upload->uploadFileHash
 ));
