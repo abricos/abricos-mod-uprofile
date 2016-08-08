@@ -84,6 +84,8 @@ class UProfileUser extends AbricosModel {
 
 /**
  * Class UProfileUserList
+ * @method UProfileUser Get(int $userid)
+ * @method UProfileUser GetByIndex(int $i)
  */
 class UProfileUserList extends AbricosModelList {
 }
