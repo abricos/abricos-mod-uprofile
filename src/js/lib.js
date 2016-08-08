@@ -143,6 +143,9 @@ Component.entryPoint = function(NS){
 
                     for (var i = 0, userid, user; i < orig.length; i++){
                         userid = orig[i] | 0;
+                        if (userid === 0){
+                            continue;
+                        }
                         user = userList.getById(userid);
                         if (user){
                             cacheUsers.add(user);
@@ -188,7 +191,10 @@ Component.entryPoint = function(NS){
             config: {
                 subscribe: function(){
                     return this.getURL('ws') + 'subscribe/SubscribeConfigWidget/';
-                }
+                },
+                publicity: function(){
+                    return this.getURL('ws') + 'publicity/PublicityConfigWidget/';
+                },
             }
         }
     });

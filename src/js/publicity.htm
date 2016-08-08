@@ -1,0 +1,47 @@
+<!--{widget}-->
+<div class="panel panel-default publicity">
+    <div class="panel-heading text-center">
+        <h3 class="panel-title pull-left">
+            Настройка приглашений
+        </h3>
+
+        <img src="/images/loading.gif" data-wait="show"/>
+
+        <div class="btn-toolbar pull-right">
+            <button data-click="save"
+                    data-wait="disable"
+                    class="btn btn-default btn-xs">
+                Сохранить
+            </button>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+        <h3>Приглашение к участию</h3>
+        <div class="radio" data-click="changeType" data-id="0">
+            <label>
+                <input id="{i#rd0}" name="{i#radio}" type="radio" value="0">
+                Все могут отправлять мне приглашение
+            </label>
+        </div>
+        <div class="radio" data-click="changeType" data-id="1">
+            <label>
+                <input id="{i#rd1}" name="{i#radio}" type="radio" value="1">
+                Только определенные пользователи могут отправлять мне приглашение
+            </label>
+        </div>
+
+        <div id="{i#usersPanel}" class="hide">
+            <div id="{i#usersWidget}"></div>
+            <div class="help-block">
+                Для того, чтобы пользователь был добавлен в список допустимых
+                к приглашению, его необходимо из левой колонки переместить в
+                правую.
+                <br />
+                Если пользователь отсутствует в левой колонке, его необходимо
+                найти по кнопке <i class="fa fa-search"></i>
+            </div>
+        </div>
+    </div>
+</div>

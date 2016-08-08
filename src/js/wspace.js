@@ -19,7 +19,7 @@ Component.entryPoint = function(NS){
             var tp = this.template,
                 userid = widget.get('userid');
 
-            tp.toggleView(userid === UID, 'personalMenu');
+            // tp.toggleView(userid === UID, 'personalMenu');
 
             this.set('userid', userid);
 
