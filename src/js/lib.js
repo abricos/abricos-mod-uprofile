@@ -171,9 +171,11 @@ Component.entryPoint = function(NS){
                 onResponse: function(userList){
                     this._addUsersToCache(userList);
 
-                    this._tempCacheUsers.each(function(user){
-                        userList.add(user);
-                    });
+                    if (this._tempCacheUsers){
+                        this._tempCacheUsers.each(function(user){
+                            userList.add(user);
+                        });
+                    }
 
                     this._tempCacheUsers = null;
 
