@@ -7,25 +7,16 @@
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
-
-require_once 'classes.php';
-require_once 'dbquery.php';
-
 /**
  * Class UProfileManager
  *
  * @property UProfileModule $module
+ * @method UProfileApp GetApp()
  */
 class UProfileManager extends Ab_ModuleManager {
 
-    /**
-     * @var UProfileManager
-     */
-    public static $instance = null;
-
-    public function __construct(UProfileModule $module){
-        UProfileManager::$instance = $this;
-        parent::__construct($module);
+    public function GetAppClassName(){
+        return 'UProfileApp';
     }
 
     public function IsAdminRole(){
@@ -50,34 +41,8 @@ class UProfileManager extends Ab_ModuleManager {
         return ($this->IsWriteRole() && intval(Abricos::$user->id) === intval($userid)) || $this->IsAdminRole();
     }
 
-    private $_app = null;
-
-    /**
-     * @return UProfileApp
-     */
-    public function GetApp(){
-        if (!is_null($this->_app)){
-            return $this->_app;
-        }
-        $this->module->ScriptRequireOnce('includes/app.php');
-        return $this->_app = new UProfileApp($this);
-    }
-
     public function AJAX($d){
         return $this->GetApp()->AJAX($d);
-    }
-
-    public function PasswordSave($userid, $d){
-        if (!$this->IsPersonalEditRole($userid)){
-            return null;
-        }
-        $ret = new stdClass();
-        $ret->err = 0;
-
-        $uman = Abricos::$user->GetManager();
-        $ret->err = $uman->UserPasswordChange($userid, $d->new, $d->old);
-
-        return $ret;
     }
 
     /**
@@ -91,6 +56,7 @@ class UProfileManager extends Ab_ModuleManager {
      *
      * @param integer $userid
      */
+    /*
     public function URating_UserCalculate($userid){
         $uMan = UserModule::$instance->GetManager();
         $user = $uMan->User($userid);
@@ -117,6 +83,7 @@ class UProfileManager extends Ab_ModuleManager {
         $ret->skill = $skill;
         return $ret;
     }
+    /**/
 
     public function User_OptionNames(){
         return array(
@@ -161,64 +128,5 @@ class UProfileManager extends Ab_ModuleManager {
             }
         }
         return false;
-    }
-
-    public function FieldList(){
-        return UProfileQuery::FieldList($this->db);
-    }
-
-    private $_userFields = null;
-
-    public function SysFieldList(){
-        if (!is_null($this->_userFields)){
-            return $this->_userFields;
-        }
-        $rows = UProfileQuery::FieldList($this->db);
-        $ret = array();
-        while (($row = $this->db->fetch_array($rows))){
-            $ret[$row['nm']] = $row;
-        }
-        $this->_userFields = $ret;
-        return $this->_userFields;
-    }
-
-    public function FieldRemove($name){
-        UProfileQuery::FieldRemove($this->db, $name);
-    }
-
-    public function FieldAppend($name, $title, $type, $size = '1', $options = array()){
-        $options = array_merge(array(
-            "order" => 0,
-            "default" => '',
-            "options" => '',
-            "unsigned" => true,
-            "access" => UserFieldAccess::VIEW_ALL
-        ), $options);
-
-        if ($type == UProfileFieldType::TABLE && empty($options['options'])){
-            // настройка опций для типа Таблица
-            $options['options'] = $name."|title";
-        }
-
-        $fields = $this->SysFieldList();
-        if (!empty($fields[$name])){
-            return;
-        }
-        if (UserModule::$instance->GetManager()->UserFieldCheck($name)){
-            return;
-        }
-
-        UProfileQuery::FieldAppend($this->db, $name, $title, $type, $size, $options);
-        UProfileQuery::FieldInfoAppend($this->db, $name, $title, $type, $options);
-    }
-
-
-    public function FieldAccessUpdate($name, $access){
-        UProfileQuery::FieldAccessUpdate($this->db, $name, $access);
-    }
-
-    public function FieldCacheClear(){
-        $this->_userFields = null;
-        UserModule::$instance->GetManager()->UserFieldCacheClear();
     }
 }

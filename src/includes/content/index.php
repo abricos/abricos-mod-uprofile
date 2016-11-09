@@ -11,12 +11,26 @@ $brick = Brick::$builder->brick;
 $p = &$brick->param->param;
 $v = &$brick->param->var;
 
-$userid = Abricos::$user->id;
-
-if (isset(Abricos::$adress->dir[1])){
-    $userid = intval(Abricos::$adress->dir[1]);
+$dir = Abricos::$adress->dir;
+if (!isset($dir[1])){
+    $brick->content = '';
+    return;
 }
+
+$username = urldecode($dir[1]);
+
+/** @var UProfileApp $app */
+$app = Abricos::GetApp('uprofile');
+
+// $app->User()
+
+print_r($username);
+exit;
+
+/*
 
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
     "userid" => $userid
 ));
+
+/**/

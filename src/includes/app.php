@@ -7,8 +7,6 @@
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
-require_once 'models.php';
-
 /**
  * Class UProfileApp
  *
@@ -19,7 +17,7 @@ class UProfileApp extends AbricosApplication {
         return array(
             'User' => 'UProfileUser',
             'UserList' => 'UProfileUserList',
-            'Profile' => 'UProfileItem',
+            'Profile' => 'UProfile',
             'ProfileList' => 'UProfileList',
         );
     }
@@ -49,6 +47,7 @@ class UProfileApp extends AbricosApplication {
         }
     }
 
+    /*
     public function IsUserRating(){
         $modURating = Abricos::GetModule('urating');
         return !empty($modURating);
@@ -60,6 +59,7 @@ class UProfileApp extends AbricosApplication {
         }
         URatingModule::$instance->GetManager()->Calculate($isClear);
     }
+    /**/
 
     public function ProfileToJSON($userid){
         $res = $this->Profile($userid);
@@ -68,14 +68,13 @@ class UProfileApp extends AbricosApplication {
 
     /**
      * @param $userid
-     * @param bool|false $recalcRating
-     * @return UProfileItem
+     * @return UProfile
      */
-    public function Profile($userid, $recalcRating = false){
+    public function Profile($userid){
         if (!$this->manager->IsViewRole()){
             return AbricosResponse::ERR_FORBIDDEN;
         }
-        $this->UsersRatingCheck($recalcRating);
+        // $this->UsersRatingCheck($recalcRating);
 
         $d = UProfileQuery::Profile($this->db, $userid);
         if (empty($d)){

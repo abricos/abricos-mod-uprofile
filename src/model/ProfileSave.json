@@ -1,0 +1,60 @@
+{
+  "type": "response",
+  "version": "0.1.0",
+  "vars": {
+    "sex": {
+      "type": "int"
+    },
+    "birthday": {
+      "type": "date"
+    },
+    "site": {
+      "type": "string",
+      "parse": "full"
+    },
+    "descript": {
+      "type": "string",
+      "parse": "full"
+    },
+    "icq": {
+      "type": "string",
+      "parse": "full"
+    },
+    "twitter": {
+      "type": "string",
+      "parse": "full"
+    },
+    "facebook": {
+      "type": "string",
+      "parse": "full"
+    },
+    "vk": {
+      "type": "string",
+      "parse": "full"
+    },
+    "telegram": {
+      "type": "string",
+      "parse": "full"
+    },
+    "ok": {
+      "type": "string",
+      "parse": "full"
+    },
+    "instagram": {
+      "type": "string",
+      "parse": "full"
+    },
+    "skype": {
+      "type": "string",
+      "parse": "full"
+    }
+  },
+  "codes": {
+    "OK": 1
+  },
+  "fields": {
+    "userid": {
+      "type": "int"
+    }
+  }
+}

@@ -9,10 +9,10 @@
 
 /**
  * Модуль "Профиль пользователя"
+ *
+ * @method UProfileManager GetManager()
  */
 class UProfileModule extends Ab_Module {
-
-    private $_manager;
 
     /**
      * @var UProfileModule
@@ -20,57 +20,25 @@ class UProfileModule extends Ab_Module {
     public static $instance = null;
 
     function __construct(){
-        $this->version = "0.1.6";
+        $this->version = "0.1.7";
         $this->name = "uprofile";
         $this->takelink = "uprofile";
 
         $this->permission = new UProfilePermission($this);
-
-        UProfileModule::$instance = $this;
     }
 
-    /**
-     * Получить менеджер
-     *
-     * @return UProfileManager
-     */
-    public function GetManager(){
-        if (is_null($this->_manager)){
-            require_once 'includes/manager.php';
-            $this->_manager = new UProfileManager($this);
-        }
-        return $this->_manager;
+    public function GetManagerClassName(){
+        return 'UProfileManager';
     }
 
     public function GetContentName(){
-        $cname = 'index';
+        $contentName = 'index';
         $adress = Abricos::$adress;
 
         if ($adress->level >= 2 && $adress->dir[1] == 'upload'){
-            $cname = "upload";
+            $contentName = "upload";
         }
-        return $cname;
-    }
-
-    /**
-     * Модуль URating запросил SQL скрипт по форме, который ему нужен для того,
-     * чтобы определить какие пользователи и их данные в модулях нуждаются
-     * в пересчете рейтинга
-     */
-    public function URating_SQLCheckCalculate(){
-        $db = Abricos::$db;
-        return "
-			SELECT 
-				DISTINCT u.userid as uid,
-				'".$this->name."' as m
-			FROM ".$db->prefix."user u
-			LEFT JOIN ".$db->prefix."urating_modcalc mc ON u.userid=mc.userid 
-				AND mc.module='".bkstr($this->name)."'
-			WHERE u.lastvisit > 0 
-				AND ((mc.upddate + ".URatingModule::PERIOD_CHECK." < u.upddate)
-					OR ISNULL(mc.upddate))
-			LIMIT 30
-		";
+        return $contentName;
     }
 }
 
@@ -99,73 +67,6 @@ class UserFriendPriority {
      * @var integer 9
      */
     const RANDOM = 9;
-}
-
-/**
- * Типы дополнительных полей учетной записи пользователя
- */
-class UProfileFieldType {
-
-    /**
-     * Тип BOOLEAN
-     *
-     * @var integer
-     */
-    const BOOLEAN = 0;
-    /**
-     * Тип INTEGER
-     *
-     * @var integer
-     */
-    const INTEGER = 1;
-    /**
-     * Тип STRING
-     *
-     * @var integer
-     */
-    const STRING = 2;
-    /**
-     * Тип DOUBLE
-     *
-     * @var integer
-     */
-    const DOUBLE = 3;
-    /**
-     * Тип TEXT
-     *
-     * @var integer
-     */
-    const TEXT = 4;
-
-    /**
-     * Тип DATETIME
-     *
-     * @var integer
-     */
-    const DATETIME = 5;
-
-    /**
-     * Тип ENUM
-     *
-     * @var integer
-     */
-    const ENUM = 6;
-
-    /**
-     * Тип TABLE
-     *
-     * @var integer
-     */
-    const TABLE = 7;
-}
-
-class UserFieldAccess {
-    const VIEW_ALL = 0;
-    const PERSONAL_VIEW = 1;
-    const PERSONAL_WRITE = 2;
-    const ADMIN_VIEW = 3;
-    const ADMIN_WRITE = 4;
-    const SYSTEM = 9;
 }
 
 class UProfileAction {

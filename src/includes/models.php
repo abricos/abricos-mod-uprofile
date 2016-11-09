@@ -37,7 +37,11 @@ class UProfileUser extends AbricosModel {
     }
 
     public function URI(){
-        return "#";
+        return $this->URL();
+    }
+
+    public function URL(){
+        return "/uprofile/".urlencode($this->username)."/";
     }
 
     /**
@@ -91,9 +95,30 @@ class UProfileUserList extends AbricosModelList {
 }
 
 /**
- * Class UProfileItem
+ * Class UProfile
+ *
+ * @property string $userid
+ * @property string $username
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $patronymic
+ * @property string $avatar
+ * @property string $email
+ * @property int $sex
+ * @property int $birthday
+ * @property string $site
+ * @property string $descript
+ * @property string $icq
+ * @property string $twitter
+ * @property string $facebook
+ * @property string $vk
+ * @property string $telegram
+ * @property string $ok
+ * @property string $instagram
+ * @property string $skype
+ * @property integer $lastvisit
  */
-class UProfileItem extends UProfileUser {
+class UProfile extends UProfileUser {
     protected $_structModule = 'uprofile';
     protected $_structName = 'Profile';
 }

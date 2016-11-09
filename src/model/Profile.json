@@ -18,6 +18,10 @@
       "type": "string",
       "json": "lnm"
     },
+    "patronymic": {
+      "type": "string",
+      "json": "lnm"
+    },
     "avatar": {
       "type": "string",
       "json": "avt"
@@ -35,17 +39,38 @@
       "type": "date",
       "json": "bday"
     },
+    "site": {
+      "type": "string",
+      "json": "site"
+    },
     "descript": {
       "type": "string",
       "json": "dsc"
+    },
+    "icq": {
+      "type": "string"
     },
     "twitter": {
       "type": "string",
       "json": "tvt"
     },
-    "site": {
-      "type": "string",
-      "json": "site"
+    "facebook": {
+      "type": "string"
+    },
+    "vk": {
+      "type": "string"
+    },
+    "telegram": {
+      "type": "string"
+    },
+    "ok": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string"
+    },
+    "skype": {
+      "type": "string"
     },
     "lastvisit": {
       "type": "date",

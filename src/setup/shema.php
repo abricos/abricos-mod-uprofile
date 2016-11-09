@@ -12,52 +12,54 @@ $updateManager = Ab_UpdateManager::$current;
 $db = Abricos::$db;
 $pfx = $db->prefix;
 
-/** @var UProfileManager $uprofilemanager */
-$uprofileManager = $updateManager->module->GetManager();
-
-if ($updateManager->isInstall()){
-
-    // дополнительные поля в таблице пользователей (описание этих полей)
-    $db->query_write("
-		CREATE TABLE IF NOT EXISTS ".$pfx."upfl_field (
-		  fieldid int(10) unsigned NOT NULL auto_increment,
-		  fieldname varchar(250) NOT NULL DEFAULT '' COMMENT 'Имя поля',
-		  fieldtype int(2) unsigned NOT NULL DEFAULT 0 COMMENT 'Тип поля',
-		  fieldaccess int(2) unsigned NOT NULL DEFAULT 0 COMMENT 'Уровень доступа к полю',
-		  options TEXT COMMENT 'Опции',
-		  title varchar(250) NOT NULL DEFAULT '' COMMENT 'Заголовок',
-		  ord int(3) unsigned NOT NULL DEFAULT 0 COMMENT 'Сортировка',
-		  PRIMARY KEY  (fieldid),
-		  UNIQUE fieldname (fieldname)
-		)".$charset
-    );
-    // TODO: необходимо создать таблицу для персональной настройки дополнительных полей учетной записи пользователя
-
-    $uprofileManager->FieldAppend('lastname', 'Фамилия', UProfileFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('firstname', 'Имя', UProfileFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('patronymic', 'Отчество', UProfileFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('sex', 'Пол', UProfileFieldType::ENUM, 1, array("options" => "мужской|женский"));
-    $uprofileManager->FieldAppend('birthday', 'Дата рождения', UProfileFieldType::DATETIME);
-    $uprofileManager->FieldAppend('descript', 'О себе', UProfileFieldType::TEXT);
-    $uprofileManager->FieldAppend('site', 'Сайт', UProfileFieldType::STRING, 100);
-    $uprofileManager->FieldAppend('icq', 'ICQ', UProfileFieldType::STRING, 10);
-    $uprofileManager->FieldCacheClear();
-}
-
 if ($updateManager->isUpdate('0.1.1')){
     Abricos::GetModule('uprofile')->permission->Install();
 }
 
-if ($updateManager->isUpdate('0.1.1.2') && !$updateManager->isInstall()){
-    $db->query_write("ALTER TABLE ".$pfx."upfl_field CHANGE enumvalue options TEXT DEFAULT '' COMMENT 'Опции'");
+if ($updateManager->isUpdate('0.1.7')){
+    $db->query_write("
+        CREATE TABLE IF NOT EXISTS ".$pfx."uprofile (
+            userid INT(10) UNSIGNED NOT NULL,
+            
+            sex TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Пол',
+            birthday INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Дата рождения',
+            site VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'Сайт',
+            descript TEXT NOT NULL COMMENT 'О себе',
+
+            github VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+
+            icq VARCHAR(16) NOT NULL DEFAULT '' COMMENT '',
+            twitter VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+            facebook VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+            vk VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+            telegram VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+            ok VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+            instagram VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+            skype VARCHAR(64) NOT NULL DEFAULT '' COMMENT '',
+
+            UNIQUE userid (userid)
+        )".$charset
+    );
 }
 
-if ($updateManager->isUpdate('0.1.1.3')){
-    $uprofileManager->FieldAppend('avatar', 'avatar', UProfileFieldType::STRING, 8, array("access" => UserFieldAccess::SYSTEM));
-    $uprofileManager->FieldCacheClear();
-}
+if ($updateManager->isUpdate('0.1.7') && !$updateManager->isInstall()){
+    $db->query_write("DROP TABLE IF EXISTS ".$pfx."upfl_field");
 
-if ($updateManager->isUpdate('0.1.4.1')){
-    $uprofileManager->FieldAppend('twitter', 'Twitter', UProfileFieldType::STRING, 50);
-    $uprofileManager->FieldCacheClear();
+    $db->query_write("
+		INSERT INTO ".$pfx."uprofile 
+		    (userid, sex, birthday, site, descript, icq, twitter)  
+		SELECT 
+			userid, sex, birthday, site, IFNULL(descript, ''), icq, twitter
+		FROM ".$pfx."user
+	");
+
+    $db->query_write("
+      ALTER TABLE ".$pfx."user 
+        DROP sex,
+        DROP birthday,
+        DROP site,
+        DROP descript,
+        DROP icq,
+        DROP twitter
+    ");
 }
