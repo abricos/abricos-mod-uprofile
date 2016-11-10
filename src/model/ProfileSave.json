@@ -2,6 +2,25 @@
   "type": "response",
   "version": "0.1.0",
   "vars": {
+    "userid": {
+      "type": "int"
+    },
+    "firstname": {
+      "type": "string",
+      "parse": "full"
+    },
+    "lastname": {
+      "type": "string",
+      "parse": "full"
+    },
+    "patronymic": {
+      "type": "string",
+      "parse": "full"
+    },
+    "email": {
+      "type": "string",
+      "parse": "full"
+    },
     "sex": {
       "type": "int"
     },
@@ -29,6 +48,10 @@
       "parse": "full"
     },
     "vk": {
+      "type": "string",
+      "parse": "full"
+    },
+    "github": {
       "type": "string",
       "parse": "full"
     },

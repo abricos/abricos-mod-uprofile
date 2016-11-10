@@ -32,21 +32,28 @@ Component.entryPoint = function(NS){
             return NS.User.viewURL(this);
         };
 
-    NS.User = Y.Base.create('user', SYS.AppModel, [], {
-        structureName: 'User',
+    var UserExt = function(){
+    };
+    UserExt.ATTRS = {
+        avatarSrc24: {readOnly: true, getter: _getterAvatar24},
+        avatarSrc45: {readOnly: true, getter: _getterAvatar45},
+        avatarSrc90: {readOnly: true, getter: _getterAvatar90},
+        avatarSrc180: {readOnly: true, getter: _getterAvatar180},
+        viewName: {readOnly: true, getter: _getterViewName},
+        viewNameAbbr: {readOnly: true, getter: _getterViewNameAbbr},
+        viewURL: {readOnly: true, getter: _getterViewURL},
+    };
+    UserExt.prototype = {
         isEdit: function(){
             return NS.roles.isAdmin || (NS.roles.isWrite && this.get('id') === UID);
         }
-    }, {
-        ATTRS: {
-            avatarSrc24: {readOnly: true, getter: _getterAvatar24},
-            avatarSrc45: {readOnly: true, getter: _getterAvatar45},
-            avatarSrc90: {readOnly: true, getter: _getterAvatar90},
-            avatarSrc180: {readOnly: true, getter: _getterAvatar180},
-            viewName: {readOnly: true, getter: _getterViewName},
-            viewNameAbbr: {readOnly: true, getter: _getterViewNameAbbr},
-            viewURL: {readOnly: true, getter: _getterViewURL},
-        }
+    };
+    NS.UserExt = UserExt;
+
+    NS.User = Y.Base.create('user', SYS.AppModel, [
+        NS.UserExt
+    ], {
+        structureName: 'User',
     });
 
     NS.User.avatarSrc = function(avatar, size){
@@ -102,7 +109,6 @@ Component.entryPoint = function(NS){
         return profile.appInstance.getURL('profile.view', profile.get('id'));
     };
 
-
     NS.UserList = Y.Base.create('userList', SYS.AppModelList, [], {
         appItem: NS.User,
         updateByData: function(d){
@@ -128,8 +134,62 @@ Component.entryPoint = function(NS){
 
     });
 
-    NS.Profile = Y.Base.create('profile', NS.User, [], {
+    NS.Profile = Y.Base.create('profile', NS.User, [
+        NS.UserExt
+    ], {
         structureName: 'Profile'
+    }, {
+        ATTRS: {
+            siteURL: {
+                readOnly: true,
+                getter: function(){
+                    var site = this.get('site');
+                    return site ? 'http://' + site : '';
+                }
+            },
+            twitterURL: {
+                readOnly: true,
+                getter: function(){
+                    var name = this.get('twitter');
+                    return name ? 'https://twitter.com/' + name : '';
+                }
+            },
+            facebookURL: {
+                readOnly: true,
+                getter: function(){
+                    var name = this.get('facebook');
+                    return name ? 'https://www.facebook.com/' + name : '';
+                }
+            },
+            vkURL: {
+                readOnly: true,
+                getter: function(){
+                    var name = this.get('vk');
+                    return name ? 'https://vk.com/' + name : '';
+                }
+            },
+            okURL: {
+                readOnly: true,
+                getter: function(){
+                    var name = this.get('ok');
+                    return name ? 'https://ok.com/' + name : '';
+                }
+            },
+            githubURL: {
+                readOnly: true,
+                getter: function(){
+                    var name = this.get('github');
+                    return name ? 'https://github.com/' + name : '';
+                }
+            },
+            instagramURL: {
+                readOnly: true,
+                getter: function(){
+                    var name = this.get('instagram');
+                    return name ? 'https://www.instagram.com/' + name : '';
+                }
+            },
+        }
     });
 
     NS.ProfileList = Y.Base.create('profileList', NS.UserList, [], {

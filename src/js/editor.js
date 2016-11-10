@@ -102,15 +102,7 @@ Component.entryPoint = function(NS){
                 emailro: profile.get('email')
             });
 
-            tp.setValue({
-                email: profile.get('email'),
-                firstname: profile.get('firstname'),
-                lastname: profile.get('lastname'),
-                sex: profile.get('sex'),
-                descript: profile.get('descript'),
-                site: profile.get('site'),
-                twitter: profile.get('twitter'),
-            });
+            tp.setValue(profile.toJSON(true));
 
             this.birthDayWidget = new NS.DateSelectWidget({
                 srcNode: tp.one('birthday'),
@@ -126,8 +118,8 @@ Component.entryPoint = function(NS){
 
             var tp = this.template;
 
-            var d = Y.merge(tp.getValue('email,firstname,lastname,sex,descript,site,twitter'), {
-                id: this.get('userid'),
+            var d = Y.merge(tp.getValue('email,firstname,lastname,sex,descript,site,twitter,facebook,vk,telegram,ok,instagram,skype,github'), {
+                userid: this.get('userid'),
                 birthday: this.birthDayWidget.get('dateUnix')
             });
             this.set('waiting', true);

@@ -60,6 +60,9 @@
     "vk": {
       "type": "string"
     },
+    "github": {
+      "type": "string"
+    },
     "telegram": {
       "type": "string"
     },

@@ -110,6 +110,7 @@ class UProfileUserList extends AbricosModelList {
  * @property string $descript
  * @property string $icq
  * @property string $twitter
+ * @property string $github
  * @property string $facebook
  * @property string $vk
  * @property string $telegram
@@ -128,3 +129,43 @@ class UProfile extends UProfileUser {
  */
 class UProfileList extends AbricosModelList {
 }
+
+/**
+ * Interface UProfileSaveVars
+ *
+ * @property string $userid
+ * @property string $username
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $patronymic
+ * @property string $email
+ * @property int $sex
+ * @property int $birthday
+ * @property string $site
+ * @property string $descript
+ * @property string $icq
+ * @property string $twitter
+ * @property string $github
+ * @property string $facebook
+ * @property string $vk
+ * @property string $telegram
+ * @property string $ok
+ * @property string $instagram
+ * @property string $skype
+ */
+interface UProfileSaveVars {
+}
+
+/**
+ * Class UProfileSave
+ *
+ * @property UProfileSaveVars $vars
+ * @property int $userid
+ */
+class UProfileSave extends AbricosResponse {
+    const CODE_OK = 1;
+
+    protected $_structModule = 'uprofile';
+    protected $_structName = 'ProfileSave';
+}
+

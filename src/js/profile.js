@@ -108,33 +108,14 @@ Component.entryPoint = function(NS){
             var tp = this.template,
                 profile = this.get('profile');
 
-            var site = 'http://' + profile.get('site'),
-                twitter = 'https://twitter.com/' + profile.get('twitter');
-
-            tp.one('site').set('href', site);
-            tp.one('twitter').set('href', twitter);
-
             tp.setHTML({
-                username: profile.get('username'),
-                email: profile.get('email'),
-                descript: profile.get('descript'),
-                site: site, twitter: twitter,
                 birthday: SYS.dateToString(profile.get('birthday')),
                 joindate: Brick.dateExt.convert(profile.get('joindate')),
                 lastvisit: Brick.dateExt.convert(profile.get('lastvisit')),
             });
 
-            tp.one('twitter').set('src', 'https://twiter.com/' + profile.get('twitter'));
-
-            var name, value,
-                rows = ('email,descript,site,twitter,birthday,' +
-                'joindate,lastvisit').split(',');
-
-            for (var i = 0; i < rows.length; i++){
-                name = rows[i];
-                value = profile.get(name);
-                tp.toggleView(!!value, name + 'Row');
-            }
+            this.appTriggerUpdate();
+            this.appSourceUpdate();
         }
     }, {
         ATTRS: {

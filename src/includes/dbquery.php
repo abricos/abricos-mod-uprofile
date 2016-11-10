@@ -43,20 +43,47 @@ class UProfileQuery {
         return $db->query_first($sql);
     }
 
-    public static function ProfileUpdate(Ab_Database $db, $userid, $d, $isAdmin = false){
+    public static function ProfileUpdate(Ab_Database $db, UProfileSave $save){
+        $d = $save->vars;
         $sql = "
 			UPDATE ".$db->prefix."user
 			SET
-				".($isAdmin ? "email='".bkstr($d->email)."'," : "")."
 				firstname='".bkstr($d->firstname)."',
 				lastname='".bkstr($d->lastname)."',
-				descript='".bkstr($d->descript)."',
-				site='".bkstr($d->site)."',
-				twitter='".bkstr($d->twitter)."',
+				patronymic='".bkstr($d->patronymic)."',
+				upddate=".TIMENOW."
+			WHERE userid=".bkint($d->userid)."
+			LIMIT 1
+		";
+        $db->query_write($sql);
+
+        $sql = "
+			UPDATE ".$db->prefix."uprofile
+			SET
 				sex=".bkint($d->sex).",
 				birthday=".bkint($d->birthday).",
-				upddate=".TIMENOW."
-			WHERE userid=".bkint($userid)."
+				site='".bkstr($d->site)."',
+				descript='".bkstr($d->descript)."',
+				github='".bkstr($d->github)."',
+				twitter='".bkstr($d->twitter)."',
+				facebook='".bkstr($d->facebook)."',
+				telegram='".bkstr($d->telegram)."',
+				skype='".bkstr($d->skype)."',
+				instagram='".bkstr($d->instagram)."',
+				vk='".bkstr($d->vk)."',
+				ok='".bkstr($d->ok)."'
+			WHERE userid=".bkint($d->userid)."
+			LIMIT 1
+		";
+        $db->query_write($sql);
+    }
+
+    public static function ProfileEmailUpdate(Ab_Database $db, UProfileSave $save){
+        $d = $save->vars;
+        $sql = "
+			UPDATE ".$db->prefix."user
+			SET email='".bkstr($d->email)."'
+			WHERE userid=".bkint($d->userid)."
 			LIMIT 1
 		";
         $db->query_write($sql);

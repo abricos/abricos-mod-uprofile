@@ -1,117 +1,197 @@
 <!--{widget}-->
-<div class="editor">
+<div class="editor row">
+    <div class="col-sm-8">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Учетная запись</label>
+                </div>
+                <div class="col-sm-9">
+                    <div id="{i#username}" class="value"></div>
+                </div>
+            </div>
 
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>Учетная запись</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <div id="{i#username}" class="value"></div>
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>E-mail</label>
+                </div>
+                <div class="col-sm-9">
+                    <input id="{i#email}" placeholder="E-mail" data-wait="disable"
+                           type="email" class="form-control">
+                    <div id="{i#emailro}" class="value"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Имя</label>
+                </div>
+                <div class="col-sm-9">
+                    <input id="{i#firstname}" data-wait="disable"
+                           type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Фамилия</label>
+                </div>
+                <div class="col-sm-9">
+                    <input id="{i#lastname}" data-wait="disable"
+                           type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Пол</label>
+                </div>
+                <div class="col-sm-9">
+                    <select id="{i#sex}" class="form-control" data-wait="disable">
+                        <option value="0">мужской</option>
+                        <option value="1">женский</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Дата рождения</label>
+                </div>
+                <div class="col-sm-9">
+                    <div id="{i#birthday}"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>О себе</label>
+                </div>
+                <div class="col-sm-9">
+                    <textarea id="{i#descript}" data-wait="disable" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Сайт</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group-addon">http://</div>
+                    <input id="{i#site}" data-wait="disable" type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Skype</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">@</div>
+                        <input id="{i#skype}" data-wait="disable" type="text" class="form-control">
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>E-mail</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <input id="{i#email}" placeholder="E-mail"
-                               data-wait="disable"
-                               type="email" class="form-control">
-                        <div id="{i#emailro}" class="value"></div>
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Telegram</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">@</div>
+                        <input id="{i#telegram}" data-wait="disable" type="text" class="form-control">
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>Имя</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <input id="{i#firstname}" data-wait="disable"
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Twitter</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">https://twitter.com/</div>
+                        <input id="{i#twitter}" data-wait="disable"
                                type="text" class="form-control">
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>Фамилия</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <input id="{i#lastname}" data-wait="disable"
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Facebook</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">https://www.facebook.com/</div>
+                        <input id="{i#facebook}" data-wait="disable"
                                type="text" class="form-control">
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>Пол</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <select id="{i#sex}" class="form-control" data-wait="disable">
-                            <option value="0">мужской</option>
-                            <option value="1">женский</option>
-                        </select>
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>ВКонтакте</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">https://vk.com/</div>
+                        <input id="{i#vk}" data-wait="disable" type="text" class="form-control">
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>Дата рождения</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <div id="{i#birthday}"></div>
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>GitHub</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">https://github.com/</div>
+                        <input id="{i#github}" data-wait="disable" type="text" class="form-control">
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>О себе</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <textarea id="{i#descript}" data-wait="disable" class="form-control"></textarea>
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Instagram</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">https://www.instagram.com/</div>
+                        <input id="{i#instagram}" data-wait="disable" type="text" class="form-control">
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>Сайт</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <input id="{i#site}" data-wait="disable"
-                               type="text" class="form-control">
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <label>Одноклассники</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">https://ok.ru/</div>
+                        <input id="{i#ok}" data-wait="disable" type="text" class="form-control">
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <div class="col-sm-3 text-right">
-                        <label>Twitter</label>
-                    </div>
-                    <div class="col-sm-9">
-                        <div class="input-group">
-                            <div class="input-group-addon">https://twitter.com/</div>
-                            <input id="{i#twitter}" data-wait="disable"
-                                   type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
         </div>
-        <div class="col-sm-4">
-            <div data-wait="show" class="text-right">
-                <img src="/images/loading.gif"/>
-            </div>
-            <div id="{i#buttons}" data-wait="hide" class="text-right">
-                <a data-click="save" href="#">Сохранить</a>
-                &nbsp;
-                <a data-click="cancel" href="#">Отмена</a>
-            </div>
-
+    </div>
+    <div class="col-sm-4">
+        <div data-wait="show" class="text-right">
+            <img src="/images/loading.gif"/>
         </div>
+        <div id="{i#buttons}" data-wait="hide" class="text-right">
+            <a data-click="save" href="#">Сохранить</a>
+            &nbsp;
+            <a data-click="cancel" href="#">Отмена</a>
+        </div>
+
     </div>
 </div>
 

@@ -19,6 +19,7 @@ class UProfileApp extends AbricosApplication {
             'UserList' => 'UProfileUserList',
             'Profile' => 'UProfile',
             'ProfileList' => 'UProfileList',
+            'ProfileSave' => 'UProfileSave'
         );
     }
 
@@ -74,7 +75,6 @@ class UProfileApp extends AbricosApplication {
         if (!$this->manager->IsViewRole()){
             return AbricosResponse::ERR_FORBIDDEN;
         }
-        // $this->UsersRatingCheck($recalcRating);
 
         $d = UProfileQuery::Profile($this->db, $userid);
         if (empty($d)){
@@ -84,43 +84,36 @@ class UProfileApp extends AbricosApplication {
         return $this->InstanceClass('Profile', $d);
     }
 
-    public function FieldSetValue($varname, $value){
-        $userid = Abricos::$user->id;
-        if (!$this->manager->IsPersonalEditRole($userid)){
-            return AbricosResponse::ERR_FORBIDDEN;
+    public function ProfileSaveToJSON($d){
+        $ret = $this->ProfileSave($d);
+        if (!$ret->IsSetCode(UProfileSave::CODE_OK)){
+            return $ret;
         }
 
-        UProfileQuery::FieldSetValue($this->db, $userid, $varname, $value);
-    }
-
-    public function ProfileSaveToJSON($d){
-        $userid = intval($d->id);
-        $res = $this->ProfileSave($d);
         return $this->ImplodeJSON(
-            $this->ProfileToJSON($userid),
-            $this->ResultToJSON('profileSave', $res)
+            $this->ProfileToJSON($ret->userid),
+            $this->ResultToJSON('profileSave', $ret)
         );
     }
 
     public function ProfileSave($d){
-        $userid = intval($d->id);
-        if (!$this->manager->IsPersonalEditRole($userid)){
-            return AbricosResponse::ERR_FORBIDDEN;
+        /** @var UProfileSave $ret */
+        $ret = $this->InstanceClass('ProfileSave', $d);
+        $vars = $ret->vars;
+
+        if (!$this->manager->IsPersonalEditRole($vars->userid)){
+            return $ret->SetError(AbricosResponse::ERR_FORBIDDEN);
         }
 
-        $utmf = Abricos::TextParser(true);
-        $d->firstname = $utmf->Parser($d->firstname);
-        $d->lastname = $utmf->Parser($d->lastname);
-        $d->site = $utmf->Parser($d->site);
-        $d->twitter = $utmf->Parser($d->twitter);
-        $d->descript = $utmf->Parser($d->descript);
-        $d->sex = intval($d->sex);
-        $d->birthday = intval($d->birthday);
+        UProfileQuery::ProfileUpdate($this->db, $ret);
 
-        UProfileQuery::ProfileUpdate($this->db, $userid, $d, $this->manager->IsAdminRole());
+        if ($this->manager->IsAdminRole()){
+            UProfileQuery::ProfileEmailUpdate($this->db, $ret);
+        }
 
-        $ret = new stdClass();
-        $ret->userid = $userid;
+        $ret->AddCode(UProfileSave::CODE_OK);
+        $ret->userid = $vars->userid;
+
         return $ret;
     }
 

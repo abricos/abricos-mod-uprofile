@@ -65,20 +65,20 @@
             <span class="title">Учетная запись</span>
         </div>
         <div class="col-sm-9">
-            <div id="{i#username}" class="value"></div>
+            <div data-src="this:profile.username" class="value"></div>
         </div>
     </div>
 
-    <div id="{i#emailRow}" class="form-group">
+    <div data-trigger="this:profile" data-code="email" class="form-group">
         <div class="col-sm-3 text-right">
             <span class="title">E-mail</span>
         </div>
         <div class="col-sm-9">
-            <div id="{i#email}" class="value"></div>
+            <div data-src="this:profile.email" class="value"></div>
         </div>
     </div>
 
-    <div id="{i#birthdayRow}" class="form-group">
+    <div data-trigger="this:profile" data-code="birthday" class="form-group">
         <div class="col-sm-3 text-right">
             <span class="title">Дата рождения</span>
         </div>
@@ -87,34 +87,109 @@
         </div>
     </div>
 
-    <div id="{i#descriptRow}" class="form-group">
+    <div data-trigger="this:profile" data-code="descript" class="form-group">
         <div class="col-sm-3 text-right">
             <span class="title">О себе</span>
         </div>
         <div class="col-sm-9">
-            <div id="{i#descript}" class="value"></div>
+            <div data-src="this:profile.descript" class="value"></div>
         </div>
     </div>
 
-    <div id="{i#siteRow}" class="form-group">
+    <div data-trigger="this:profile" data-code="siteURL"
+         class="form-group hide">
         <div class="col-sm-3 text-right">
             <span class="title">Сайт</span>
         </div>
         <div class="col-sm-9">
-            <a id="{i#site}" href="#" class="value" target="_blank"></a>
+            <a data-src="this:profile.siteURL"
+               data-href="this:profile.siteURL"
+               href="#" class="value" target="_blank"></a>
         </div>
     </div>
 
-    <div id="{i#twitterRow}" class="form-group">
+    <div data-trigger="this:profile" data-code="skype"
+         class="form-group hide">
+        <div class="col-sm-3 text-right">
+            <span class="title">Skype</span>
+        </div>
+        <div class="col-sm-9">
+            <span data-src="this:profile.skype"></span>
+        </div>
+    </div>
+
+    <div data-trigger="this:profile" data-code="telegram"
+         class="form-group hide">
+        <div class="col-sm-3 text-right">
+            <span class="title">Telegram</span>
+        </div>
+        <div class="col-sm-9">
+            @<span data-src="this:profile.telegram"></span>
+        </div>
+    </div>
+
+    <div data-trigger="this:profile" data-code="twitterURL"
+         class="form-group hide">
         <div class="col-sm-3 text-right">
             <span class="title">Twitter</span>
         </div>
         <div class="col-sm-9">
-            <a id="{i#twitter}" href="#" class="value" target="_blank"></a>
+            <a data-src="this:profile.twitterURL"
+               data-href="this:profile.twitterURL"
+               href="#" class="value" target="_blank"></a>
         </div>
     </div>
 
-    <div id="{i#joindateRow}" class="form-group">
+    <div data-trigger="this:profile" data-code="facebookURL"
+         class="form-group hide">
+        <div class="col-sm-3 text-right">
+            <span class="title">Facebook</span>
+        </div>
+        <div class="col-sm-9">
+            <a data-src="this:profile.facebookURL"
+               data-href="this:profile.facebookURL"
+               href="#" class="value" target="_blank"></a>
+        </div>
+    </div>
+
+    <div data-trigger="this:profile" data-code="vkURL"
+         class="form-group hide">
+        <div class="col-sm-3 text-right">
+            <span class="title">ВКонтакте</span>
+        </div>
+        <div class="col-sm-9">
+            <a data-src="this:profile.vkURL"
+               data-href="this:profile.vkURL"
+               href="#" class="value" target="_blank"></a>
+        </div>
+    </div>
+
+    <div data-trigger="this:profile" data-code="githubURL"
+         class="form-group hide">
+        <div class="col-sm-3 text-right">
+            <span class="title">GitHub</span>
+        </div>
+        <div class="col-sm-9">
+            <a data-src="this:profile.githubURL"
+               data-href="this:profile.githubURL"
+               href="#" class="value" target="_blank"></a>
+        </div>
+    </div>
+
+    <div data-trigger="this:profile" data-code="instagramURL"
+         class="form-group hide">
+        <div class="col-sm-3 text-right">
+            <span class="title">Instagram</span>
+        </div>
+        <div class="col-sm-9">
+            <a data-src="this:profile.instagramURL"
+               data-href="this:profile.instagramURL"
+               href="#" class="value" target="_blank"></a>
+        </div>
+    </div>
+
+    <div data-trigger="this:profile" data-code="joindate"
+         class="form-group hide">
         <div class="col-sm-3 text-right">
             <span class="title">Регистрация</span>
         </div>
@@ -123,7 +198,8 @@
         </div>
     </div>
 
-    <div id="{i#lastvisitRow}" class="form-group">
+    <div data-trigger="this:profile" data-code="lastvisit"
+         class="form-group hide">
         <div class="col-sm-3 text-right">
             <span class="title">Активность</span>
         </div>
@@ -131,5 +207,4 @@
             <div id="{i#lastvisit}" class="value"></div>
         </div>
     </div>
-
 </div>
