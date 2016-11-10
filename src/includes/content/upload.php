@@ -41,8 +41,7 @@ $profile = $app->Profile(Abricos::$user->id);
 // проверка, нет ли уже загруженного фото
 $avatarid = $profile->avatar;
 if (!empty($avatarid)){
-    $fmManager->FileRemove($avatarid);
-    $app->FieldSetValue('avatar', '');
+    $app->AvatarRemove(Abricos::$user->id);
 }
 
 $upload = FileManagerModule::$instance->GetManager()->CreateUploadByVar('file0');
@@ -56,7 +55,7 @@ $upload->filePublicName = 'avatar.gif';
 $error = $upload->Upload();
 
 if ($error === 0){
-    $app->FieldSetValue('avatar', $upload->uploadFileHash);
+    UProfileQuery::ProfileAvatarUpdate($app->db, Abricos::$user->id, $upload->uploadFileHash);
 }
 
 $dir = Abricos::$adress->dir;

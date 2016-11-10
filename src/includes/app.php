@@ -105,7 +105,7 @@ class UProfileApp extends AbricosApplication {
             return $ret->SetError(AbricosResponse::ERR_FORBIDDEN);
         }
 
-        UProfileQuery::ProfileUpdate($this->db, $ret);
+        UProfileQuery::ProfileSave($this->db, $ret);
 
         if ($this->manager->IsAdminRole()){
             UProfileQuery::ProfileEmailUpdate($this->db, $ret);
@@ -182,7 +182,7 @@ class UProfileApp extends AbricosApplication {
 
         $fileManager->FileRemove($avatar);
 
-        UProfileQuery::FieldSetValue($this->db, $userid, 'avatar', '');
+        UProfileQuery::ProfileAvatarUpdate($this->db, $userid, '');
 
         return $ret;
     }

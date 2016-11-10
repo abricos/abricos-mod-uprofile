@@ -1,10 +1,13 @@
 {
   "version": "0.1.0",
   "type": "model",
-  "idField": "userid",
   "fields": {
-    "userid": {
+    "id": {
       "type": "int"
+    },
+    "userid": {
+      "type": "int",
+      "dbField": "id"
     },
     "username": {
       "type": "string",

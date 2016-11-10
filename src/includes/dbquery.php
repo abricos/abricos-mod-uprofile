@@ -33,7 +33,8 @@ class UProfileQuery {
 
     public static function Profile(Ab_Database $db, $userid){
         $sql = "
-			SELECT 
+			SELECT
+			    u.userid as id,
 			    u.*, p.*
 			FROM ".$db->prefix."user u
 			LEFT JOIN ".$db->prefix."uprofile p ON u.userid=p.userid 
@@ -43,7 +44,7 @@ class UProfileQuery {
         return $db->query_first($sql);
     }
 
-    public static function ProfileUpdate(Ab_Database $db, UProfileSave $save){
+    public static function ProfileSave(Ab_Database $db, UProfileSave $save){
         $d = $save->vars;
         $sql = "
 			UPDATE ".$db->prefix."user
@@ -58,8 +59,26 @@ class UProfileQuery {
         $db->query_write($sql);
 
         $sql = "
-			UPDATE ".$db->prefix."uprofile
-			SET
+            INSERT INTO ".$db->prefix."uprofile (
+                userid, sex, birthday, site, descript, github, 
+                twitter, facebook, telegram, skype, instagram, 
+                vk, ok
+            ) VALUES (
+                ".bkint($d->userid).",
+				".bkint($d->sex).",
+				".bkint($d->birthday).",
+				'".bkstr($d->site)."',
+				'".bkstr($d->descript)."',
+				'".bkstr($d->github)."',
+				'".bkstr($d->twitter)."',
+				'".bkstr($d->facebook)."',
+				'".bkstr($d->telegram)."',
+				'".bkstr($d->skype)."',
+				'".bkstr($d->instagram)."',
+				'".bkstr($d->vk)."',
+				'".bkstr($d->ok)."'
+            ) 
+            ON DUPLICATE KEY UPDATE 
 				sex=".bkint($d->sex).",
 				birthday=".bkint($d->birthday).",
 				site='".bkstr($d->site)."',
@@ -72,8 +91,6 @@ class UProfileQuery {
 				instagram='".bkstr($d->instagram)."',
 				vk='".bkstr($d->vk)."',
 				ok='".bkstr($d->ok)."'
-			WHERE userid=".bkint($d->userid)."
-			LIMIT 1
 		";
         $db->query_write($sql);
     }
@@ -84,6 +101,16 @@ class UProfileQuery {
 			UPDATE ".$db->prefix."user
 			SET email='".bkstr($d->email)."'
 			WHERE userid=".bkint($d->userid)."
+			LIMIT 1
+		";
+        $db->query_write($sql);
+    }
+
+    public static function ProfileAvatarUpdate(Ab_Database $db, $userid, $avatar){
+        $sql = "
+			UPDATE ".$db->prefix."user
+			SET avatar='".bkstr($avatar)."'
+			WHERE userid=".bkint($userid)."
 			LIMIT 1
 		";
         $db->query_write($sql);
@@ -111,14 +138,5 @@ class UProfileQuery {
 			LIMIT 25
 		";
         return $db->query_read($sql);
-    }
-
-    public static function FieldSetValue(Ab_Database $db, $userid, $varname, $value){
-        $sql = "
-			UPDATE ".$db->prefix."user
-			SET ".bkstr($varname)."='".bkstr($value)."'
-			WHERE userid=".bkint($userid)."
-		";
-        $db->query_write($sql);
     }
 }
