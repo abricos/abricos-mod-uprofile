@@ -86,7 +86,19 @@ class UProfileApp extends AbricosApplication {
             sleep(3);
             return AbricosResponse::ERR_FORBIDDEN;
         }
-        return $this->InstanceClass('Profile', $d);
+
+        /** @var UProfile $profile */
+        $profile = $this->InstanceClass('Profile', $d);
+
+        /** @var URatingApp $uratingApp */
+        $uratingApp = Abricos::GetApp('urating');
+        if (!empty($uratingApp)){
+            $voting = $uratingApp->Voting('uprofile', 'user', $profile->id);
+            $profile->voting = $voting;
+            $profile->userid = $profile->id;
+        }
+
+        return $profile;
     }
 
     public function ProfileSaveToJSON($d){

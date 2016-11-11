@@ -45,6 +45,17 @@ class UProfileManager extends Ab_ModuleManager {
         return $this->GetApp()->AJAX($d);
     }
 
+    public function URating_GetTypes(){
+        return 'user';
+    }
+
+    public function URating_GetDefaultConfig($type){
+        return array(
+            'votingPeriod' => 0,
+            'showResult' => true
+        );
+    }
+
     /**
      * Расчет рейтинга пользователя
      *

@@ -38,6 +38,7 @@ $replace = array(
     "avatar24" => $profile->GetAvatar24(),
     "avatar180" => $profile->GetAvatar180(),
     "userURL" => $profile->URL(),
+    "voting" => ""
 );
 
 $fields = $profile->ToArray();
@@ -60,5 +61,12 @@ $replace["viewName"] = $profile->GetViewName();
 $replace["username"] = $profile->username;
 $replace["userid"] = $profile->id;
 
+/** @var URatingApp $uratingApp */
+$uratingApp = Abricos::GetApp('urating');
+if (!empty($uratingApp)){
+    $replace['voting'] = Brick::ReplaceVarByData($v['voting'], array(
+        "voting" => $uratingApp->VotingHTML($profile->voting)
+    ));
+}
 
 $brick->content = Brick::ReplaceVarByData($brick->content, $replace);

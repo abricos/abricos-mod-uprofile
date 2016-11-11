@@ -1,6 +1,7 @@
 <!--[*]
 [tt=main][/tt]
 [script]content/index.php[/script]
+[mcss=uprofile]profile.css[/mcss]
 
 [v=editorLink]
     <ul class="nav navbar-nav pull-right">
@@ -10,6 +11,12 @@
             </a>
         </li>
     </ul>
+[/v]
+
+[v=voting]
+    <div class="userVoting pull-right">
+        {v#voting}
+    </div>
 [/v]
 
 [v=birthdayField]
@@ -152,54 +159,54 @@
 [/v]
 
 [*]-->
-<div class="aw-uprofile">
-    <div class="app-nav">
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="{v#userURL}">
-                        <img class="icon" src="{v#avatar24}"/>
-                    </a>
-                    <a class="navbar-brand" href="{v#userURL}" title="Профиль пользователя">
-                        {v#viewName}
-                    </a>
-                </div>
-                {v#editorLink}
+<div class="aw-uprofile profile">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{v#userURL}">
+                    <img class="icon" src="{v#avatar24}"/>
+                </a>
+                <a class="navbar-brand" href="{v#userURL}" title="Профиль пользователя">
+                    {v#viewName}
+                </a>
             </div>
-        </nav>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-3">
-        <div class="avatar text-center thumbnail">
-            <img class="img-rounded" src="{v#avatar180}"/>
-        </div>
-    </div>
-    <div class="col-sm-9">
-        <div class="form-horizontal">
-            <div class="form-group">
-                <div class="col-sm-3 text-right">
-                    <span class="title">Учетная запись</span>
-                </div>
-                <div class="col-sm-9">
-                    {v#username}
-                </div>
-            </div>
+            {v#voting}
 
-            {v#email}
-            {v#birthday}
-            {v#descript}
-            {v#site}
-            {v#skype}
-            {v#telegram}
-            {v#twitter}
-            {v#facebook}
-            {v#vk}
-            {v#ok}
-            {v#github}
-            {v#instagram}
-            {v#joindate}
-            {v#lastvisit}
+            {v#editorLink}
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="avatar text-center thumbnail">
+                <img class="img-rounded" src="{v#avatar180}"/>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-3 text-right">
+                        <span class="title">Учетная запись</span>
+                    </div>
+                    <div class="col-sm-9">
+                        {v#username}
+                    </div>
+                </div>
+
+                {v#email}
+                {v#birthday}
+                {v#descript}
+                {v#site}
+                {v#skype}
+                {v#telegram}
+                {v#twitter}
+                {v#facebook}
+                {v#vk}
+                {v#ok}
+                {v#github}
+                {v#instagram}
+                {v#joindate}
+                {v#lastvisit}
+            </div>
         </div>
     </div>
 </div>
