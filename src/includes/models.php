@@ -117,6 +117,7 @@ class UProfileUserList extends AbricosModelList {
  * @property string $ok
  * @property string $instagram
  * @property string $skype
+ * @property integer $joindate
  * @property integer $lastvisit
  */
 class UProfile extends UProfileUser {

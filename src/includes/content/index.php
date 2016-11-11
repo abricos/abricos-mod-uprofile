@@ -22,15 +22,43 @@ $username = urldecode($dir[1]);
 /** @var UProfileApp $app */
 $app = Abricos::GetApp('uprofile');
 
-// $app->User()
+$profile = $app->Profile($username, true);
 
-print_r($username);
-exit;
+if (AbricosResponse::IsError($profile)){
+    return $profile;
+}
 
-/*
+$tplEditorLink = "";
+if ($app->manager->IsPersonalEditRole($profile->id)){
+    $tplEditorLink = $v['editorLink'];
+}
 
-$brick->content = Brick::ReplaceVarByData($brick->content, array(
-    "userid" => $userid
-));
+$replace = array(
+    "editorLink" => $tplEditorLink,
+    "avatar24" => $profile->GetAvatar24(),
+    "avatar180" => $profile->GetAvatar180(),
+    "userURL" => $profile->URL(),
+);
 
-/**/
+$fields = $profile->ToArray();
+
+foreach ($fields as $name => $value){
+    $replace[$name] = '';
+
+    if (!isset($v[$name.'Field']) || empty($value)){
+        continue;
+    }
+
+    $replace[$name] = Brick::ReplaceVarByData($v[$name.'Field'], array(
+        $name => $value,
+        "lastvisit" => date('d.m.Y H:i', $profile->lastvisit),
+        "joindate" => date('d.m.Y', $profile->joindate)
+    ));
+}
+
+$replace["viewName"] = $profile->GetViewName();
+$replace["username"] = $profile->username;
+$replace["userid"] = $profile->id;
+
+
+$brick->content = Brick::ReplaceVarByData($brick->content, $replace);

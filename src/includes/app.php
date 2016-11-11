@@ -62,8 +62,8 @@ class UProfileApp extends AbricosApplication {
     }
     /**/
 
-    public function ProfileToJSON($userid){
-        $res = $this->Profile($userid);
+    public function ProfileToJSON($userid, $isUserName = false){
+        $res = $this->Profile($userid, $isUserName);
         return $this->ResultToJSON('profile', $res);
     }
 
@@ -71,12 +71,17 @@ class UProfileApp extends AbricosApplication {
      * @param $userid
      * @return UProfile
      */
-    public function Profile($userid){
+    public function Profile($userid, $isUserName = false){
         if (!$this->manager->IsViewRole()){
             return AbricosResponse::ERR_FORBIDDEN;
         }
 
-        $d = UProfileQuery::Profile($this->db, $userid);
+        if ($isUserName){
+            $d = UProfileQuery::ProfileByUserName($this->db, $userid);
+        } else {
+            $d = UProfileQuery::Profile($this->db, $userid);
+        }
+
         if (empty($d)){
             sleep(3);
             return AbricosResponse::ERR_FORBIDDEN;

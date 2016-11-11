@@ -2,15 +2,204 @@
 [tt=main][/tt]
 [script]content/index.php[/script]
 
-[*]-->
+[v=editorLink]
+    <ul class="nav navbar-nav pull-right">
+        <li>
+            <a href="/bos/#app=uprofile/wspace/ws/profile/ProfileWidget/{v#userid}/">
+                Перейти к настройкам профиля
+            </a>
+        </li>
+    </ul>
+[/v]
 
-<div id="bos" class="mod-uprofile">
-	<div class="static">
-		<div id="mod-uprofile-container" style="min-height: 220px;">
-			<div style="width: 300px; margin: 150px auto; text-align: center">
-				Идет загрузка данных<br />
-				<img src="/images/loading.gif" /> Пожалуйста, подождите...
-			</div>
-		</div>
-	</div>
+[v=birthdayField]
+    <div data-trigger="this:profile" data-code="birthday" class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Дата рождения</span>
+        </div>
+        <div class="col-sm-9">
+            {v#birthday}
+        </div>
+    </div>
+[/v]
+[v=descriptField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">О себе</span>
+        </div>
+        <div class="col-sm-9">
+            {v#descript}
+        </div>
+    </div>
+[/v]
+[v=siteField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Сайт</span>
+        </div>
+        <div class="col-sm-9">
+            <a href="http://{v#site}" target="_blank">http://{v#site}</a>
+        </div>
+    </div>
+[/v]
+[v=skypeField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Skype</span>
+        </div>
+        <div class="col-sm-9">{v#skype}</div>
+    </div>
+[/v]
+[v=telegramField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Telegram</span>
+        </div>
+        <div class="col-sm-9">@{v#telegram}</div>
+    </div>
+[/v]
+[v=twitterField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Twitter</span>
+        </div>
+        <div class="col-sm-9">
+            <a href="https://twitter.com/{v#twitter}" class="value" target="_blank">
+                https://twitter.com/{v#twitter}
+            </a>
+        </div>
+    </div>
+[/v]
+[v=facebookField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Facebook</span>
+        </div>
+        <div class="col-sm-9">
+            <a href="https://www.facebook.com/{v#facebook}" class="value" target="_blank">
+                https://www.facebook.com/{v#facebook}
+            </a>
+        </div>
+    </div>
+[/v]
+[v=vkField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">ВКонтакте</span>
+        </div>
+        <div class="col-sm-9">
+            <a href="https://vk.com/{v#vk}" class="value" target="_blank">
+                https://vk.com/{v#vk}
+            </a>
+        </div>
+    </div>
+[/v]
+[v=okField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Одноклассники</span>
+        </div>
+        <div class="col-sm-9">
+            <a href="https://ok.ru/{v#ok}" class="value" target="_blank">
+                https://ok.ru/{v#ok}
+            </a>
+        </div>
+    </div>
+[/v]
+[v=githubField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">GitHub</span>
+        </div>
+        <div class="col-sm-9">
+            <a href="https://github.com/{v#github}" class="value" target="_blank">
+                https://github.com/{v#github}
+            </a>
+        </div>
+    </div>
+[/v]
+[v=instagramField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Instagram</span>
+        </div>
+        <div class="col-sm-9">
+            <a href="https://www.instagram.com/{v#instagram}" class="value" target="_blank">
+                https://www.instagram.com/{v#instagram}
+            </a>
+        </div>
+    </div>
+[/v]
+[v=joindateField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Регистрация</span>
+        </div>
+        <div class="col-sm-9">
+            {v#joindate}
+        </div>
+    </div>
+[/v]
+[v=lastvisitField]
+    <div class="form-group">
+        <div class="col-sm-3 text-right">
+            <span class="title">Активность</span>
+        </div>
+        <div class="col-sm-9">
+            {v#lastvisit}
+        </div>
+    </div>
+[/v]
+
+[*]-->
+<div class="aw-uprofile">
+    <div class="app-nav">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{v#userURL}">
+                        <img class="icon" src="{v#avatar24}"/>
+                    </a>
+                    <a class="navbar-brand" href="{v#userURL}" title="Профиль пользователя">
+                        {v#viewName}
+                    </a>
+                </div>
+                {v#editorLink}
+            </div>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <div class="avatar text-center thumbnail">
+            <img class="img-rounded" src="{v#avatar180}"/>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-3 text-right">
+                    <span class="title">Учетная запись</span>
+                </div>
+                <div class="col-sm-9">
+                    {v#username}
+                </div>
+            </div>
+
+            {v#email}
+            {v#birthday}
+            {v#descript}
+            {v#site}
+            {v#skype}
+            {v#telegram}
+            {v#twitter}
+            {v#facebook}
+            {v#vk}
+            {v#ok}
+            {v#github}
+            {v#instagram}
+            {v#joindate}
+            {v#lastvisit}
+        </div>
+    </div>
 </div>

@@ -172,7 +172,7 @@ Component.entryPoint = function(NS){
                 readOnly: true,
                 getter: function(){
                     var name = this.get('ok');
-                    return name ? 'https://ok.com/' + name : '';
+                    return name ? 'https://ok.ru/' + name : '';
                 }
             },
             githubURL: {

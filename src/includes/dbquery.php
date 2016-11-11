@@ -44,6 +44,20 @@ class UProfileQuery {
         return $db->query_first($sql);
     }
 
+    public static function ProfileByUserName(Ab_Database $db, $userName){
+        $sql = "
+			SELECT
+			    u.userid as id,
+			    u.*, p.*
+			FROM ".$db->prefix."user u
+			LEFT JOIN ".$db->prefix."uprofile p ON u.userid=p.userid 
+			WHERE u.username='".bkstr($userName)."'
+			LIMIT 1
+		";
+        return $db->query_first($sql);
+    }
+
+
     public static function ProfileSave(Ab_Database $db, UProfileSave $save){
         $d = $save->vars;
         $sql = "
