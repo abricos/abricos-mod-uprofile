@@ -48,20 +48,6 @@ class UProfileApp extends AbricosApplication {
         }
     }
 
-    /*
-    public function IsUserRating(){
-        $modURating = Abricos::GetModule('urating');
-        return !empty($modURating);
-    }
-
-    public function UsersRatingCheck($isClear = false){
-        if (!$this->IsUserRating()){
-            return;
-        }
-        URatingModule::$instance->GetManager()->Calculate($isClear);
-    }
-    /**/
-
     public function ProfileToJSON($userid, $isUserName = false){
         $res = $this->Profile($userid, $isUserName);
         return $this->ResultToJSON('profile', $res);
@@ -93,8 +79,7 @@ class UProfileApp extends AbricosApplication {
         /** @var URatingApp $uratingApp */
         $uratingApp = Abricos::GetApp('urating');
         if (!empty($uratingApp)){
-            $voting = $uratingApp->Voting('uprofile', 'user', $profile->id);
-            $profile->voting = $voting;
+            $profile->voting = $uratingApp->Voting('uprofile', 'user', $profile->id);
             $profile->userid = $profile->id;
         }
 
@@ -367,4 +352,18 @@ class UProfileApp extends AbricosApplication {
         }
         return $user;
     }
+
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * */
+    /*                        URating                    */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    /**
+     * @param URatingOwner $owner
+     * @param URatingVoting $voting
+     * @return bool
+     */
+    public function URating_IsToVote($owner, $voting){
+        return true;
+    }
+
 }

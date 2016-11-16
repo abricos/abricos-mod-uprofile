@@ -52,7 +52,8 @@ class UProfileManager extends Ab_ModuleManager {
     public function URating_GetDefaultConfig($type){
         return array(
             'votingPeriod' => 0,
-            'showResult' => true
+            'showResult' => true,
+            'disableVotingAbstain' => true
         );
     }
 

@@ -40,6 +40,10 @@ class UProfileModule extends Ab_Module {
         }
         return $contentName;
     }
+
+    public function URating_IsVoting(){
+        return true;
+    }
 }
 
 
