@@ -50,6 +50,9 @@ Component.entryPoint = function(NS){
             }, this);
         }
     }, [], {
+        APPS: {
+            urating: {}
+        },
         ATTRS: {
             isLoadAppStructure: {value: true},
             User: {value: NS.User},

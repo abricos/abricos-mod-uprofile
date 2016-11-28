@@ -80,7 +80,7 @@ class UProfileApp extends AbricosApplication {
         $uratingApp = Abricos::GetApp('urating');
         if (!empty($uratingApp)){
             $profile->voting = $uratingApp->Voting('uprofile', 'user', $profile->id);
-            $profile->userid = $profile->id;
+            $profile->voting->userid = $profile->id;
         }
 
         return $profile;
