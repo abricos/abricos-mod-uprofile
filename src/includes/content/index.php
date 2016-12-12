@@ -52,6 +52,7 @@ foreach ($fields as $name => $value){
 
     $replace[$name] = Brick::ReplaceVarByData($v[$name.'Field'], array(
         $name => $value,
+        "birthday" => date('d.m.Y', $profile->birthday),
         "lastvisit" => date('d.m.Y H:i', $profile->lastvisit),
         "joindate" => date('d.m.Y', $profile->joindate)
     ));
