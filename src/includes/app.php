@@ -279,6 +279,32 @@ class UProfileApp extends AbricosApplication {
         return $list;
     }
 
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * */
+    /*                        User                       */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+    private $_userPreload = array();
+    private $_userPreloadMap = array();
+
+    public function UserAddToPreload($userid){
+        $userid = intval($userid);
+        if ($userid === 0){
+            return;
+        }
+
+        if (isset($this->_userPreloadMap[$userid])){
+            return;
+        }
+
+        $this->_userPreload[] = $userid;
+        $this->_userPreloadMap[$userid] = true;
+    }
+
+    private function UserPreloadClean(){
+        $this->_userPreload = array();
+        $this->_userPreloadMap = array();
+    }
+
     public function UserListByIdsToJSON($d){
         $ret = $this->UserListByIds($d);
         return $this->ResultToJSON('userListByIds', $ret);
@@ -298,19 +324,17 @@ class UProfileApp extends AbricosApplication {
         if (is_integer($d)){
             $d = array($d);
         } else if (!is_array($d)){
-            return 400;
+            return AbricosResponse::ERR_BAD_REQUEST;
         }
-        if (!isset($this->_cache['User'])){
-            $this->_cache['User'] = array();
-        }
+
         $distinct = new stdClass();
         $userids = array();
         $count = count($d);
         for ($i = 0; $i < $count; $i++){
             $userid = intval($d[$i]);
 
-            if (isset($this->_cache['User'][$userid])){
-                $list->Add($this->_cache['User'][$userid]);
+            if ($this->CacheExists('User', $userid)){
+                $list->Add($this->Cache('User', $userid));
             } else if (!isset($distinct->$userid)){
                 $userids[] = $userid;
                 $distinct->$userid = $userid;
@@ -326,7 +350,7 @@ class UProfileApp extends AbricosApplication {
             /** @var UProfileUser $user */
             $user = $this->InstanceClass('User', $d);
             $user->email = $d['email'];
-            $this->_cache['User'][$user->id] = $user;
+            $this->SetCache('User', $user->id, $user);
             $list->Add($user);
         }
         return $list;
@@ -342,14 +366,30 @@ class UProfileApp extends AbricosApplication {
      * @return UProfileUser|int
      */
     public function User($userid){
-        $list = $this->UserListByIds(array($userid));
-        if (is_integer($list)){
-            return $list;
+        $userid = intval($userid);
+        if ($this->CacheExists('User', $userid)){
+            return $this->Cache('User', $userid);
         }
-        $user = $list->Get($userid);
-        if (empty($user)){
-            return 404;
+
+        if (count($this->_userPreload) > 0){
+            $this->UserAddToPreload($userid);
+
+            $userids = $this->_userPreload;
+            $this->UserPreloadClean();
+            $list = $this->UserListByIds($userids);
+            return $list->Get($userid);
         }
+
+        $d = UProfileQuery::User($this, $userid);
+        if (empty($d)){
+            return AbricosResponse::ERR_NOT_FOUND;
+        }
+
+        /** @var UProfileUser $user */
+        $user = $this->InstanceClass('User', $d);
+        $user->email = $d['email'];
+        $this->SetCache('User', $user->id, $user);
+
         return $user;
     }
 

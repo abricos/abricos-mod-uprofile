@@ -12,6 +12,17 @@
  */
 class UProfileQuery {
 
+    public static function User(UProfileApp $app, $userid){
+        $db = $app->db;
+        $sql = "
+			SELECT *
+			FROM ".$db->prefix."user
+			WHERE userid=".intval($userid)."
+			LIMIT 1
+		";
+        return $db->query_first($sql);
+    }
+
     public static function UserListById(UProfileApp $app, $ids){
         $db = $app->db;
 
